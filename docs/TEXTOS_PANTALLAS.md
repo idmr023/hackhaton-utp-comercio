@@ -86,11 +86,15 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 - Tras pedir: *Pedido enviado a tus vecinos. Te avisamos cuando alguien pueda ayudar.*
 - Pantalla puedo: título **¿Con qué puedes ayudar?** · opciones: `ENFERMERA/O · BOTIQUÍN · AGUA · COMIDA · GENERADOR · VEHÍCULO · ESPACIO`
 - Tras ofrecer: *Gracias. Tu ayuda ya aparece en el mapa (+20 puntos al confirmar).*
+- Pantalla urgencia (tras elegir qué necesita): título **💧 AGUA: ¿qué tan urgente?** · botones grandes `Puede esperar · Hoy · ¡Ahora!`
+- Sin señal (se guarda en el celular y se envía solo): *Sin señal: tu pedido se guardó y se enviará solo.* · *Sin señal: tu ayuda se guardó y se enviará sola.* · *Sin señal: tu aviso se guardó y se enviará solo.*
+- Error al enviar: *No se pudo enviar. Intenta de nuevo.*
+- Mapa Minka: una pastilla por zona (~300 m): roja `🆘 n` = necesidades, verde `🤝 n` = recursos. Popup: **Necesitan ayuda** (💧 AGUA · ¡Ahora! — María G.) / **Pueden ayudar** (🩹 BOTIQUÍN — Luis R.) · `a 150 m`
 - Match encontrado (notificación): *Lucía, a 2 cuadras, tiene botiquín. Toca para coordinar.* → botón **Coordinar por WhatsApp**
 - Tarjeta cerca: título **Cerca de ti (3 km)** · `🔴 3 necesidades abiertas · 🟢 5 recursos disponibles`
 - Boletín: título **📰 Boletín Minka** · vacío: *Sin avisos por ahora.*
 - Parte de zona (IA): *Resumen de tu zona, 4:10 pm: 3 familias sin agua en la cuadra 5, 1 herido leve atendido, acopio en el parque.*
-- Salir de Minka (confirmación): *¿Terminó la emergencia en tu zona?* → **Sí, volver al barrio** / **Seguir en Minka**
+- Salir de Minka (confirmación del navegador): *¿Terminó la emergencia en tu zona?* → Aceptar = **Sí, volver al barrio** / Cancelar = **Seguir en Minka**
 
 ## 7. Puntos Ayni
 - Encabezado: `Tus puntos Ayni` · número grande · *Ayuda confirmada +10 · Recomendación +2 · Minka +20*

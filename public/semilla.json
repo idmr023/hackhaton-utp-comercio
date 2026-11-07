@@ -34,5 +34,16 @@
     {"id": "aviso_01", "autorRol": "moderador", "texto": "Municipalidad: punto de acopio de agua en el Mercado N° 1 desde las 3 pm", "zona": "Surquillo"},
     {"id": "aviso_02", "autorRol": "moderador", "texto": "Serenazgo: Av. Villarán cuadra 3 cerrada por un poste caído", "zona": "Surquillo"},
     {"id": "aviso_03", "autorRol": "moderador", "texto": "Posta del barrio atendiendo heridos leves hasta las 10 pm", "zona": "Surquillo"}
+  ],
+  "necesidades": [
+    {"id": "nec_01", "autorId": "vec_02", "autorNombre": "María G.", "whatsapp": "985893049", "tipo": "agua", "urgencia": 3, "estado": "abierta", "asignadoA": null, "geo": {"lat": -12.1149, "lng": -77.0229}},
+    {"id": "nec_02", "autorId": "vec_07", "autorNombre": "Pedro F.", "whatsapp": "985893049", "tipo": "medicina", "urgencia": 2, "estado": "abierta", "asignadoA": null, "geo": {"lat": -12.1122, "lng": -77.0256}},
+    {"id": "nec_03", "autorId": "vec_10", "autorNombre": "Lucía C.", "whatsapp": "985893049", "tipo": "albergue", "urgencia": 1, "estado": "abierta", "asignadoA": null, "geo": {"lat": -12.1122, "lng": -77.0229}}
+  ],
+  "recursos": [
+    {"id": "recu_01", "autorId": "vec_05", "autorNombre": "Luis R.", "whatsapp": "985893049", "tipo": "botiquin", "disponible": true, "asignadoA": null, "geo": {"lat": -12.1122, "lng": -77.0229}},
+    {"id": "recu_02", "autorId": "vec_01", "autorNombre": "Juan P.", "whatsapp": "985893049", "tipo": "agua", "disponible": true, "asignadoA": null, "geo": {"lat": -12.1122, "lng": -77.0229}},
+    {"id": "recu_03", "autorId": "vec_08", "autorNombre": "Sofía B.", "whatsapp": "985893049", "tipo": "enfermera", "disponible": true, "asignadoA": null, "geo": {"lat": -12.1149, "lng": -77.0229}},
+    {"id": "recu_04", "autorId": "vec_06", "autorNombre": "Elena S.", "whatsapp": "985893049", "tipo": "vehiculo", "disponible": true, "asignadoA": null, "geo": {"lat": -12.1149, "lng": -77.0202}}
   ]
 }

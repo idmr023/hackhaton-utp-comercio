@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, NavLink, Navigate, useNavigate } from 'react-router-dom'
 import { EstadoProvider, useEstado } from './lib/estado'
 import Mapa from './pages/Mapa'
 import Publicar from './pages/Publicar'
@@ -10,6 +10,13 @@ import Puntos from './pages/Puntos'
 
 function Barra() {
   const { modo, setModo, online, aviso } = useEstado()
+  const nav = useNavigate()
+  const cambiarModo = () => {
+    if (modo === 'minka') {
+      if (!window.confirm('¿Terminó la emergencia en tu zona?\n\nAceptar = Sí, volver al barrio · Cancelar = Seguir en Minka')) return
+      setModo('barrio'); nav('/')
+    } else { setModo('minka'); nav('/minka') }
+  }
   return (
     <>
       <header className="barra-superior">
@@ -17,7 +24,7 @@ function Barra() {
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <span className={'estado' + (online ? '' : ' offline')}>{online ? 'En línea' : 'Sin internet · se guarda local'}</span>
           <button className="btn secundario" style={{ width: 'auto', minHeight: 34, padding: '4px 10px', fontSize: 13 }}
-            onClick={() => setModo(modo === 'minka' ? 'barrio' : 'minka')}>
+            onClick={cambiarModo}>
             {modo === 'minka' ? 'Salir' : 'Emergencia'}
           </button>
         </div>
