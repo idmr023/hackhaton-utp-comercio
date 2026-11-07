@@ -45,6 +45,7 @@ export default defineConfig({
   server: {
     host: true, // permite abrir desde el celular por IP de la red Wi-Fi
     port: 5173,
+    allowedHosts: ['.trycloudflare.com'], // tunel HTTPS: npx cloudflared tunnel --url http://localhost:5173
     proxy: {
       // /api/* -> mini servidor Node (Didit). Asi el celular solo habla con Vite.
       '/api': 'http://localhost:3001',

@@ -11,7 +11,28 @@ import { pendientes } from '../lib/offlineQueue'
 
 // Iconos simples por tipo (emoji en divIcon: no depende de imagenes externas)
 const icono = (emoji) => L.divIcon({ html: `<div style="font-size:26px;line-height:1">${emoji}</div>`, className: '', iconSize: [30, 30], iconAnchor: [15, 15] })
-const ICONOS = { OFREZCO: icono('🛠️'), NECESITO: icono('🙋'), RECOMIENDO: icono('⭐'), NEGOCIO: icono('🏪'), YO: icono('📍') }
+const ICONOS = { NEGOCIO: icono('🏪'), YO: icono('📍') }
+const EMOJI_TIPO = { OFREZCO: '🛠️', NECESITO: '🙋', RECOMIENDO: '⭐' }
+
+// Icono de un grupo de publicaciones: emoji de la mas reciente + contador si hay varias
+const iconoGrupo = (emoji, n) => L.divIcon({
+  html: `<div style="position:relative;font-size:26px;line-height:1">${emoji}${n > 1
+    ? `<span style="position:absolute;top:-8px;right:-12px;background:#d62828;color:#fff;border-radius:10px;font:700 12px sans-serif;padding:2px 6px">${n}</span>` : ''}</div>`,
+  className: '', iconSize: [30, 30], iconAnchor: [15, 15],
+})
+
+// Las publicaciones se guardan en una celda aproximada (~300 m), asi que varias caen en el
+// mismo punto y se taparian: un icono por celda, con la lista completa en el popup.
+const msFecha = (f) => (f == null ? Infinity : f.seconds ? f.seconds * 1000 : Number(f) || 0) // null = recien creada
+function agruparPorCelda(pubs) {
+  const grupos = new Map()
+  for (const p of pubs) {
+    const k = `${p.geo.lat.toFixed(5)},${p.geo.lng.toFixed(5)}`
+    if (!grupos.has(k)) grupos.set(k, [])
+    grupos.get(k).push(p)
+  }
+  return [...grupos].map(([k, items]) => ({ k, items: items.sort((a, b) => msFecha(b.fecha) - msFecha(a.fecha)) }))
+}
 
 function Centrar({ centro }) {
   const map = useMap()
@@ -64,12 +85,19 @@ export default function Mapa() {
               </Popup>
             </Marker>
           ))}
-          {pubs.map((p) => (
-            <Marker key={p.id} position={[p.geo.lat, p.geo.lng]} icon={ICONOS[p.tipo] || ICONOS.OFREZCO}>
+          {agruparPorCelda(pubs).map(({ k, items }) => (
+            <Marker key={k} position={[items[0].geo.lat, items[0].geo.lng]} icon={iconoGrupo(EMOJI_TIPO[items[0].tipo] || '🛠️', items.length)}>
               <Popup>
-                <span className="chip">{p.tipo}</span> <span className="chip">{p.categoria}</span><br />
-                {p.texto}<br />
-                <span className="muted">{p.autorNombre} · {(p.distanciaKm * 1000).toFixed(0)} m</span>
+                {items.length > 1 && <b>{items.length} publicaciones en esta zona</b>}
+                <div style={{ maxHeight: 240, overflowY: 'auto' }}>
+                  {items.map((p, i) => (
+                    <div key={p.id} style={{ padding: '6px 0', borderTop: i ? '1px solid #eee' : 'none' }}>
+                      <span className="chip">{p.tipo}</span> <span className="chip">{p.categoria}</span><br />
+                      {p.texto}<br />
+                      <span className="muted">{p.autorId === usuario?.id ? 'Tú' : p.autorNombre} · {(p.distanciaKm * 1000).toFixed(0)} m</span>
+                    </div>
+                  ))}
+                </div>
               </Popup>
             </Marker>
           ))}

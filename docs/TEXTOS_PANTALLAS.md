@@ -45,6 +45,7 @@ Enlace secundario en las 3: **Saltar**.
 - Sin permiso de ubicación: *Sin tu ubicación no podemos mostrar tu barrio. Actívala en el candado de la barra del navegador.*
 - Chip pendientes: `2 publicaciones pendientes de subir`
 - Vacío: *Aún no hay publicaciones a {radio} de ti. Sé el primero: toca el +.*
+- Publicaciones de la misma zona (~300 m) = un solo ícono con contador rojo. Popup: **{n} publicaciones en esta zona** + lista (la más reciente arriba); si es tuya dice `Tú` en vez del nombre.
 - Popup de negocio:
   - Nombre, rubro
   - **⭐ Recomendado por 12 vecinos de tu zona**
