@@ -26,12 +26,14 @@ export function clasificarLocal(texto) {
 
 const key = import.meta.env.VITE_GEMINI_API_KEY
 const genAI = key ? new GoogleGenerativeAI(key) : null
+// 2.5-flash-lite ya no esta disponible para claves nuevas (nov 2026)
+const MODELO = 'gemini-3.5-flash-lite'
 
 /** Clasifica con Gemini (timeout 6 s). Si no hay clave/internet o falla, usa el local. */
 export async function clasificar(texto) {
   if (!genAI || !navigator.onLine) return { categoria: clasificarLocal(texto), fuente: 'local' }
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' })
+    const model = genAI.getGenerativeModel({ model: MODELO })
     const prompt = `Clasifica este texto de un vecino de Lima en UNA de estas categorias: ${CATEGORIAS.join(', ')}. Responde solo la categoria.\nTexto: "${texto}"`
     const res = await Promise.race([
       model.generateContent(prompt),
@@ -51,7 +53,7 @@ export async function resumirComentarios(comentarios) {
   if (!comentarios?.length) return ''
   if (!genAI || !navigator.onLine) return comentarios.slice(0, 2).join(' · ')
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' })
+    const model = genAI.getGenerativeModel({ model: MODELO })
     const res = await model.generateContent(`Resume en una frase de maximo 15 palabras, en espanol peruano y tono vecinal, estas opiniones:\n${comentarios.join('\n')}`)
     return res.response.text().trim()
   } catch {
