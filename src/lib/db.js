@@ -3,7 +3,7 @@
 // Colecciones: usuarios, publicaciones, recomendaciones, negocios_oficios,
 // ayudas_intercambios, recompensas, canjes, emergencias, necesidades, recursos, avisos_minka
 import {
-  collection, addDoc, getDocs, query, where, orderBy, limit, serverTimestamp, doc, updateDoc, setDoc,
+  collection, addDoc, getDocs, getDoc, query, where, orderBy, limit, serverTimestamp, doc, updateDoc, setDoc,
 } from 'firebase/firestore'
 import { db, FIREBASE_ACTIVO } from './firebase'
 import { geohash, rangosGeohash, distanciaKm } from './geo'
@@ -94,6 +94,13 @@ export async function listarCerca(col, centro, radioKm, filtros = {}) {
     .filter((d) => Object.entries(filtros).every(([k, v]) => d[k] === v))
     .map((d) => ({ ...d, distanciaKm: distanciaKm(centro, d.geo) }))
     .sort((a, b) => a.distanciaKm - b.distanciaKm)
+}
+
+/** Lee un documento por id. Devuelve null si no existe. */
+export async function obtener(col, id) {
+  if (MODO_DEMO_LOCAL) return localList(col).find((d) => d.id === id) || null
+  const s = await getDoc(doc(db, col, id))
+  return s.exists() ? { id: s.id, ...s.data() } : null
 }
 
 /** Lista simple (sin geo), por ejemplo avisos_minka o recompensas. */

@@ -106,7 +106,11 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 - Faltan puntos: *Te faltan 6 puntos. Ayuda a un vecino para ganar más.*
 - Canje hecho: *Tu código: **482 913**. Muéstralo en Panadería San Martín. Vence en 7 días.*
 - Límite: *Ya canjeaste aquí esta semana. Prueba otro negocio.*
-- Confirmar ayuda (quien recibió): título **¿Te ayudaron?** · *Pide a quien te ayudó su código de 4 dígitos* · campo `Código` · botón **Confirmar ayuda** · éxito: *Gracias. Carlos recibió +10 puntos Ayni.* · lejos: *Tienen que estar juntos para confirmar (menos de 200 m).*
+- Confirmar ayuda (dentro de la tarjeta verde de match en Minka): quien recibió ve **¿Te ayudaron?** *Pide a quien te ayudó su código de 4 dígitos.* · campo `Código` · botón **Confirmar ayuda** · éxito: *Gracias. Carlos recibió +20 puntos Ayni.* · lejos: *Tienen que estar juntos para confirmar (menos de 200 m).* · código mal: *Ese código no es. Pídeselo de nuevo a quien te ayudó.* · ya confirmada: `✔ Ayuda confirmada`
+- Quien ayudó ve: *Cuando ayudes, dale este código para confirmar:* **6197** → luego `✔ Jessica confirmó tu ayuda: +20 puntos Ayni`
+- Antifraude (misma pareja en el mes 100% / 50% / 0; máx. 3 ayudas y 30 puntos por día): *Gracias. Ayuda confirmada. Esta vez no suma puntos: ya se ayudaron varias veces este mes.* · *Gracias. Ayuda confirmada. Carlos ya llegó al máximo de puntos de hoy.*
+- Agotado: botón `Agotado` · *Se agotó esta recompensa. Prueba otra.* · error: *No se pudo canjear. Intenta de nuevo.* · vacío: *Aún no hay recompensas en tu barrio.*
+- Tarjeta verde **Tus códigos de canje** (últimos 3): **482 913** · `1 pan francés gratis · Panadería La Espiga de Oro · vence el 14 nov`
 
 ## 8. Perfil
 - Chips: **Validado en RENIEC** / **Pendiente de verificación** · `Avales: 1 / 2` · **Vecino verificado ✔**
