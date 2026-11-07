@@ -53,6 +53,7 @@ body { -webkit-tap-highlight-color: transparent; }
 .fab {
   position: absolute; right: 16px; bottom: 16px; width: 64px; height: 64px; border-radius: 50%;
   background: var(--amarillo); color: #222; font-size: 34px; border: 0; box-shadow: 0 4px 14px rgba(0,0,0,.3); cursor: pointer;
+  z-index: 1000; /* encima de las capas de Leaflet (400-1000) */
 }
 
 .pantalla { padding: 16px; display: flex; flex-direction: column; gap: 14px; }

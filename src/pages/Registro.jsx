@@ -4,11 +4,11 @@
 import { useState } from 'react'
 import { useEstado } from '../lib/estado'
 import { crear } from '../lib/db'
+import { sha256 } from '../lib/hash'
 
-async function sha256(texto) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(texto))
-  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('')
-}
+// Sin senal Firestore guarda local pero no confirma: no esperar para siempre
+const conTiempo = (promesa, ms) =>
+  Promise.race([promesa, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))])
 
 export default function Registro() {
   const { setUsuario, geoAprox } = useEstado()
@@ -24,29 +24,35 @@ export default function Registro() {
 
   async function registrar() {
     setCargando(true); setError('')
-    let verificacion = 'pendiente'
     try {
-      const r = await fetch('/api/verificar-dni', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ dni, nombre }),
-        signal: AbortSignal.timeout(8000),
-      })
-      const j = await r.json()
-      if (j.coincide === true) verificacion = 'reniec'
-      if (j.coincide === false) { setError('El DNI no coincide con RENIEC. Revísalo.'); setCargando(false); return }
-    } catch {
-      // servidor apagado o sin internet -> respaldo: pendiente de verificacion
+      let verificacion = 'pendiente'
+      try {
+        const r = await fetch('/api/verificar-dni', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dni, nombre }),
+          signal: AbortSignal.timeout(8000),
+        })
+        const j = await r.json()
+        if (j.coincide === true) verificacion = 'reniec'
+        if (j.coincide === false) { setError('El DNI no coincide con RENIEC. Revísalo.'); return }
+      } catch {
+        // servidor apagado o sin internet -> respaldo: pendiente de verificacion
+      }
+      const dniHash = await sha256(dni)
+      const u = {
+        nombre: nombre.trim(), telefono, whatsappVisible, dniHash,
+        verificacion,              // 'reniec' | 'pendiente'
+        verificado: false,          // true cuando tenga 2 avales
+        avales: [], puntosAyni: 0, zonaAprox: geoAprox || null, idioma: 'es',
+      }
+      try { u.id = await conTiempo(crear('usuarios', u), 5000) } catch { u.id = 'local_' + Date.now() }
+      setUsuario(u)
+    } catch (e) {
+      console.error('Registro fallo', e)
+      setError('No pudimos crear tu cuenta. Intenta de nuevo.')
+    } finally {
+      setCargando(false)
     }
-    const dniHash = await sha256(dni)
-    const u = {
-      nombre: nombre.trim(), telefono, whatsappVisible, dniHash,
-      verificacion,              // 'reniec' | 'pendiente'
-      verificado: false,          // true cuando tenga 2 avales
-      avales: [], puntosAyni: 0, zonaAprox: geoAprox || null, idioma: 'es',
-    }
-    try { u.id = await crear('usuarios', u) } catch { u.id = 'local_' + Date.now() }
-    setUsuario(u)
-    setCargando(false)
   }
 
   return (

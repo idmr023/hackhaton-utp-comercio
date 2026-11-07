@@ -28,6 +28,7 @@ Enlace secundario en las 3: **Saltar**.
 - Nota al pie: *Tu ubicación se guarda aproximada (~300 m). Nadie ve tu casa exacta.*
 - Errores:
   - DNI no coincide: *El DNI no coincide con RENIEC. Revísalo.*
+  - Error inesperado al crear la cuenta: *No pudimos crear tu cuenta. Intenta de nuevo.*
   - Celular inválido: *El celular debe tener 9 dígitos y empezar con 9.*
   - Ya existe: *Ya hay una cuenta con ese DNI. ¿Es tuya? Entra con tu celular.*
   - Sin internet / Didit caído (no es error, es aviso): *No pudimos validar tu DNI ahora. Puedes entrar; lo validamos cuando vuelva la señal.*

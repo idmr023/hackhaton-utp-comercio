@@ -7,11 +7,13 @@ import {
 } from 'firebase/firestore'
 import { db, FIREBASE_ACTIVO } from './firebase'
 import { geohash, rangosGeohash, distanciaKm } from './geo'
+import { sha256 } from './hash'
 
 export const MODO_DEMO_LOCAL = !FIREBASE_ACTIVO
 
 // ---------- almacen local (solo demo) ----------
 const KEY = 'ayni_local_db'
+const KEY_VERSION = 'ayni_local_semilla_version'
 function leerLocal() {
   try { return JSON.parse(localStorage.getItem(KEY)) || {} } catch { return {} }
 }
@@ -79,17 +81,24 @@ export async function listar(col, filtros = {}, max = 100) {
   return s.docs.map((d) => ({ id: d.id, ...d.data() }))
 }
 
-/** MODO DEMO LOCAL: la primera vez carga /semilla.json (misma data que datos/semilla.json). */
+/** MODO DEMO LOCAL: carga /semilla.json (misma data que datos/semilla.json).
+ *  Si la semilla cambia, reemplaza solo lo sembrado y conserva lo que publico el usuario. */
 export async function inicializarDemoLocal() {
-  if (!MODO_DEMO_LOCAL || localStorage.getItem(KEY)) return
+  if (!MODO_DEMO_LOCAL) return
   try {
-    const semilla = await (await fetch('/semilla.json')).json()
-    const data = {}
+    const texto = await (await fetch('/semilla.json')).text()
+    const version = await sha256(texto)
+    if (localStorage.getItem(KEY_VERSION) === version) return
+    const semilla = JSON.parse(texto)
+    const data = leerLocal()
     for (const [col, docs] of Object.entries(semilla)) {
-      data[col] = docs.map((d, i) => ({ id: `semilla_${col}_${i}`, ...d, fecha: Date.now() - i * 60000 }))
+      const propios = (data[col] || []).filter((d) => !d.deSemilla)
+      const sembrados = docs.map((d, i) => ({ id: `semilla_${col}_${i}`, ...d, deSemilla: true, fecha: Date.now() - i * 60000 }))
+      data[col] = [...propios, ...sembrados]
     }
     escribirLocal(data)
-  } catch (e) { console.warn('No se pudo cargar semilla local', e) }
+    localStorage.setItem(KEY_VERSION, version)
+  } catch (e) { console.warn('No se pudo cargar semilla local (sin internet: se usa lo guardado)', e) }
 }
 
 /** Prepara una publicacion: ubicacion aproximada + geohash. */
