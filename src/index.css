@@ -1,0 +1,80 @@
+/* Ayni - estilos base. Movil primero, letra grande, botones de 48px minimo. */
+:root {
+  --azul: #1f6f8b;
+  --azul-claro: #e3f1f6;
+  --amarillo: #f6c343;
+  --rojo: #c0392b;
+  --rojo-claro: #fdecea;
+  --verde: #2e8b57;
+  --verde-claro: #e6f4ec;
+  --gris: #666;
+  --fondo: #ffffff;
+  --texto: #1b1b1b;
+  --radio: 14px;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 17px;
+  color: var(--texto);
+  background: var(--fondo);
+}
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; height: 100%; }
+body { -webkit-tap-highlight-color: transparent; }
+
+.app { display: flex; flex-direction: column; height: 100dvh; }
+.app.minka { --azul: var(--rojo); --azul-claro: var(--rojo-claro); }
+.contenido { flex: 1; overflow: auto; position: relative; }
+
+.barra-superior {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; background: var(--azul); color: #fff; font-weight: 700;
+}
+.barra-superior .estado { font-size: 13px; font-weight: 500; opacity: .95; }
+.estado.offline { background: var(--amarillo); color: #222; padding: 3px 8px; border-radius: 10px; }
+
+.nav {
+  display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid #ddd; background: #fff;
+}
+.nav a { text-decoration: none; color: var(--gris); text-align: center; padding: 8px 0 10px; font-size: 13px; }
+.nav a.activo { color: var(--azul); font-weight: 700; }
+.nav a span { display: block; font-size: 22px; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 10px 18px; border: 0; border-radius: var(--radio);
+  background: var(--azul); color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; width: 100%;
+}
+.btn.secundario { background: var(--azul-claro); color: var(--azul); }
+.btn.gigante { min-height: 96px; font-size: 24px; }
+.btn.bien { background: var(--azul); }
+.btn.ayuda { background: var(--rojo); }
+.btn.puedo { background: var(--verde); }
+.btn:disabled { opacity: .5; }
+
+.fab {
+  position: absolute; right: 16px; bottom: 16px; width: 64px; height: 64px; border-radius: 50%;
+  background: var(--amarillo); color: #222; font-size: 34px; border: 0; box-shadow: 0 4px 14px rgba(0,0,0,.3); cursor: pointer;
+}
+
+.pantalla { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+.tarjeta { background: #fff; border: 1px solid #e3e3e3; border-radius: var(--radio); padding: 14px; }
+.tarjeta h3 { margin: 0 0 6px; }
+.chip { display: inline-block; background: var(--azul-claro); color: var(--azul); padding: 3px 10px; border-radius: 10px; font-size: 13px; font-weight: 700; }
+.chip.pendiente { background: #fff3cd; color: #7a5a00; }
+.recomendado { color: var(--verde); font-weight: 700; font-size: 14px; }
+.muted { color: var(--gris); font-size: 14px; }
+
+input, textarea, select {
+  width: 100%; font-size: 17px; padding: 12px; border: 1px solid #ccc; border-radius: 10px; font-family: inherit;
+}
+.toast {
+  position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%);
+  background: #222; color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 15px; z-index: 2000;
+}
+.selector-radio { display: flex; gap: 6px; }
+.selector-radio button { flex: 1; min-height: 40px; border-radius: 10px; border: 1px solid var(--azul); background: #fff; color: var(--azul); font-weight: 700; }
+.selector-radio button.activo { background: var(--azul); color: #fff; }
+
+.mapa { height: 100%; width: 100%; }
+.leaflet-container { font: inherit; }
+.opciones-tipo { display: grid; gap: 12px; }
+.opciones-tipo .btn { min-height: 72px; font-size: 20px; }

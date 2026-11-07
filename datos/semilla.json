@@ -1,0 +1,23 @@
+{
+  "negocios_oficios": [
+    { "nombre": "Bodega Doña Rosa", "rubro": "Bodega / abarrotes", "geo": { "lat": -12.0455, "lng": -77.0435 }, "horario": "7am-10pm", "whatsapp": "999111222", "nRecomendaciones": 12, "resumenIA": "Fía a los vecinos conocidos y abre temprano.", "insignias": ["Recomendado"] },
+    { "nombre": "Don Julio - Gasfitero", "rubro": "Oficios / gasfitería", "geo": { "lat": -12.0472, "lng": -77.0418 }, "horario": "Lun-Sáb", "whatsapp": "999333444", "nRecomendaciones": 8, "resumenIA": "Rápido, cobra justo y atiende domingos de emergencia.", "insignias": ["Recomendado", "Solidario"] },
+    { "nombre": "Panadería San Martín", "rubro": "Alimentos / panadería", "geo": { "lat": -12.0448, "lng": -77.0412 }, "horario": "6am-9pm", "whatsapp": "999555666", "nRecomendaciones": 21, "resumenIA": "Pan caliente a las 6 y precios de barrio.", "insignias": ["Recomendado", "Solidario"] },
+    { "nombre": "Botica Vecinal", "rubro": "Salud / farmacia", "geo": { "lat": -12.0480, "lng": -77.0440 }, "horario": "8am-11pm", "whatsapp": "999777888", "nRecomendaciones": 5, "resumenIA": "Tienen botiquín de emergencia y atienden de noche.", "insignias": [] }
+  ],
+  "publicaciones": [
+    { "tipo": "OFREZCO", "categoria": "Oficios", "texto": "Arreglo lavadoras y refrigeradoras a domicilio", "geo": { "lat": -12.0460, "lng": -77.0450 }, "autorId": "semilla1", "autorNombre": "Carlos M.", "estado": "activa" },
+    { "tipo": "NECESITO", "categoria": "Hogar", "texto": "Necesito prestado un taladro por 1 hora", "geo": { "lat": -12.0450, "lng": -77.0420 }, "autorId": "semilla2", "autorNombre": "Lucía P.", "estado": "activa" },
+    { "tipo": "RECOMIENDO", "categoria": "Alimentos", "texto": "El menú de la Sra. Juana en el pasaje 3 está buenazo, S/ 9", "geo": { "lat": -12.0468, "lng": -77.0430 }, "autorId": "semilla3", "autorNombre": "Pedro Q.", "estado": "activa" }
+  ],
+  "recompensas": [
+    { "negocioId": "panaderia", "negocioNombre": "Panadería San Martín", "titulo": "1 pan francés gratis con tu compra", "costoPuntos": 10, "stock": 20, "vigencia": "2026-12-31" },
+    { "negocioId": "bodega", "negocioNombre": "Bodega Doña Rosa", "titulo": "10% de descuento en tu compra", "costoPuntos": 20, "stock": 10, "vigencia": "2026-12-31" },
+    { "negocioId": "gasfitero", "negocioNombre": "Don Julio - Gasfitero", "titulo": "Revisión de fuga gratis", "costoPuntos": 30, "stock": 5, "vigencia": "2026-12-31" }
+  ],
+  "avisos_minka": [
+    { "autorRol": "moderador", "texto": "Municipalidad: punto de acopio de agua en el parque principal desde las 3 pm", "zona": "Centro" },
+    { "autorRol": "moderador", "texto": "Serenazgo: la calle Los Pinos cuadra 5 está cerrada por un poste caído", "zona": "Centro" },
+    { "autorRol": "moderador", "texto": "Centro de salud Las Flores atendiendo heridos leves hasta las 10 pm", "zona": "Centro" }
+  ]
+}

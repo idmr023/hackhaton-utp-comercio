@@ -1,0 +1,137 @@
+# Ayni – Textos de pantallas (guía de P2)
+*Versión 1 · vie 6 nov. Regla de voz: hablamos como vecino, no como app. Tú (no usted). Frases cortas. Verbos en los botones. Nada de "usuario", "sistema", "transacción".*
+
+## Principios
+1. **Botones con verbo:** "Publicar", "Entrar a mi barrio", "Canjear". Nunca "OK" ni "Aceptar".
+2. **Máximo 2 líneas** en cualquier aviso. Si no cabe, se corta.
+3. **Primero qué pasó, luego qué hacer:** "Sin internet. Se guardó y se subirá solo."
+4. **Siempre decir dónde:** "en tu barrio", "a 2 cuadras", "de tu zona". Es el diferenciador.
+5. **En emergencia, menos palabras y más grandes.** Mayúsculas solo en los 3 botones Minka.
+6. **Sin tecnicismos:** no "geolocalización", "sincronizar", "verificación RENIEC vía API". Sí: "tu ubicación", "se subirá solo", "validar tu DNI".
+
+---
+
+## 1. Tutorial (3 pantallas, solo la primera vez)
+| # | Título | Texto | Botón |
+|---|---|---|---|
+| 1 | Tu barrio en un mapa | Mira negocios, oficios y vecinos a menos de 1 km. Cada uno dice cuántos vecinos de tu zona lo recomiendan. | Siguiente |
+| 2 | Publica en 3 toques | Toca el **+**, elige si Ofreces, Necesitas o Recomiendas, agrega foto o voz y listo. Funciona sin internet. | Siguiente |
+| 3 | Modo Minka en emergencias | Si hay un sismo o incendio, la app cambia a 3 botones: Estoy bien, Necesito ayuda, Puedo ayudar. Los vecinos se coordinan solos. | Empezar |
+Enlace secundario en las 3: **Saltar**.
+
+## 2. Registro
+- Título: **Crea tu cuenta de vecino**
+- Campos (placeholder): `Tu nombre` · `Celular (9 dígitos)` · `DNI (8 dígitos)`
+- Casilla 1: *Autorizo validar mi DNI en RENIEC. Ayni guarda solo una huella (hash), nunca mi número de DNI.*
+- Casilla 2: *Mostrar mi WhatsApp a los vecinos que quieran contactarme*
+- Botón: **Entrar a mi barrio** · mientras carga: **Verificando…**
+- Nota al pie: *Tu ubicación se guarda aproximada (~300 m). Nadie ve tu casa exacta.*
+- Errores:
+  - DNI no coincide: *El DNI no coincide con RENIEC. Revísalo.*
+  - Celular inválido: *El celular debe tener 9 dígitos y empezar con 9.*
+  - Ya existe: *Ya hay una cuenta con ese DNI. ¿Es tuya? Entra con tu celular.*
+  - Sin internet / Didit caído (no es error, es aviso): *No pudimos validar tu DNI ahora. Puedes entrar; lo validamos cuando vuelva la señal.*
+- Estado en perfil: chip **Validado en RENIEC** / chip amarillo **Pendiente de verificación**
+
+## 3. Barra superior
+- Modo barrio: **🤝 Ayni** · Modo emergencia: **🆘 MODO MINKA**
+- Conexión: `En línea` · amarillo: `Sin internet · se guarda local`
+- Botón derecha: **Emergencia** (en barrio) / **Salir** (en Minka)
+
+## 4. Mapa (Modo Barrio)
+- Etiqueta radio: `Radio` + botones `500 m · 1 km · 2 km · 5 km`
+- Cargando: *Buscando tu ubicación…*
+- Sin permiso de ubicación: *Sin tu ubicación no podemos mostrar tu barrio. Actívala en el candado de la barra del navegador.*
+- Chip pendientes: `2 publicaciones pendientes de subir`
+- Vacío: *Aún no hay publicaciones a {radio} de ti. Sé el primero: toca el +.*
+- Popup de negocio:
+  - Nombre, rubro
+  - **⭐ Recomendado por 12 vecinos de tu zona**
+  - Resumen IA entre comillas: *"Rápido, cobra justo y atiende domingos."*
+  - Distancia: `a 350 m · 5 min a pie`
+  - Botones: **💬 WhatsApp** · **⭐ Recomendar** (solo vecinos verificados; si no: *Necesitas 2 avales de vecinos para recomendar*)
+- Popup de publicación: chips `NECESITO` `Oficios` · texto · `Lucía P. · a 200 m`
+- Botón flotante: **+** (aria: "Publicar")
+
+## 5. Publicar (3 toques)
+**Toque 2 – elegir tipo.** Título: **¿Qué quieres publicar?**
+| Botón | Subtítulo |
+|---|---|
+| 🛠️ **Ofrezco** | un servicio o producto |
+| 🙋 **Necesito** | ayuda o algo del barrio |
+| ⭐ **Recomiendo** | un negocio u oficio |
+Secundario: **Cancelar**
+
+**Toque 3 – contenido.** Placeholder según tipo:
+- Ofrezco: *Ej: Arreglo lavadoras a domicilio, S/ 30 la visita*
+- Necesito: *Ej: Necesito gasfitero para una fuga hoy*
+- Recomiendo: *Ej: La bodega de Doña Rosa fía y abre temprano*
+Botones: **🎙️ Hablar** (escuchando: *🎙️ Escuchando…*) · **📷 Foto** · **Publicar** (cargando: *Publicando…*) · **Atrás**
+Nota: *📍 Se publica con tu ubicación aproximada.* Si está offline, se agrega: *Estás sin internet: se guardará y subirá solo.*
+Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto.*
+
+**Avisos (toast, 4 s):**
+- Online: *Publicado en tu barrio ✔*
+- Offline: *Sin internet: guardado, se subirá solo*
+- Al reconectar: *Se subieron 2 publicaciones pendientes*
+
+## 6. Modo Minka
+- Botones gigantes: **✅ ESTOY BIEN** · **🆘 NECESITO AYUDA** · **🤝 PUEDO AYUDAR**
+- Tras "Estoy bien": *Avisamos que estás bien ✔*
+- Pantalla necesito: título **¿Qué necesitas?** · opciones: `AGUA · MEDICINA · ALBERGUE · RESCATE · COMIDA · OTRO` · urgencia: `Puede esperar · Hoy · ¡Ahora!`
+- Tras pedir: *Pedido enviado a tus vecinos. Te avisamos cuando alguien pueda ayudar.*
+- Pantalla puedo: título **¿Con qué puedes ayudar?** · opciones: `ENFERMERA/O · BOTIQUÍN · AGUA · COMIDA · GENERADOR · VEHÍCULO · ESPACIO`
+- Tras ofrecer: *Gracias. Tu ayuda ya aparece en el mapa (+20 puntos al confirmar).*
+- Match encontrado (notificación): *Lucía, a 2 cuadras, tiene botiquín. Toca para coordinar.* → botón **Coordinar por WhatsApp**
+- Tarjeta cerca: título **Cerca de ti (3 km)** · `🔴 3 necesidades abiertas · 🟢 5 recursos disponibles`
+- Boletín: título **📰 Boletín Minka** · vacío: *Sin avisos por ahora.*
+- Parte de zona (IA): *Resumen de tu zona, 4:10 pm: 3 familias sin agua en la cuadra 5, 1 herido leve atendido, acopio en el parque.*
+- Salir de Minka (confirmación): *¿Terminó la emergencia en tu zona?* → **Sí, volver al barrio** / **Seguir en Minka**
+
+## 7. Puntos Ayni
+- Encabezado: `Tus puntos Ayni` · número grande · *Ayuda confirmada +10 · Recomendación +2 · Minka +20*
+- Sección: **Canjea en negocios de tu barrio**
+- Tarjeta: título de la recompensa · `Panadería San Martín · 10 puntos · quedan 20` · botón **Canjear**
+- Faltan puntos: *Te faltan 6 puntos. Ayuda a un vecino para ganar más.*
+- Canje hecho: *Tu código: **482 913**. Muéstralo en Panadería San Martín. Vence en 7 días.*
+- Límite: *Ya canjeaste aquí esta semana. Prueba otro negocio.*
+- Confirmar ayuda (quien recibió): título **¿Te ayudaron?** · *Pide a quien te ayudó su código de 4 dígitos* · campo `Código` · botón **Confirmar ayuda** · éxito: *Gracias. Carlos recibió +10 puntos Ayni.* · lejos: *Tienen que estar juntos para confirmar (menos de 200 m).*
+
+## 8. Perfil
+- Chips: **Validado en RENIEC** / **Pendiente de verificación** · `Avales: 1 / 2` · **Vecino verificado ✔**
+- WhatsApp: `(WhatsApp visible)` / `(WhatsApp oculto)` · interruptor: *Mostrar mi WhatsApp*
+- Botón en perfil de otro vecino: **🤝 Lo conozco (avalar)** · éxito: *Avalaste a Lucía. Le falta 1 aval más.*
+- Reportar publicación: **Reportar** → *¿Qué pasa con esta publicación?* `Es falsa · Es ofensiva · No es de este barrio` → *Gracias. Con 3 reportes se oculta.*
+- **Cerrar sesión**
+
+## 9. WhatsApp (mensaje precargado)
+- Negocio: *Hola, te vi en Ayni como {rubro} en {zona}. ¿Estás disponible?*
+- Vecino que ofrece: *Hola {nombre}, vi en Ayni que ofreces {texto corto}. ¿Podemos coordinar?*
+- Minka: *Hola {nombre}, soy {yo} de Ayni. Necesito {tipo} y estás a {distancia}. ¿Puedes ayudar?*
+- Aviso bajo el botón (una vez): *Queda en un lugar público. Ayni no interviene en pagos.*
+
+## 10. Accesibilidad y quechua
+- Interruptor en perfil: **Letra grande** · **Alto contraste**
+- Idioma: **Español / Quechua** (en la demo, 5 frases; el resto queda en español)
+
+| Español | Quechua (Cusco-Collao) | Dónde |
+|---|---|---|
+| Ayni = reciprocidad, hoy por ti mañana por mí | Ayni | nombre de la app |
+| Minka = trabajo colectivo por la comunidad | Minka | modo emergencia |
+| ¿Estás bien? | Allinllachu? | botón "Estoy bien" |
+| ¡Ayúdame! | Yanapaway! | botón "Necesito ayuda" |
+| Te ayudo | Yanapasqayki | botón "Puedo ayudar" |
+| Gracias | Sulpayki | confirmaciones |
+| Vecino / vecina | Wasimasi | textos |
+
+> P3 valida estas frases con un hablante antes del domingo (hay variantes por región). Si hay duda, se dejan solo Ayni, Minka y Sulpayki.
+
+## 11. Mensajes de error generales
+- Sin internet al cargar: *Estás sin internet. Te mostramos lo último que vimos de tu barrio.*
+- Falla rara: *Algo salió mal. Intenta de nuevo.* (nunca mostrar el error técnico)
+- Sesión perdida: *Vuelve a entrar con tu celular.*
+
+## 12. Nombre y lema (para slides y tienda)
+- **Ayni – tu barrio se ayuda**
+- Lema corto: *Lo que necesitas está a 10 cuadras.*
+- Lema emergencia: *Cuando tiembla, el primero que llega es tu vecino.*
