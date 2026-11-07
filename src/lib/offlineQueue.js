@@ -2,7 +2,7 @@
 // Flujo: sin senal -> encolar() -> al volver la senal, sincronizar() las sube a Firestore en orden.
 // Nota: Firestore ya tiene persistencia offline propia; esta cola ademas permite mostrar el
 // estado "pendiente" al vecino y reintentar la clasificacion IA cuando vuelva internet.
-import { crear } from './db'
+import { crear, conTiempo, nuevoId } from './db'
 
 const DB_NAME = 'ayni_offline'
 const STORE = 'cola'
@@ -25,21 +25,32 @@ function tx(modo, fn) {
   }))
 }
 
-export async function encolar(col, docu) {
-  await tx('readwrite', (s) => s.add({ col, docu, creadoEn: Date.now() }))
+/** Guarda para subir luego. `docId` fijo desde ya: aunque se suba 2 veces, queda 1 documento. */
+export async function encolar(col, docu, docId = nuevoId(col)) {
+  await tx('readwrite', (s) => s.add({ col, docu, docId, creadoEn: Date.now() }))
 }
 
 export async function pendientes() {
   return tx('readonly', (s) => s.getAll())
 }
 
+// Una sola sincronizacion a la vez (dos en paralelo subirian lo mismo dos veces)
+let enCurso = null
+
 /** Sube todo lo pendiente en orden FIFO. Devuelve cuantos subio. */
-export async function sincronizar(onCadaUno) {
+export function sincronizar(onCadaUno) {
+  enCurso ??= subirPendientes(onCadaUno).finally(() => { enCurso = null })
+  return enCurso
+}
+
+async function subirPendientes(onCadaUno) {
   const lista = await pendientes()
   let subidos = 0
   for (const item of lista) {
     try {
-      await crear(item.col, { ...item.docu, estado: 'activa' })
+      if (!item.docId) { item.docId = nuevoId(item.col); await tx('readwrite', (s) => s.put(item)) } // items viejos
+      try { await conTiempo(crear(item.col, { ...item.docu, estado: 'activa' }, item.docId), 8000) }
+      catch (e) { if (e.message !== 'timeout') throw e } // timeout: ya esta en la cola de Firestore, la sube sola
       await tx('readwrite', (s) => s.delete(item.localId))
       subidos++
       onCadaUno?.(item)

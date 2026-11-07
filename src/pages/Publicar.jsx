@@ -2,7 +2,7 @@
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useEstado } from '../lib/estado'
-import { crear, conGeo } from '../lib/db'
+import { crear, conGeo, conTiempo, nuevoId } from '../lib/db'
 import { encolar } from '../lib/offlineQueue'
 import { clasificar } from '../lib/ia'
 
@@ -55,12 +55,19 @@ export default function Publicar() {
       tipo, texto: texto.trim(), categoria, categoriaFuente: fuente, fotoBase64: foto || null,
       autorId: usuario.id, autorNombre: usuario.nombre, estado: online ? 'activa' : 'enCola',
     }, geoAprox)
+    const id = nuevoId('publicaciones') // mismo id en cualquier reintento: nunca se duplica
     try {
-      if (online) { await crear('publicaciones', docu); setAviso('Publicado en tu barrio ✔') }
-      else { await encolar('publicaciones', docu); setAviso('Sin internet: guardado, se subirá solo') }
+      if (online) {
+        try { await conTiempo(crear('publicaciones', docu, id), 6000); setAviso('Publicado en tu barrio ✔') }
+        catch (e) {
+          if (e.message !== 'timeout') throw e
+          // Senal debil: Firestore ya la tiene en su cola local y la sube sola (no encolar = no duplicar)
+          setAviso('Señal débil: guardado, se subirá solo')
+        }
+      } else { await encolar('publicaciones', docu, id); setAviso('Sin internet: guardado, se subirá solo') }
       nav('/')
     } catch (e) {
-      await encolar('publicaciones', docu); setAviso('Guardado en cola, se subirá luego')
+      await encolar('publicaciones', docu, id); setAviso('Guardado en cola, se subirá luego')
       nav('/')
     } finally { setEnviando(false) }
   }

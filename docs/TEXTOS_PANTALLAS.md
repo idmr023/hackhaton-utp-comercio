@@ -29,6 +29,7 @@ Enlace secundario en las 3: **Saltar**.
 - Errores:
   - DNI no coincide: *El DNI no coincide con RENIEC. Revísalo.*
   - Error inesperado al crear la cuenta: *No pudimos crear tu cuenta. Intenta de nuevo.*
+- Ya tiene cuenta (mismo celular + DNI): ayuda bajo el botón *¿Ya tienes cuenta? Escribe el mismo celular y DNI y entras directo.* · aviso al entrar: *¡Hola de nuevo, {nombre}! Entraste a tu cuenta*
   - Celular inválido: *El celular debe tener 9 dígitos y empezar con 9.*
   - Ya existe: *Ya hay una cuenta con ese DNI. ¿Es tuya? Entra con tu celular.*
   - Sin internet / Didit caído (no es error, es aviso): *No pudimos validar tu DNI ahora. Puedes entrar; lo validamos cuando vuelva la señal.*
@@ -75,6 +76,7 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 **Avisos (toast, 4 s):**
 - Online: *Publicado en tu barrio ✔*
 - Offline: *Sin internet: guardado, se subirá solo*
+- Señal débil (hay red pero no responde en 6 s): *Señal débil: guardado, se subirá solo*
 - Al reconectar: *Se subieron 2 publicaciones pendientes*
 
 ## 6. Modo Minka

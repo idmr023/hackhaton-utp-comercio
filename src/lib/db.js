@@ -3,7 +3,7 @@
 // Colecciones: usuarios, publicaciones, recomendaciones, negocios_oficios,
 // ayudas_intercambios, recompensas, canjes, emergencias, necesidades, recursos, avisos_minka
 import {
-  collection, addDoc, getDocs, query, where, orderBy, limit, serverTimestamp, doc, updateDoc,
+  collection, addDoc, getDocs, query, where, orderBy, limit, serverTimestamp, doc, updateDoc, setDoc,
 } from 'firebase/firestore'
 import { db, FIREBASE_ACTIVO } from './firebase'
 import { geohash, rangosGeohash, distanciaKm } from './geo'
@@ -18,11 +18,11 @@ function leerLocal() {
   try { return JSON.parse(localStorage.getItem(KEY)) || {} } catch { return {} }
 }
 function escribirLocal(data) { localStorage.setItem(KEY, JSON.stringify(data)) }
-function localAdd(col, docu) {
+const idLocal = () => 'loc_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7)
+function localAdd(col, docu, id) {
   const data = leerLocal()
-  data[col] = data[col] || []
-  const nuevo = { id: 'loc_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7), ...docu, fecha: Date.now() }
-  data[col].unshift(nuevo)
+  const nuevo = { id: id || idLocal(), ...docu, fecha: Date.now() }
+  data[col] = [nuevo, ...(data[col] || []).filter((d) => d.id !== nuevo.id)] // mismo id = reemplaza
   escribirLocal(data)
   return nuevo
 }
@@ -30,10 +30,24 @@ function localList(col) { return (leerLocal()[col] || []) }
 
 // ---------- API ----------
 
-/** Crea un documento en una coleccion. Devuelve el id. */
-export async function crear(col, docu) {
-  if (MODO_DEMO_LOCAL) return localAdd(col, docu).id
-  const ref = await addDoc(collection(db, col), { ...docu, fecha: serverTimestamp() })
+/** Espera una promesa como maximo `ms`; si no, rechaza con Error('timeout').
+ *  Con senal debil Firestore guarda la escritura en su cola local y no confirma:
+ *  usar esto para no dejar la pantalla esperando para siempre. */
+export const conTiempo = (promesa, ms) =>
+  Promise.race([promesa, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))])
+
+/** Id nuevo para un documento. Se genera en el celular, funciona sin internet. */
+export function nuevoId(col) {
+  return MODO_DEMO_LOCAL ? idLocal() : doc(collection(db, col)).id
+}
+
+/** Crea un documento en una coleccion. Devuelve el id.
+ *  Con `id` fijo la escritura es idempotente: reintentarla (cola offline, recarga) no duplica. */
+export async function crear(col, docu, id) {
+  if (MODO_DEMO_LOCAL) return localAdd(col, docu, id).id
+  const datos = { ...docu, fecha: serverTimestamp() }
+  if (id) { await setDoc(doc(db, col, id), datos); return id }
+  const ref = await addDoc(collection(db, col), datos)
   return ref.id
 }
 

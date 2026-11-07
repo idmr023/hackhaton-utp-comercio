@@ -3,15 +3,11 @@
 // TODO (sab): reemplazar el telefono por Firebase Auth con SMS (signInWithPhoneNumber).
 import { useState } from 'react'
 import { useEstado } from '../lib/estado'
-import { crear } from '../lib/db'
+import { crear, listar, conTiempo } from '../lib/db'
 import { sha256 } from '../lib/hash'
 
-// Sin senal Firestore guarda local pero no confirma: no esperar para siempre
-const conTiempo = (promesa, ms) =>
-  Promise.race([promesa, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))])
-
 export default function Registro() {
-  const { setUsuario, geoAprox } = useEstado()
+  const { setUsuario, geoAprox, setAviso } = useEstado()
   const [nombre, setNombre] = useState('')
   const [telefono, setTelefono] = useState('')
   const [dni, setDni] = useState('')
@@ -25,6 +21,17 @@ export default function Registro() {
   async function registrar() {
     setCargando(true); setError('')
     try {
+      const dniHash = await sha256(dni)
+      // Mismo celular + DNI = ya tiene cuenta (otro celular u otro link): entra a esa, sin duplicar ni gastar Didit
+      try {
+        const [existente] = await conTiempo(listar('usuarios', { telefono, dniHash }, 1), 5000)
+        if (existente) {
+          setUsuario(existente)
+          setAviso(`¡Hola de nuevo, ${existente.nombre.split(' ')[0]}! Entraste a tu cuenta`)
+          return
+        }
+      } catch { /* sin senal: sigue el registro normal */ }
+
       let verificacion = 'pendiente'
       try {
         const r = await fetch('/api/verificar-dni', {
@@ -38,7 +45,6 @@ export default function Registro() {
       } catch {
         // servidor apagado o sin internet -> respaldo: pendiente de verificacion
       }
-      const dniHash = await sha256(dni)
       const u = {
         nombre: nombre.trim(), telefono, whatsappVisible, dniHash,
         verificacion,              // 'reniec' | 'pendiente'
@@ -71,6 +77,7 @@ export default function Registro() {
       </label>
       {error && <div style={{ color: 'var(--rojo)' }}>{error}</div>}
       <button className="btn" disabled={!valido || cargando} onClick={registrar}>{cargando ? 'Verificando…' : 'Entrar a mi barrio'}</button>
+      <p className="muted">¿Ya tienes cuenta? Escribe el mismo celular y DNI y entras directo.</p>
       <p className="muted">Tu ubicación se guarda aproximada (~300 m). Nadie ve tu casa exacta.</p>
     </div>
   )
