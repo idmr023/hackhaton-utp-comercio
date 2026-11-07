@@ -61,6 +61,19 @@ export async function actualizar(col, id, cambios) {
   await updateDoc(doc(db, col, id), cambios)
 }
 
+/** Crea sin colgarse: si Firestore no confirma en `ms` (sin senal), queda en su cola local y sube solo.
+ *  Id fijo = reintentos no duplican. Devuelve { id, sinSenal }. */
+export async function crearSeguro(col, docu, id = nuevoId(col), ms = 4000) {
+  try { await conTiempo(crear(col, docu, id), ms); return { id, sinSenal: false } }
+  catch (e) { if (e.message !== 'timeout') throw e; return { id, sinSenal: true } }
+}
+
+/** Actualiza sin colgarse (misma idea que crearSeguro). */
+export async function actualizarSeguro(col, id, cambios, ms = 4000) {
+  try { await conTiempo(actualizar(col, id, cambios), ms) }
+  catch (e) { if (e.message !== 'timeout') throw e }
+}
+
 /** Lista documentos de una coleccion con geo dentro de un radio (km) desde centro. */
 export async function listarCerca(col, centro, radioKm, filtros = {}) {
   let docs = []

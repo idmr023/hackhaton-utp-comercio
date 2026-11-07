@@ -90,7 +90,10 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 - Sin señal (se guarda en el celular y se envía solo): *Sin señal: tu pedido se guardó y se enviará solo.* · *Sin señal: tu ayuda se guardó y se enviará sola.* · *Sin señal: tu aviso se guardó y se enviará solo.*
 - Error al enviar: *No se pudo enviar. Intenta de nuevo.*
 - Mapa Minka: una pastilla por zona (~300 m): roja `🆘 n` = necesidades, verde `🤝 n` = recursos. Popup: **Necesitan ayuda** (💧 AGUA · ¡Ahora! — María G.) / **Pueden ayudar** (🩹 BOTIQUÍN — Luis R.) · `a 150 m`
-- Match encontrado (notificación): *Lucía, a 2 cuadras, tiene botiquín. Toca para coordinar.* → botón **Coordinar por WhatsApp**
+- Match automático (al pedir: recurso disponible más cercano que sirva; al ofrecer: necesidad abierta más urgente y luego más cercana). Qué sirve: agua→agua · comida→comida · medicina→botiquín/enfermera · albergue→espacio · rescate→vehículo/enfermera · otro→cualquiera.
+- Aviso al hacer match: *¡Match! Juan P., a 2 cuadras, tiene agua.* / *¡Match! María G., a 1 cuadra, necesita agua (¡Ahora!).*
+- Tarjeta verde arriba de los botones (la ven los dos, al entrar a Minka; máx. 3): *Lucía, a 2 cuadras, tiene botiquín. Toca para coordinar.* / *María G., a 1 cuadra, necesita agua (¡Ahora!). Toca para coordinar.* → botón **💬 Coordinar por WhatsApp** · sin WhatsApp: *No compartió su WhatsApp: búscalo en el mapa de su zona.*
+- Distancias: `a menos de 1 cuadra` · `a 1 cuadra` · `a N cuadras` (1 cuadra ≈ 100 m)
 - Tarjeta cerca: título **Cerca de ti (3 km)** · `🔴 3 necesidades abiertas · 🟢 5 recursos disponibles`
 - Boletín: título **📰 Boletín Minka** · vacío: *Sin avisos por ahora.*
 - Parte de zona (IA): *Resumen de tu zona, 4:10 pm: 3 familias sin agua en la cuadra 5, 1 herido leve atendido, acopio en el parque.*
@@ -116,7 +119,8 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 ## 9. WhatsApp (mensaje precargado)
 - Negocio: *Hola, te vi en Ayni como {rubro} en {zona}. ¿Estás disponible?*
 - Vecino que ofrece: *Hola {nombre}, vi en Ayni que ofreces {texto corto}. ¿Podemos coordinar?*
-- Minka: *Hola {nombre}, soy {yo} de Ayni. Necesito {tipo} y estás a {distancia}. ¿Puedes ayudar?*
+- Minka (quien pidió): *Hola {nombre}, soy {yo} de Ayni. Necesito {tipo} y estás a {distancia}. ¿Puedes ayudar?*
+- Minka (quien ofrece): *Hola {nombre}, soy {yo} de Ayni. Vi que necesitas {tipo} y estoy a {distancia}. ¿Te ayudo?*
 - Aviso bajo el botón (una vez): *Queda en un lugar público. Ayni no interviene en pagos.*
 
 ## 10. Accesibilidad y quechua

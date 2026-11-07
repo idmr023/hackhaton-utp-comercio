@@ -1,12 +1,12 @@
-// Modo Minka (emergencia): 3 botones grandes, mapa de necesidades (rojo) y recursos (verde), boletin.
+// Modo Minka (emergencia): 3 botones grandes, match automatico, mapa de necesidades (rojo) y recursos (verde), boletin.
 // Funciona sin senal: Firestore guarda en el celular y sube solo al volver la conexion.
-// Pendiente (columna 5): match automatico necesidad <-> recurso mas cercano.
 import { useEffect, useState } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useEstado } from '../lib/estado'
-import { crear, conGeo, listarCerca, listar, conTiempo, nuevoId } from '../lib/db'
+import { conGeo, listarCerca, listar, nuevoId, crearSeguro, actualizarSeguro } from '../lib/db'
+import { distanciaKm } from '../lib/geo'
 import { CATEGORIAS_MINKA } from '../lib/ia'
 
 const RECURSOS = ['enfermera', 'botiquin', 'agua', 'comida', 'generador', 'vehiculo', 'espacio']
@@ -18,8 +18,20 @@ const EMOJI = {
   agua: '💧', medicina: '💊', albergue: '🏠', rescate: '🚒', comida: '🍲', otro: '❓',
   enfermera: '🩺', botiquin: '🩹', generador: '🔋', vehiculo: '🚗', espacio: '🏠',
 }
+// Que recursos sirven para cada pedido (match automatico)
+const SIRVE = {
+  agua: ['agua'], comida: ['comida'], medicina: ['botiquin', 'enfermera'],
+  albergue: ['espacio'], rescate: ['vehiculo', 'enfermera'], otro: RECURSOS,
+}
 const URGENCIAS = [[1, 'Puede esperar'], [2, 'Hoy'], [3, '¡Ahora!']]
 const textoUrgencia = (u) => URGENCIAS.find(([n]) => n === u)?.[1] || ''
+const min = (tipo) => (ETIQUETA[tipo] || tipo || '').toLowerCase()
+const aDistancia = (km) => {
+  const c = Math.round((km * 1000) / 100) // 1 cuadra ~ 100 m
+  return c < 1 ? 'a menos de 1 cuadra' : `a ${c} cuadra${c > 1 ? 's' : ''}`
+}
+const waLink = (num, msj) => `https://wa.me/51${num}?text=${encodeURIComponent(msj)}`
+const msFecha = (f) => (f == null ? Infinity : f.seconds ? f.seconds * 1000 : Number(f) || 0)
 
 const iconoYo = L.divIcon({ html: '<div style="font-size:26px;line-height:1">📍</div>', className: '', iconSize: [30, 30], iconAnchor: [15, 15] })
 
@@ -60,43 +72,82 @@ export default function Minka() {
   const [necesidades, setNecesidades] = useState([])
   const [recursos, setRecursos] = useState([])
   const [avisos, setAvisos] = useState([])
+  const [matches, setMatches] = useState([]) // mis pedidos/ayudas que ya tienen pareja
 
   const quien = (x) => (x.autorId === usuario?.id ? 'Tú' : x.autorNombre)
+  const miWhatsapp = usuario?.whatsappVisible ? usuario.telefono : null
+  const distA = (geo) => (ubicacion && geo ? aDistancia(distanciaKm(ubicacion, geo)) : '')
 
   async function cargar() {
     if (!ubicacion) return
     try {
-      const nec = await listarCerca('necesidades', ubicacion, radioKm, { estado: 'abierta' })
+      const [nec, rec, avs, misNec, misRec] = await Promise.all([
+        listarCerca('necesidades', ubicacion, radioKm, { estado: 'abierta' }),
+        listarCerca('recursos', ubicacion, radioKm, { disponible: true }),
+        listar('avisos_minka', {}, 10),
+        listar('necesidades', { autorId: usuario.id, estado: 'atendida' }, 20),
+        listar('recursos', { autorId: usuario.id, disponible: false }, 20),
+      ])
       setNecesidades(nec.sort((a, b) => (b.urgencia || 0) - (a.urgencia || 0)))
-      setRecursos(await listarCerca('recursos', ubicacion, radioKm, { disponible: true }))
-      setAvisos(await listar('avisos_minka', {}, 10))
+      setRecursos(rec)
+      setAvisos(avs)
+      setMatches([
+        ...misNec.filter((n) => n.match).map((n) => ({ key: n.id, rol: 'pedi', miTipo: n.tipo, otro: n.match, fecha: n.fecha })),
+        ...misRec.filter((r) => r.match).map((r) => ({ key: r.id, rol: 'ofreci', miTipo: r.tipo, otro: r.match, fecha: r.fecha })),
+      ].sort((a, b) => msFecha(b.fecha) - msFecha(a.fecha)).slice(0, 3))
     } catch (e) { console.warn('Minka: no se pudo cargar', e) }
   }
   useEffect(() => { setModo('minka'); cargar() }, [ubicacion, radioKm]) // eslint-disable-line
 
-  // Sin senal no esperar a Firestore: queda guardado en el celular y sube solo. Id fijo = no duplica.
-  async function guardar(col, docu, msjOk, msjSinSenal) {
+  async function accion(fn) {
     setEnviando(true)
-    try {
-      try { await conTiempo(crear(col, docu, nuevoId(col)), 4000); setAviso(msjOk) }
-      catch (e) { if (e.message !== 'timeout') throw e; setAviso(msjSinSenal) }
-      setPaso(null); setTipoPedido(null); cargar()
-    } catch (e) {
-      console.error('Minka: no se pudo guardar', e)
-      setAviso('No se pudo enviar. Intenta de nuevo.')
-    } finally { setEnviando(false) }
+    try { await fn(); setPaso(null); setTipoPedido(null); await cargar() }
+    catch (e) { console.error('Minka: no se pudo guardar', e); setAviso('No se pudo enviar. Intenta de nuevo.') }
+    finally { setEnviando(false) }
   }
 
-  const base = () => ({ autorId: usuario.id, autorNombre: usuario.nombre, whatsapp: usuario.whatsappVisible ? usuario.telefono : null })
+  const base = () => ({ autorId: usuario.id, autorNombre: usuario.nombre, whatsapp: miWhatsapp })
 
-  const estoyBien = () => guardar('estados_minka', { ...base(), estado: 'bien', zona: geoAprox },
-    'Avisamos que estás bien ✔', 'Sin señal: tu aviso se guardó y se enviará solo.')
-  const necesito = (urgencia) => guardar('necesidades',
-    conGeo({ ...base(), tipo: tipoPedido, urgencia, estado: 'abierta', asignadoA: null }, geoAprox),
-    'Pedido enviado a tus vecinos. Te avisamos cuando alguien pueda ayudar.', 'Sin señal: tu pedido se guardó y se enviará solo.')
-  const puedo = (tipo) => guardar('recursos',
-    conGeo({ ...base(), tipo, disponible: true, asignadoA: null }, geoAprox),
-    'Gracias. Tu ayuda ya aparece en el mapa (+20 puntos al confirmar).', 'Sin señal: tu ayuda se guardó y se enviará sola.')
+  const estoyBien = () => accion(async () => {
+    const { sinSenal } = await crearSeguro('estados_minka', { ...base(), estado: 'bien', zona: geoAprox })
+    setAviso(sinSenal ? 'Sin señal: tu aviso se guardó y se enviará solo.' : 'Avisamos que estás bien ✔')
+  })
+
+  // NECESITO: busca el recurso disponible mas cercano que sirva; si hay, la necesidad nace "atendida"
+  const necesito = (urgencia) => accion(async () => {
+    const r = recursos
+      .filter((x) => SIRVE[tipoPedido]?.includes(x.tipo) && x.autorId !== usuario.id && !x.asignadoA)
+      .sort((a, b) => a.distanciaKm - b.distanciaKm)[0]
+    const id = nuevoId('necesidades')
+    const { sinSenal } = await crearSeguro('necesidades', conGeo({
+      ...base(), tipo: tipoPedido, urgencia, estado: r ? 'atendida' : 'abierta', asignadoA: r?.id || null,
+      match: r ? { id: r.id, nombre: r.autorNombre, whatsapp: r.whatsapp || null, tipo: r.tipo, geo: r.geo } : null,
+    }, geoAprox), id)
+    if (!r) return setAviso(sinSenal ? 'Sin señal: tu pedido se guardó y se enviará solo.' : 'Pedido enviado a tus vecinos. Te avisamos cuando alguien pueda ayudar.')
+    await actualizarSeguro('recursos', r.id, {
+      disponible: false, asignadoA: id,
+      match: { id, nombre: usuario.nombre, whatsapp: miWhatsapp, tipo: tipoPedido, urgencia, geo: geoAprox },
+    })
+    setAviso(`¡Match! ${r.autorNombre}, ${aDistancia(r.distanciaKm)}, tiene ${min(r.tipo)}.`)
+  })
+
+  // PUEDO AYUDAR: busca la necesidad abierta mas urgente (y luego mas cercana) que este recurso cubre
+  const puedo = (tipo) => accion(async () => {
+    const n = necesidades
+      .filter((x) => SIRVE[x.tipo]?.includes(tipo) && x.autorId !== usuario.id && !x.asignadoA)
+      .sort((a, b) => (b.urgencia || 0) - (a.urgencia || 0) || a.distanciaKm - b.distanciaKm)[0]
+    const id = nuevoId('recursos')
+    const { sinSenal } = await crearSeguro('recursos', conGeo({
+      ...base(), tipo, disponible: !n, asignadoA: n?.id || null,
+      match: n ? { id: n.id, nombre: n.autorNombre, whatsapp: n.whatsapp || null, tipo: n.tipo, urgencia: n.urgencia, geo: n.geo } : null,
+    }, geoAprox), id)
+    if (!n) return setAviso(sinSenal ? 'Sin señal: tu ayuda se guardó y se enviará sola.' : 'Gracias. Tu ayuda ya aparece en el mapa (+20 puntos al confirmar).')
+    await actualizarSeguro('necesidades', n.id, {
+      estado: 'atendida', asignadoA: id,
+      match: { id, nombre: usuario.nombre, whatsapp: miWhatsapp, tipo, geo: geoAprox },
+    })
+    setAviso(`¡Match! ${n.autorNombre}, ${aDistancia(n.distanciaKm)}, necesita ${min(n.tipo)} (${textoUrgencia(n.urgencia)}).`)
+  })
 
   if (paso === 'ayuda') return (
     <div className="pantalla">
@@ -130,6 +181,26 @@ export default function Minka() {
 
   return (
     <div className="pantalla">
+      {matches.map((m) => {
+        const yo = usuario.nombre.split(' ')[0]
+        const dist = distA(m.otro.geo)
+        const texto = m.rol === 'pedi'
+          ? `${m.otro.nombre}, ${dist}, tiene ${min(m.otro.tipo)}. Toca para coordinar.`
+          : `${m.otro.nombre}, ${dist}, necesita ${min(m.otro.tipo)}${m.otro.urgencia ? ` (${textoUrgencia(m.otro.urgencia)})` : ''}. Toca para coordinar.`
+        const msj = m.rol === 'pedi'
+          ? `Hola ${m.otro.nombre}, soy ${yo} de Ayni. Necesito ${min(m.miTipo)} y estás ${dist}. ¿Puedes ayudar?`
+          : `Hola ${m.otro.nombre}, soy ${yo} de Ayni. Vi que necesitas ${min(m.otro.tipo)} y estoy ${dist}. ¿Te ayudo?`
+        return (
+          <div key={m.key} className="tarjeta" style={{ border: '2px solid var(--verde)', background: 'var(--verde-claro)' }}>
+            <b>🤝 {EMOJI[m.otro.tipo]} {texto}</b>
+            {m.otro.whatsapp
+              ? <a className="btn puedo" style={{ marginTop: 10, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  href={waLink(m.otro.whatsapp, msj)} target="_blank" rel="noreferrer">💬 Coordinar por WhatsApp</a>
+              : <div className="muted" style={{ marginTop: 6 }}>No compartió su WhatsApp: búscalo en el mapa de su zona.</div>}
+          </div>
+        )
+      })}
+
       <button className="btn gigante bien" disabled={enviando} onClick={estoyBien}>✅ ESTOY BIEN</button>
       <button className="btn gigante ayuda" onClick={() => setPaso('ayuda')}>🆘 NECESITO AYUDA</button>
       <button className="btn gigante puedo" onClick={() => setPaso('puedo')}>🤝 PUEDO AYUDAR</button>
