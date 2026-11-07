@@ -1,23 +1,38 @@
 {
   "negocios_oficios": [
-    { "nombre": "Bodega Doña Rosa", "rubro": "Bodega / abarrotes", "geo": { "lat": -12.0455, "lng": -77.0435 }, "horario": "7am-10pm", "whatsapp": "999111222", "nRecomendaciones": 12, "resumenIA": "Fía a los vecinos conocidos y abre temprano.", "insignias": ["Recomendado"] },
-    { "nombre": "Don Julio - Gasfitero", "rubro": "Oficios / gasfitería", "geo": { "lat": -12.0472, "lng": -77.0418 }, "horario": "Lun-Sáb", "whatsapp": "999333444", "nRecomendaciones": 8, "resumenIA": "Rápido, cobra justo y atiende domingos de emergencia.", "insignias": ["Recomendado", "Solidario"] },
-    { "nombre": "Panadería San Martín", "rubro": "Alimentos / panadería", "geo": { "lat": -12.0448, "lng": -77.0412 }, "horario": "6am-9pm", "whatsapp": "999555666", "nRecomendaciones": 21, "resumenIA": "Pan caliente a las 6 y precios de barrio.", "insignias": ["Recomendado", "Solidario"] },
-    { "nombre": "Botica Vecinal", "rubro": "Salud / farmacia", "geo": { "lat": -12.0480, "lng": -77.0440 }, "horario": "8am-11pm", "whatsapp": "999777888", "nRecomendaciones": 5, "resumenIA": "Tienen botiquín de emergencia y atienden de noche.", "insignias": [] }
+    {"id": "neg_01", "nombre": "Bodega Don Lucho", "rubro": "Abarrotes / Frutas", "geo": {"lat": -12.1128, "lng": -77.0215}, "horario": "7am-12am", "whatsapp": "985893049", "nRecomendaciones": 18, "resumenIA": "Atiende hasta medianoche, siempre tiene stock de primera necesidad.", "insignias": ["Recomendado", "Solidario"]},
+    {"id": "neg_02", "nombre": "Panadería La Espiga de Oro", "rubro": "Panadería / Pastelería", "geo": {"lat": -12.114, "lng": -77.023}, "horario": "6am-9pm", "whatsapp": "985893049", "nRecomendaciones": 24, "resumenIA": "El pan francés sale caliente a las 6 p.m. Excelente atención.", "insignias": ["Recomendado"]},
+    {"id": "neg_03", "nombre": "Ferretería El Martillo de Oro", "rubro": "Ferretería / Pintura", "geo": {"lat": -12.1115, "lng": -77.024}, "horario": "8am-7pm", "whatsapp": "985893049", "nRecomendaciones": 15, "resumenIA": "Tienen de todo y Don Jorge te asesora gratis sobre instalaciones.", "insignias": ["Recomendado"]},
+    {"id": "neg_04", "nombre": "Gasfitería y Electricidad Don Carlos", "rubro": "Técnico / Oficio", "geo": {"lat": -12.115, "lng": -77.021}, "horario": "Lun-Sáb 8am-6pm", "whatsapp": "985893049", "nRecomendaciones": 31, "resumenIA": "Llega puntual, cobra lo justo y da garantía de su trabajo.", "insignias": ["Recomendado", "Solidario"]},
+    {"id": "neg_05", "nombre": "Taller de Costura Doña Rosa", "rubro": "Costura / Enmiendas", "geo": {"lat": -12.112, "lng": -77.025}, "horario": "9am-7pm", "whatsapp": "985893049", "nRecomendaciones": 12, "resumenIA": "Arregla cierres al instante y realiza acabados impecables.", "insignias": []},
+    {"id": "neg_06", "nombre": "Menú El Sabor Norteño", "rubro": "Restaurante / Menú", "geo": {"lat": -12.1145, "lng": -77.0205}, "horario": "12pm-4pm", "whatsapp": "985893049", "nRecomendaciones": 29, "resumenIA": "Seco de cabrito buenazo, menú variado a S/ 13.", "insignias": ["Recomendado"]},
+    {"id": "neg_07", "nombre": "Bazar y Novedades Lucianita", "rubro": "Regalos / Útiles", "geo": {"lat": -12.113, "lng": -77.0235}, "horario": "8am-8pm", "whatsapp": "985893049", "nRecomendaciones": 9, "resumenIA": "Fotocopias rápidas, impresiones y empacado de regalos.", "insignias": []},
+    {"id": "neg_08", "nombre": "Lavandería Burbujas Surquillo", "rubro": "Lavandería", "geo": {"lat": -12.116, "lng": -77.022}, "horario": "8am-8pm", "whatsapp": "985893049", "nRecomendaciones": 14, "resumenIA": "Dejan la ropa oliendo a fresco y cuidan las prendas delicadas.", "insignias": []},
+    {"id": "neg_09", "nombre": "Pollería El Dorado", "rubro": "Pollería", "geo": {"lat": -12.111, "lng": -77.0218}, "horario": "5pm-11pm", "whatsapp": "985893049", "nRecomendaciones": 42, "resumenIA": "Las mejores papas amarillas fritas y crema de ají del barrio.", "insignias": ["Recomendado"]},
+    {"id": "neg_10", "nombre": "Veterinaria Pet Care Surquillo", "rubro": "Veterinaria / Grooming", "geo": {"lat": -12.1155, "lng": -77.0245}, "horario": "9am-8pm", "whatsapp": "985893049", "nRecomendaciones": 20, "resumenIA": "Trato muy cariñoso con las mascotas y atención médica confiable.", "insignias": ["Recomendado"]},
+    {"id": "neg_11", "nombre": "Taller Mecánico El Rayo", "rubro": "Mecánica / Llantas", "geo": {"lat": -12.1105, "lng": -77.023}, "horario": "Lun-Sáb 8am-6pm", "whatsapp": "985893049", "nRecomendaciones": 8, "resumenIA": "Honestos con los repuestos, te muestran las piezas cambiadas.", "insignias": []},
+    {"id": "neg_12", "nombre": "Verdulería Doña Juana", "rubro": "Frutas y Verduras", "geo": {"lat": -12.1138, "lng": -77.0212}, "horario": "6am-2pm", "whatsapp": "985893049", "nRecomendaciones": 27, "resumenIA": "Productos ultra frescos traídos a diario del Mercado Mayorista.", "insignias": ["Recomendado"]},
+    {"id": "neg_13", "nombre": "Peluquería & Barbería Glamour", "rubro": "Estética", "geo": {"lat": -12.1125, "lng": -77.0255}, "horario": "10am-9pm", "whatsapp": "985893049", "nRecomendaciones": 16, "resumenIA": "Cortes modernos, excelente ambiente y buena atención.", "insignias": ["Recomendado"]},
+    {"id": "neg_14", "nombre": "Farmacia San Juan", "rubro": "Salud / Farmacia", "geo": {"lat": -12.1142, "lng": -77.0248}, "horario": "7am-11pm", "whatsapp": "985893049", "nRecomendaciones": 19, "resumenIA": "Amplio surtido de genéricos económicos y atención empática.", "insignias": ["Recomendado", "Solidario"]},
+    {"id": "neg_15", "nombre": "Zapatería Don Pepe", "rubro": "Reparación de Calzado", "geo": {"lat": -12.1165, "lng": -77.0215}, "horario": "9am-6pm", "whatsapp": "985893049", "nRecomendaciones": 11, "resumenIA": "Revive calzado antiguo con costuras y suelas de alta resistencia.", "insignias": []}
   ],
   "publicaciones": [
-    { "tipo": "OFREZCO", "categoria": "Oficios", "texto": "Arreglo lavadoras y refrigeradoras a domicilio", "geo": { "lat": -12.0460, "lng": -77.0450 }, "autorId": "semilla1", "autorNombre": "Carlos M.", "estado": "activa" },
-    { "tipo": "NECESITO", "categoria": "Hogar", "texto": "Necesito prestado un taladro por 1 hora", "geo": { "lat": -12.0450, "lng": -77.0420 }, "autorId": "semilla2", "autorNombre": "Lucía P.", "estado": "activa" },
-    { "tipo": "RECOMIENDO", "categoria": "Alimentos", "texto": "El menú de la Sra. Juana en el pasaje 3 está buenazo, S/ 9", "geo": { "lat": -12.0468, "lng": -77.0430 }, "autorId": "semilla3", "autorNombre": "Pedro Q.", "estado": "activa" }
+    {"id": "pub_01", "tipo": "OFREZCO", "categoria": "Oficios", "texto": "Arreglo lavadoras y refrigeradoras a domicilio", "geo": {"lat": -12.1122, "lng": -77.0229}, "autorId": "vec_03", "autorNombre": "Carlos M.", "estado": "activa"},
+    {"id": "pub_02", "tipo": "NECESITO", "categoria": "Hogar", "texto": "Necesito prestado un taladro por 1 hora", "geo": {"lat": -12.1149, "lng": -77.0229}, "autorId": "vec_02", "autorNombre": "María G.", "estado": "activa"},
+    {"id": "pub_03", "tipo": "RECOMIENDO", "categoria": "Alimentos", "texto": "El menú de El Sabor Norteño está buenazo, S/ 13", "geo": {"lat": -12.1149, "lng": -77.0202}, "autorId": "vec_06", "autorNombre": "Elena S.", "estado": "activa"},
+    {"id": "pub_04", "tipo": "OFREZCO", "categoria": "Educacion", "texto": "Doy clases de matemática a escolares, la primera es gratis", "geo": {"lat": -12.1149, "lng": -77.0229}, "autorId": "vec_08", "autorNombre": "Sofía B.", "estado": "activa"},
+    {"id": "pub_05", "tipo": "NECESITO", "categoria": "Mascotas", "texto": "Busco quién pasee a mi perro en las mañanas", "geo": {"lat": -12.1149, "lng": -77.0229}, "autorId": "vec_09", "autorNombre": "Jorge H.", "estado": "activa"},
+    {"id": "pub_06", "tipo": "RECOMIENDO", "categoria": "Oficios", "texto": "Don Carlos me arregló la fuga en 20 minutos, muy honesto", "geo": {"lat": -12.1149, "lng": -77.0202}, "autorId": "vec_04", "autorNombre": "Ana T.", "estado": "activa"}
   ],
   "recompensas": [
-    { "negocioId": "panaderia", "negocioNombre": "Panadería San Martín", "titulo": "1 pan francés gratis con tu compra", "costoPuntos": 10, "stock": 20, "vigencia": "2026-12-31" },
-    { "negocioId": "bodega", "negocioNombre": "Bodega Doña Rosa", "titulo": "10% de descuento en tu compra", "costoPuntos": 20, "stock": 10, "vigencia": "2026-12-31" },
-    { "negocioId": "gasfitero", "negocioNombre": "Don Julio - Gasfitero", "titulo": "Revisión de fuga gratis", "costoPuntos": 30, "stock": 5, "vigencia": "2026-12-31" }
+    {"id": "rec_01", "negocioId": "neg_02", "negocioNombre": "Panadería La Espiga de Oro", "titulo": "1 pan francés gratis con tu compra", "costoPuntos": 10, "stock": 20, "vigencia": "2026-12-31"},
+    {"id": "rec_02", "negocioId": "neg_01", "negocioNombre": "Bodega Don Lucho", "titulo": "10% de descuento en tu compra", "costoPuntos": 20, "stock": 10, "vigencia": "2026-12-31"},
+    {"id": "rec_03", "negocioId": "neg_09", "negocioNombre": "Pollería El Dorado", "titulo": "Porción de papas fritas gratis", "costoPuntos": 25, "stock": 10, "vigencia": "2026-12-31"},
+    {"id": "rec_04", "negocioId": "neg_04", "negocioNombre": "Gasfitería y Electricidad Don Carlos", "titulo": "Revisión de fuga gratis", "costoPuntos": 30, "stock": 5, "vigencia": "2026-12-31"}
   ],
   "avisos_minka": [
-    { "autorRol": "moderador", "texto": "Municipalidad: punto de acopio de agua en el parque principal desde las 3 pm", "zona": "Centro" },
-    { "autorRol": "moderador", "texto": "Serenazgo: la calle Los Pinos cuadra 5 está cerrada por un poste caído", "zona": "Centro" },
-    { "autorRol": "moderador", "texto": "Centro de salud Las Flores atendiendo heridos leves hasta las 10 pm", "zona": "Centro" }
+    {"id": "aviso_01", "autorRol": "moderador", "texto": "Municipalidad: punto de acopio de agua en el Mercado N° 1 desde las 3 pm", "zona": "Surquillo"},
+    {"id": "aviso_02", "autorRol": "moderador", "texto": "Serenazgo: Av. Villarán cuadra 3 cerrada por un poste caído", "zona": "Surquillo"},
+    {"id": "aviso_03", "autorRol": "moderador", "texto": "Posta del barrio atendiendo heridos leves hasta las 10 pm", "zona": "Surquillo"}
   ]
 }

@@ -3,7 +3,11 @@ import { useEstado } from '../lib/estado'
 import { MODO_DEMO_LOCAL } from '../lib/db'
 
 export default function Perfil() {
-  const { usuario, setUsuario } = useEstado()
+  const { usuario, setUsuario, ubicacionDemo, setUbicacionDemo, setAviso } = useEstado()
+  const cambiarDemo = () => {
+    setUbicacionDemo(!ubicacionDemo)
+    setAviso(ubicacionDemo ? 'Usando tu ubicación real' : 'Ubicación fija en Surquillo')
+  }
   const salir = () => { localStorage.removeItem('ayni_usuario'); setUsuario(null); window.location.href = '/' }
   return (
     <div className="pantalla">
@@ -15,6 +19,9 @@ export default function Perfil() {
         <div>⭐ Puntos Ayni: {usuario.puntosAyni || 0}</div>
       </div>
       {MODO_DEMO_LOCAL && <div className="chip pendiente">Modo demo local: sin Firebase (.env vacío). Los datos viven en este navegador.</div>}
+      <button className="btn secundario" onClick={cambiarDemo}>
+        {ubicacionDemo ? '📍 Usar mi ubicación real' : '📍 Fijar ubicación en Surquillo (demo)'}
+      </button>
       <button className="btn secundario" onClick={salir}>Cerrar sesión</button>
     </div>
   )

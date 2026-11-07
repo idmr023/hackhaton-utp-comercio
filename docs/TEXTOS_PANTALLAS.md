@@ -102,6 +102,7 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 - WhatsApp: `(WhatsApp visible)` / `(WhatsApp oculto)` · interruptor: *Mostrar mi WhatsApp*
 - Botón en perfil de otro vecino: **🤝 Lo conozco (avalar)** · éxito: *Avalaste a Lucía. Le falta 1 aval más.*
 - Reportar publicación: **Reportar** → *¿Qué pasa con esta publicación?* `Es falsa · Es ofensiva · No es de este barrio` → *Gracias. Con 3 reportes se oculta.*
+- Ubicación de demo: botón **📍 Fijar ubicación en Surquillo (demo)** / **📍 Usar mi ubicación real** · aviso: *Ubicación fija en Surquillo* / *Usando tu ubicación real* · chip en el mapa: `📍 Ubicación demo: Surquillo` · también con `?demo=1` / `?demo=0` en la URL
 - **Cerrar sesión**
 
 ## 9. WhatsApp (mensaje precargado)

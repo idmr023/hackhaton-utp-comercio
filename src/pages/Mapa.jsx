@@ -20,7 +20,7 @@ function Centrar({ centro }) {
 }
 
 export default function Mapa() {
-  const { ubicacion, radioKm, setRadioKm, usuario } = useEstado()
+  const { ubicacion, radioKm, setRadioKm, usuario, ubicacionDemo } = useEstado()
   const [pubs, setPubs] = useState([])
   const [negocios, setNegocios] = useState([])
   const [nPend, setNPend] = useState(0)
@@ -45,6 +45,7 @@ export default function Mapa() {
           ))}
         </div>
       </div>
+      {ubicacionDemo && <div className="chip" style={{ margin: '0 12px 6px' }}>📍 Ubicación demo: Surquillo</div>}
       {nPend > 0 && <div className="chip pendiente" style={{ margin: '0 12px 6px' }}>{nPend} publicación(es) pendiente(s) de subir</div>}
       <div style={{ flex: 1, position: 'relative' }}>
         <MapContainer center={[ubicacion.lat, ubicacion.lng]} zoom={15} className="mapa" zoomControl={false}>

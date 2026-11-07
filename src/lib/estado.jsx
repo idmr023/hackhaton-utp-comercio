@@ -1,6 +1,6 @@
 // Estado global simple: usuario, modo (barrio | minka), conexion, ubicacion, radio.
 import { createContext, useContext, useEffect, useState } from 'react'
-import { ubicacionActual, celdaAprox, RADIO_DEFAULT_KM, RADIO_MINKA_KM } from './geo'
+import { ubicacionActual, celdaAprox, RADIO_DEFAULT_KM, RADIO_MINKA_KM, ubicacionDemoActiva, setUbicacionDemoActiva } from './geo'
 import { activarAutoSync } from './offlineQueue'
 import { inicializarDemoLocal } from './db'
 
@@ -15,6 +15,13 @@ export function EstadoProvider({ children }) {
   const [ubicacion, setUbicacion] = useState(null)   // exacta, solo en memoria
   const [radioKm, setRadioKm] = useState(RADIO_DEFAULT_KM)
   const [aviso, setAviso] = useState('')
+  const [ubicacionDemo, setUbicacionDemoState] = useState(ubicacionDemoActiva)
+
+  // Activa/apaga la ubicacion fija de Surquillo y vuelve a ubicar
+  const setUbicacionDemo = (activa) => {
+    setUbicacionDemoActiva(activa); setUbicacionDemoState(activa)
+    setUbicacion(null); ubicacionActual().then(setUbicacion)
+  }
 
   useEffect(() => {
     const on = () => setOnline(true), off = () => setOnline(false)
@@ -30,6 +37,7 @@ export function EstadoProvider({ children }) {
 
   const value = {
     usuario, setUsuario, modo, setModo, online, ubicacion, radioKm, setRadioKm, aviso, setAviso,
+    ubicacionDemo, setUbicacionDemo,
     // Ubicacion aproximada (celda ~300 m): es la que se guarda en cualquier documento.
     geoAprox: ubicacion ? celdaAprox(ubicacion) : null,
   }
