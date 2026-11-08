@@ -10,7 +10,19 @@
 
 Costo: S/ 0 (plan Hobby). Firebase sigue igual, no cambia nada de datos.
 
-## Pasos (10 minutos, con la cuenta de GitHub de Eduardo)
+## Cómo quedó (dom 8 nov 01:25)
+- **URL de producción: https://ayni-xpertimpact.vercel.app** (cuenta Vercel `eduarx1509`, proyecto `hackhaton-utp-comercio`; el dominio se cambió en Settings → Domains con "Add Existing" porque `ayni.vercel.app` ya estaba ocupado).
+- Se desplegó **desde la PC con la línea de comandos**, no desde GitHub: el repo pertenece a la cuenta de Iván (idmr023) y Vercel solo deja importar repos de la propia cuenta. Por eso **no se publica solo con cada push**: hay que correr el comando de abajo.
+- Publicar una versión nueva (PowerShell en VS Code, desde la carpeta del repo):
+  ```powershell
+  cd "C:\Users\eduar\Documents\hackathon utp comercio\hackhaton-utp-comercio"
+  npx vercel --prod --yes
+  ```
+  Sube solo lo que no está en `.gitignore` (sin node_modules, .env ni capturas). Tarda 1 minuto.
+- Variables: Settings → Environment Variables del proyecto (las 6 de abajo). Sin `DIDIT_API_KEY`, `/api/salud` responde `"didit":false` y los registros quedan "Pendiente de verificación".
+- Si algún día Iván quiere que cada push publique solo: importar el repo desde su cuenta de Vercel (pasos siguientes) o invitar a Eduardo como colaborador y correr `npx vercel git connect`.
+
+## Pasos alternativos: importar desde GitHub (solo con la cuenta dueña del repo)
 1. Entrar a https://vercel.com y crear cuenta con **Continue with GitHub**.
 2. **Add New → Project → Import** el repo `idmr023/hackhaton-utp-comercio`. Vercel detecta Vite solo (Framework Preset: Vite, Build `npm run build`, Output `dist`). No cambiar nada.
 3. En **Environment Variables**, pegar las 6 variables del `.env` local (los valores están en `entregables dia 1/`), una por una, para los tres entornos (Production, Preview, Development):
@@ -20,7 +32,7 @@ Costo: S/ 0 (plan Hobby). Firebase sigue igual, no cambia nada de datos.
    - `VITE_FIREBASE_APP_ID`
    - `VITE_GEMINI_API_KEY`
    - `DIDIT_API_KEY` (sin `VITE_`: solo la ve la función serverless)
-4. **Deploy**. Tarda 1 o 2 minutos. Vercel da una URL tipo `https://hackhaton-utp-comercio.vercel.app`. En **Settings → Domains** se puede cambiar a algo corto como `ayni-barrio.vercel.app` si está libre.
+4. **Deploy**. Tarda 1 o 2 minutos. Vercel da una URL tipo `https://ayni-xpertimpact.vercel.app`. En **Settings → Domains** se puede cambiar a algo corto como `ayni-barrio.vercel.app` si está libre.
 5. Comprobar:
    - Abrir `https://<tu-url>/api/salud` → debe responder `{"ok":true,"didit":true}`. Si dice `"didit":false`, falta la variable `DIDIT_API_KEY` (agregarla y **Redeploy**).
    - Abrir `https://<tu-url>/?demo=1` en el celular, registrarse con el mismo celular y DNI (entra a la cuenta existente) y **Agregar a pantalla de inicio**. Desinstalar la versión del túnel para no confundirse.

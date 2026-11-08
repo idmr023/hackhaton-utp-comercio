@@ -198,6 +198,10 @@ CELULAR DEL VECINO (app web instalable / PWA: React + Vite)
 | ¿Cómo escala a otros barrios? | La búsqueda por cercanía (geohash) funciona igual en cualquier ciudad. Basta cargar los negocios del barrio, o que los vecinos los recomienden. |
 | ¿Qué gana El Comercio? | Un canal de contenido útil en emergencias (Boletín Minka), presencia diaria en el barrio y datos agregados por zona. |
 
+## 9b. Dónde está la app
+- **URL fija (producción):** https://ayni-xpertimpact.vercel.app. Se instala desde el celular (Chrome → Agregar a pantalla de inicio) y abre sin internet. Para la demo no hace falta nada corriendo en la PC: solo internet en el celular.
+- La URL con ubicación de demo fija en Surquillo: https://ayni-xpertimpact.vercel.app/?demo=1
+
 ## 10. Identidad visual (para que las slides combinen con la app)
 - **Concepto:** **"tejido verde"**: Ayni es reciprocidad, y la identidad es el verde andino sobre un fondo marfil cálido. El maíz marca lo que suma (puntos, publicar) y la terracota lo que se pide. El **rojo queda solo para Minka**. El único gesto decorativo es la **faja** (franja tejida) delgada: en la app va bajo la barra, en la portada y en la tarjeta de puntos; en las slides, una franja arriba o abajo. No llenar de patrones.
 - **Colores** (los mismos de `docs/PALETA_COLORES.md`):
