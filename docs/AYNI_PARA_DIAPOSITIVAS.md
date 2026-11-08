@@ -8,11 +8,15 @@
 ## 1. La idea en una frase
 **Ayni – tu barrio se ayuda.** Una app para el celular donde los vecinos encuentran negocios y servicios recomendados por otros vecinos a menos de 1 km, se ayudan entre ellos y, cuando hay una emergencia, la app se convierte en **Modo Minka** para coordinar quién necesita qué y quién puede ayudar.
 
-**Por qué esos nombres:**
-- **Ayni** = reciprocidad andina: hoy por ti, mañana por mí.
-- **Minka** = trabajo colectivo por la comunidad.
+### Qué significan Ayni y Minka (para explicarlo en la slide 1 o 3)
+Los dos nombres vienen del quechua y nombran dos formas de ayuda mutua que existen desde hace siglos en las comunidades andinas del Perú y siguen vivas hoy.
 
-Los ganadores de ediciones anteriores usaron nombres en quechua y al jurado le gustó.
+- **Ayni** es la **reciprocidad entre personas**: yo te ayudo hoy con tu cosecha, tu techo o tu mudanza, y tú me ayudas mañana cuando yo lo necesite. Es una relación de uno a uno, entre vecinos o familias, que se devuelve con trabajo o con un favor equivalente. "Hoy por ti, mañana por mí". En la app, Ayni es el **día a día del barrio**: ofrezco, necesito, recomiendo, y los puntos Ayni son la forma de que esa reciprocidad quede registrada y vuelva al que ayudó.
+- **Minka** (también escrita *mink'a* o *minga*) es el **trabajo colectivo por un bien común**: toda la comunidad se junta para algo que nadie puede hacer solo, como abrir un camino, construir una escuela o limpiar un canal. No se devuelve persona a persona, sino que todos aportan porque todos se benefician. En la app, Minka es el **modo de emergencia**: cuando hay un sismo o una inundación, el barrio entero se organiza (quién está bien, quién necesita, quién puede ayudar) y la app reparte las tareas con el match automático.
+
+La relación entre los dos es la tesis de la app: **una comunidad que practica el ayni todos los días es la que puede hacer una minka cuando llega la emergencia.** Por eso es una sola app con dos modos, y no dos apps.
+
+**Nombre de los modos en las slides:** la app en pantalla dice **"Ayni – tu barrio se ayuda"** en el modo normal y **"Modo Minka – emergencia en tu zona"** en emergencia. En las slides usar **Modo Ayni** y **Modo Minka**. (En el código y en documentos internos el modo normal se llamaba "barrio"; ese nombre no aparece en ninguna pantalla y no debe usarse frente al jurado.)
 
 ## 2. El reto y cómo lo cumplimos
 > *Crear en 48 horas un aplicativo que sirva a los ciudadanos para obtener con costos mínimos, y sin necesidad de transporte mayor, productos y servicios avalados por recomendaciones de vecinos. La aplicación debe integrar mecanismos de intercambios solidarios y evolucionar en situaciones de emergencia para coordinar soporte a los vecinos.*
@@ -42,7 +46,7 @@ Los ganadores de ediciones anteriores usaron nombres en quechua y al jurado le g
 - En **Ajustes** puedes **cambiar el celular con el que entras** (pide tu PIN) y **tu WhatsApp** por separado (y si se muestra a los vecinos).
 - **No hay login por SMS:** el equipo lo descartó por tiempo y riesgo en vivo. En producción iría Firebase Auth.
 
-### 3.2 Modo Barrio
+### 3.2 Modo Ayni (el día a día; en pantalla: "Ayni – tu barrio se ayuda")
 - **Mapa** con tu posición y los negocios con el **ícono de su rubro** (o su logo): panadería (croissant), farmacia (pastilla), gasfitero, veterinaria, pollería… Arriba, **buscador** y **panel Filtrar**: Todo / Negocios / Publicaciones, **tipo de publicación** (Ofrezco, Necesito, Recomiendo) y **categorías de negocio**, cada opción con su cantidad; con "Publicaciones" el panel lista las cercanas y al tocar una el mapa la enfoca.
 - **Lista Vecinos** (pestaña): dos sub-pestañas. **Vecinos**: lo que publican cerca, lo más reciente arriba, con foto, filtro Ofrezco / Necesito / Recomiendo, botones Mapa / Comentar / WhatsApp. **Negocios**: por categoría (Comida, Salud, Hogar y oficios, Belleza, Tiendas), con **estrellas** y *"N vecinos lo recomiendan"*. En PC es un feed centrado.
 - **Página de cada negocio**: estrellas y opiniones de los vecinos (**opinar da +2 puntos** a quien opina), comentarios, horario, WhatsApp y "Ver en el mapa". Las estrellas de los 15 negocios de ejemplo son **datos de demo** (el promedio inicial es ficticio); cada opinión real suma 1 a la cantidad y mueve el promedio.
@@ -181,7 +185,7 @@ CELULAR DEL VECINO (app web instalable / PWA: React + Vite)
   | Caída de servicios | Respaldo en IA, en Didit y sin señal |
 
 ## 8. Siguiente paso / roadmap (presentarlo como plan, NO como hecho)
-- **Ayuda confirmada +10** en el Modo Barrio (hoy la confirmación con código existe solo en Minka; las recomendaciones +2 ya funcionan).
+- **Ayuda confirmada +10** en el Modo Ayni (hoy la confirmación con código existe solo en Minka; las recomendaciones +2 ya funcionan).
 - **Avales:** "Vecino verificado" con 2 avales de vecinos ya verificados; puntos "pendientes" los primeros 7 días.
 - **Insignia "Negocio solidario"** y **"negocio que dona" +30** en emergencias.
 - **Trueque y préstamo** entre vecinos; **3 reportes ocultan una publicación**.
@@ -194,6 +198,26 @@ CELULAR DEL VECINO (app web instalable / PWA: React + Vite)
   - Firebase Auth en lugar del PIN propio.
   - Detección de grupos de cuentas que solo se ayudan entre sí.
   - Publicar en la tienda como app instalable.
+
+## 8b. Escalabilidad: cómo crece Ayni (para la slide 14 y para preguntas)
+Todo lo de esta sección es **propuesta**, no está hecho. Se presenta como "así escala", apoyado en que la base técnica ya lo permite.
+
+**1. Boletín Minka conectado a El Comercio y a fuentes oficiales.** Hoy el boletín tiene dos partes: avisos de un moderador (en la demo son de ejemplo, cargados a mano) y el resumen de zona que la IA escribe con lo que reportan los vecinos. El siguiente paso es que los avisos lleguen solos:
+- **El Comercio como fuente verificada:** la redacción publica avisos de emergencia por zona (cierres de vías, puntos de acopio, albergues, alertas de Indeci) desde un panel de moderador, o por una conexión directa con su sistema de noticias, y Ayni los muestra en el boletín del barrio afectado en segundos. El mismo canal sirve al revés: el **resumen de zona** de cada barrio, con cifras agregadas y anónimas (cuántos piden agua, cuántos ofrecen ayuda, dónde), es un insumo para la cobertura periodística en vivo de la emergencia.
+- **Fuentes oficiales automáticas:** IGP (sismos), Senamhi (lluvias, huaicos), Indeci y las municipalidades distritales. Una alerta oficial para la zona **activa el Modo Minka sola** en los celulares del barrio y entra al boletín, sin que nadie tenga que tocar el botón Emergencia.
+- **Minka automática por los vecinos:** si 3 o más vecinos de distintas zonas reportan "Necesito ayuda" en pocos minutos, la app propone entrar en Minka a todo el barrio.
+
+**2. De un barrio a todo el país.** La búsqueda por cercanía (geohash) funciona igual en Surquillo, en Arequipa o en Iquitos: no hay nada configurado para un barrio. Para abrir una zona nueva basta con que los vecinos publiquen y registren sus negocios, o cargar una base inicial con la municipalidad. El radio de 500 m a 5 km se adapta solo a la densidad del lugar.
+
+**3. Confianza a escala.** Con miles de usuarios, lo que hoy es una demo se refuerza: validación de DNI con RENIEC activa (recarga de Didit) y, después, selfie con prueba de vida; **avales** entre vecinos ("Vecino verificado" con 2 avales); reportes de la comunidad (3 reportes ocultan una publicación); moderadores por distrito. Firebase Auth en lugar del PIN propio.
+
+**4. Puntos y antifraude en el servidor.** Hoy el código de confirmación y los puntos se calculan en el celular, suficiente para la demo. A escala pasan a **Cloud Functions**: el servidor emite y valida los códigos, aplica el antifraude y detecta grupos de cuentas que solo se ayudan entre sí. El libro de movimientos ya está diseñado para eso (no se edita, solo se agrega).
+
+**5. Negocios y municipios como aliados.** Cada negocio administra su página y sus recompensas; plan **Destacado** para aparecer primero en su categoría. Las municipalidades reciben un **tablero por distrito**: qué se pide, qué se ofrece y dónde, en tiempo real durante una emergencia y como mapa de necesidades el resto del año. **"Negocio solidario"**: insignia para el que dona en emergencias (+30 puntos para su clientela).
+
+**6. Costos al crecer.** Firebase cobra por uso (lecturas y escrituras), la app está hecha para leer poco: una consulta por radio, caché en el celular, fotos comprimidas sin servicio de archivos. Gemini se usa en tres puntos con respaldo local, así que si se corta el presupuesto de IA la app sigue igual. OpenStreetMap y Vercel no cobran a este volumen. El único costo fijo nuevo sería la validación de DNI (USD 0,20 por cuenta nueva), que se paga una sola vez por vecino.
+
+**7. Accesibilidad y lenguas.** La interfaz ya está traducida por completo al quechua; el mismo mecanismo permite aimara, shipibo o asháninka con un archivo de traducción por lengua, validado con hablantes.
 
 ## 9. Preguntas probables del jurado (con respuesta honesta)
 | Pregunta | Respuesta |
@@ -208,8 +232,10 @@ CELULAR DEL VECINO (app web instalable / PWA: React + Vite)
 | ¿Se ve dónde vivo? | No. Se guarda una zona aproximada de unos 300 m, nunca la casa exacta. Del DNI solo se guarda una huella, no el número. |
 | ¿Cuánto cuesta? | Hoy S/ 0: todo en niveles gratuitos, sin tarjeta. Al escalar: Firebase por uso y Didit a USD 0,20 por verificación de DNI (con recarga inicial de 50 USD). |
 | ¿Por qué no hay login con SMS? | Lo descartamos para no depender en vivo de un servicio con pocos mensajes gratis. La identidad la da el DNI validado con RENIEC, y el SMS queda como mejora. |
-| ¿Cómo escala a otros barrios? | La búsqueda por cercanía (geohash) funciona igual en cualquier ciudad. Basta cargar los negocios del barrio, o que los vecinos los recomienden. |
-| ¿Qué gana El Comercio? | Un canal de contenido útil en emergencias (Boletín Minka), presencia diaria en el barrio y datos agregados por zona. |
+| ¿Cómo escala a otros barrios? | La búsqueda por cercanía (geohash) funciona igual en cualquier ciudad. Basta cargar los negocios del barrio, o que los vecinos los recomienden. Detalle en la sección 8b. |
+| ¿Qué gana El Comercio? | Un canal de contenido útil en emergencias (Boletín Minka), presencia diaria en el barrio y datos agregados por zona. El plan es que sus avisos verificados entren solos al boletín y que el resumen de zona de cada barrio sea insumo para su cobertura en vivo. |
+| ¿De dónde salen los avisos del boletín (Municipalidad, Serenazgo)? | En la demo son avisos de ejemplo cargados por un moderador. El resumen de zona sí es real: la IA lo escribe con lo que los vecinos reportan en ese momento. Conectar fuentes oficiales y El Comercio es el siguiente paso (sección 8b). |
+| ¿Qué significan Ayni y Minka? | Ayni es la reciprocidad entre vecinos (hoy por ti, mañana por mí): el día a día. Minka es el trabajo colectivo por un bien común: la emergencia. Una comunidad que practica el ayni es la que puede hacer una minka. |
 
 ## 9b. Dónde está la app
 - **URL fija (producción):** https://ayni-xpertimpact.vercel.app. Se instala desde el celular (Chrome → Agregar a pantalla de inicio) y abre sin internet. Para la demo no hace falta nada corriendo en la PC: solo internet en el celular.
@@ -246,7 +272,7 @@ Cada slide tiene **un solo mensaje**. Las capturas se sacan desde el celular, co
 |---|---|---|---|---|
 | 1 | **Ayni: tu barrio se ayuda** | Nombre y lema · nombre del equipo · Hackathon UTP – El Comercio 2026 | Logo del equipo (casa verde con sonrisa sobre maíz) sobre verde profundo + faja abajo | Ayni = hoy por ti, mañana por mí |
 | 2 | **El problema** | No sabemos en quién confiar para un gasfitero o una bodega cerca · los emprendimientos del barrio no se hacen ver · en un sismo nadie sabe quién necesita qué | Foto o ilustración simple del barrio (sin texto encima) | La ayuda existe, pero no se encuentra |
-| 3 | **Nuestra respuesta: una app, dos modos** | **Modo Barrio** para el día a día · **Modo Minka** para emergencias · funciona en el celular, sin descargar de una tienda | Dos capturas lado a lado: mapa (verde) y Minka (rojo) | Barrio + Minka |
+| 3 | **Nuestra respuesta: una app, dos modos** | **Modo Ayni** para el día a día (reciprocidad entre vecinos) · **Modo Minka** para emergencias (trabajo colectivo) · funciona en el celular, sin descargar de una tienda | Dos capturas lado a lado: mapa (verde) y Minka (rojo) | Ayni todos los días hace posible la Minka en la emergencia |
 | 4 | **Cumplimos todo el reto** | Lista con check de lo que pedía el reto (tabla de la sección 2) | Checklist en dos columnas | 10 de 10 pedidos cubiertos |
 | 5 | **Vecinos de verdad** | Cuenta con celular + DNI + PIN · DNI contrastado con **RENIEC** (Didit), se guarda solo una huella · ubicación aproximada (~300 m), nunca tu casa | Capturas: registro + Ajustes de Eduardo o Jessica con "Validado en RENIEC" (no crear cuenta nueva para la captura: saldría "en verificación") | Identidad real, privacidad cuidada |
 | 6 | **Tu barrio en un mapa** | Negocios a menos de 1 km con su ícono o logo · estrellas y *"Recomendado por 24 vecinos de tu zona"* · filtros por categoría y tipo · WhatsApp con mensaje listo | Captura del mapa con el panel Filtrar + ficha de Panadería La Espiga de Oro | Recomendaciones de vecinos, no de desconocidos |
@@ -257,8 +283,8 @@ Cada slide tiene **un solo mensaje**. Las capturas se sacan desde el celular, co
 | 11 | **Puntos que traen clientes** | Ayudar en Minka +20, opinar un negocio +2, ser recomendado +2 · se canjean en negocios del barrio (pan gratis, descuento) con código de 6 dígitos · antifraude: 20 → 10 → 0 por pareja, máx. 3 ayudas al día | Captura de Puntos (saldo + recompensas) + página de negocio con estrellas | El emprendimiento gana clientes sin pagar |
 | 12 | **Para todos los vecinos** | Toda la app en **quechua** · letra grande, alto contraste y **modo para daltónicos** · fuente para baja visión, voz, botones grandes, asistente de ayuda | Captura de Minka en quechua + Ajustes con los interruptores | Inclusión de verdad |
 | 13 | **Cómo está hecho · S/ 0** | App instalable (React + Vite) publicada en Vercel · Firebase con modo offline · Gemini, OpenStreetMap, Didit/RENIEC · todo en niveles gratuitos | Esquema de la sección 5 + tabla de costos | Costo S/ 0 |
-| 14 | **Modelo de negocio y futuro** | Negocios ponen producto, ganan clientes · plan Destacado y auspicio de municipios / El Comercio · roadmap: avales, Minka automático, IGP / Senamhi / Indeci | Tres columnas: negocio · El Comercio · municipios, y una línea de tiempo corta | Sostenible y escalable |
-| 15 | **Equipo y demo en vivo** | Eduardo y Jessica: desarrollo y Modo Barrio · Bruce: Minka y datos · Iván: cuentas, demo y presentación · "Ahora, en vivo" | Fotos o nombres del equipo + faja; luego se pasa al celular | La app funciona de verdad |
+| 14 | **Cómo crece Ayni** | Boletín conectado a El Comercio y a IGP / Senamhi / Indeci: la alerta oficial activa Minka sola · de un barrio al país sin reconfigurar (geohash) · confianza a escala: RENIEC activo, avales, moderadores · negocios y municipios como aliados (plan Destacado, tablero por distrito) | Tres columnas: vecinos · El Comercio · municipios, y una línea de tiempo corta (sección 8b) | Sostenible y escalable |
+| 15 | **Equipo y demo en vivo** | Eduardo y Jessica: desarrollo y Modo Ayni · Bruce: Minka y datos · Iván: cuentas, demo y presentación · "Ahora, en vivo" | Fotos o nombres del equipo + faja; luego se pasa al celular | La app funciona de verdad |
 
 **Consejos:**
 - **Demo en vivo al final** (slide 15) con dos celulares, desde https://ayni-xpertimpact.vercel.app: publicar, modo avión y match en Minka (flujos B, C y E de la sección 6); si sobra tiempo, el asistente (H). Tener el **video de respaldo** listo por si falla la red.
