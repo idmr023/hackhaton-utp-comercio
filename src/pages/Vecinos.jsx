@@ -91,7 +91,7 @@ export default function Vecinos({ pubs, negocios, resenasNeg = {}, cargado, onEl
                 <div className="pub-pie">
                   <span className="fila-icono muted"><LocateFixed size={16} aria-hidden="true" />{t('a {m}', { m: metros(p.distanciaKm) })}</span>
                   <div className="pub-acciones">
-                    <button className="btn chico secundario" onClick={(e) => { parar(e); onElegir({ k: claveCelda(p.geo), lat: p.geo.lat, lng: p.geo.lng }) }}><Map size={18} aria-hidden="true" />{t('Mapa')}</button>
+                    <button className="btn chico secundario" onClick={(e) => { parar(e); onElegir({ k: claveCelda(p.geo), lat: p.geo.lat, lng: p.geo.lng, pubId: p.id }) }}><Map size={18} aria-hidden="true" />{t('Mapa')}</button>
                     <button className="btn chico secundario" onClick={(e) => { parar(e); abrir(p) }}><MessageSquare size={18} aria-hidden="true" />{t('Comentar')}</button>
                     {p.autorWhatsapp && !mia && <BotonWa num={p.autorWhatsapp} msj={msjPublicacion(p)} />}
                   </div>

@@ -21,7 +21,12 @@ export default function Barrio({ vista }) {
   const [foco, setFoco] = useState(null) // { k, lat, lng, n }: lo elegido en la lista, para centrarlo en el mapa
   const loc = useLocation()
   // "Ver en el mapa" desde el detalle de una publicacion llega como state de la navegacion
-  useEffect(() => { if (loc.state?.foco) setFoco({ ...loc.state.foco, n: Date.now() }) }, [loc.state])
+  // Se usa una vez y se borra del historial: si no, recargar la pagina volvia a abrir ese popup
+  useEffect(() => {
+    if (!loc.state?.foco) return
+    setFoco({ ...loc.state.foco, n: Date.now() })
+    nav(loc.pathname, { replace: true, state: null })
+  }, [loc.state]) // eslint-disable-line
 
   useEffect(() => {
     if (!ubicacion) return

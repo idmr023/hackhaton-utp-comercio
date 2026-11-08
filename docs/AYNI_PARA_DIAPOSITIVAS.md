@@ -54,7 +54,7 @@ Los ganadores de ediciones anteriores usaron nombres en quechua y al jurado le g
 - **Sin señal:** activas el modo avión, publicas, la app avisa *"Sin internet: guardado, se subirá solo"*, y al volver la señal se sube **una sola vez**.
 
 ### 3.3 Modo Minka (emergencia)
-- Un botón **Emergencia** (sirena) cambia toda la app a rojo con **3 botones gigantes**:
+- Un botón **Emergencia** (sirena) cambia toda la app a rojo con **3 botones gigantes**. Desde el barrio, el botón muestra una burbuja roja con cuántos vecinos piden ayuda en Minka a 3 km:
   - **Estoy bien** (avisa que estás a salvo)
   - **Necesito ayuda**: agua, medicina, albergue, rescate, comida u otro, con urgencia *Puede esperar / Hoy / ¡Ahora!*
   - **Puedo ayudar**: enfermera/o, botiquín, agua, comida, generador, vehículo o espacio

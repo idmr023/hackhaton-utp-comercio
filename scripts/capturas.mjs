@@ -52,6 +52,12 @@ const PANTALLAS = [
   ['entrar', '/', () => estado(true, false, 'barrio', "localStorage.setItem('ayni_ultimo_celular','987654321')")],
   ['mapa', '/', () => estado(true, true)],
   ['mapa_filtros', '/', () => estado(true, true), "document.querySelector('.buscador button')?.click(); const i=document.querySelector('.buscador input'); const set=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set; set.call(i,'poller'); i.dispatchEvent(new Event('input',{bubbles:true}))"],
+  // Panel Filtrar en Todo (tipos de publicacion + categorias), con Necesito elegido, y en Publicaciones
+  ['mapa_filtros_tipos', '/', () => estado(true, true), "document.querySelector('.buscador button')?.click()"],
+  ['mapa_necesito', '/', () => estado(true, true), "(async () => { document.querySelector('.buscador button')?.click(); await new Promise((r) => setTimeout(r, 300)); document.querySelector('.opcion-filtro.tipo-NECESITO')?.click(); await new Promise((r) => setTimeout(r, 300)); document.querySelector('.panel-filtros .cerrar')?.click() })()"],
+  ['mapa_filtros_pubs', '/', () => estado(true, true), "(async () => { document.querySelector('.buscador button')?.click(); await new Promise((r) => setTimeout(r, 300)); [...document.querySelectorAll('.panel-filtros .segmentos button')].find((b) => b.textContent.includes('Publicaciones'))?.click() })()"],
+  // "Ver en el mapa" desde el detalle: el mapa se arma de cero y debe abrir el popup de esa publicacion
+  ['publicacion_ver_mapa', '/publicacion/pub_05', () => estado(true, true), "(async () => { [...document.querySelectorAll('button')].find((b) => b.textContent.includes('Ver en el mapa'))?.click(); await new Promise((r) => setTimeout(r, 1500)) })()"],
   ['publicar', '/publicar', () => estado(true, true)],
   ['puntos', '/puntos', () => estado(true, true)],
   ['vecinos', '/vecinos', () => estado(true, true)],

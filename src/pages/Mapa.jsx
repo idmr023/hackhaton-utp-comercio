@@ -63,18 +63,24 @@ function Enfocar({ foco, refs }) {
   useEffect(() => {
     if (!foco) return
     map.setView([foco.lat, foco.lng], Math.max(map.getZoom(), 17), { animate: true })
-    const t = setTimeout(() => {
-      refs.current[foco.k]?.openPopup()
+    let t, intentos = 0
+    const abrir = () => {
+      const marcador = refs.current[foco.k]
+      // Llegando desde otra pantalla (detalle de publicacion o de negocio) el mapa se arma de cero y los
+      // marcadores aparecen cuando terminan de cargar los datos: reintentar hasta ~8 s
+      if (!marcador) { if (++intentos < 40) t = setTimeout(abrir, 200); return }
+      marcador.openPopup()
       if (!foco.pubId) return
       // El popup agrupa varias publicaciones: llevar la lista hasta la tocada (si no, siempre se ve la de arriba)
-      setTimeout(() => {
+      t = setTimeout(() => {
         const el = document.querySelector(`.leaflet-popup .pop-item[data-id="${foco.pubId}"]`)
         if (!el) return
         el.scrollIntoView({ block: 'nearest' })
         el.classList.add('resaltado')
-        setTimeout(() => el.classList.remove('resaltado'), 2500)
+        t = setTimeout(() => el.classList.remove('resaltado'), 2500)
       }, 120)
-    }, 350)
+    }
+    t = setTimeout(abrir, 350)
     return () => clearTimeout(t)
   }, [foco, map, refs])
   return null
@@ -104,18 +110,35 @@ export default function Mapa({ pubs: todasPubs, negocios: todosNeg, nPend, carga
   const [ver, setVer] = useState('todo') // 'todo' | 'negocios' | 'publicaciones'
   const [categoria, setCategoria] = useState('todo') // categoria de negocio
   const [conOpiniones, setConOpiniones] = useState(false)
+  const [tipoPub, setTipoPub] = useState('todo') // 'todo' | 'OFREZCO' | 'NECESITO' | 'RECOMIENDO'
   const [filtrosAbiertos, setFiltrosAbiertos] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 900)
   const [focoLista, setFocoLista] = useState(null) // publicacion tocada en el panel: el mapa se centra y abre su popup
   const q = normal(busqueda.trim())
   const coincide = (...campos) => !q || campos.some((c) => normal(c).includes(q))
-  const negocios = todosNeg.filter((n) => ver !== 'publicaciones'
-    && (categoria === 'todo' || categoriaNegocio(n.rubro, n.nombre) === categoria)
+  // Filtros de negocio (categoria, con opiniones) y de publicacion (tipo). En "Todo", elegir solo los de un lado
+  // oculta el otro (se ve lo que se pidio); con filtros de los dos lados se ven ambos, cada uno filtrado.
+  const filtroNeg = categoria !== 'todo' || conOpiniones
+  const filtroPub = tipoPub !== 'todo'
+  const verNeg = ver === 'negocios' || (ver === 'todo' && (filtroNeg || !filtroPub))
+  const verPub = ver === 'publicaciones' || (ver === 'todo' && (filtroPub || !filtroNeg))
+  const negocios = !verNeg ? [] : todosNeg.filter((n) => (categoria === 'todo' || categoriaNegocio(n.rubro, n.nombre) === categoria)
     && (!conOpiniones || (resenasNeg[n.id]?.n || 0) > 0)
     && coincide(n.nombre, n.rubro, n.descripcion, n.resumenIA))
-  // Las categorias y "con opiniones" son de negocios: al elegirlas se ocultan las publicaciones
-  const pubs = todasPubs.filter((p) => ver !== 'negocios' && categoria === 'todo' && !conOpiniones && coincide(p.texto, p.categoria, p.autorNombre))
-  const hayFiltro = !!q || ver !== 'todo' || categoria !== 'todo' || conOpiniones
-  const limpiar = () => { setBusqueda(''); setVer('todo'); setCategoria('todo'); setConOpiniones(false) }
+  const basePubs = todasPubs.filter((p) => coincide(p.texto, p.categoria, p.autorNombre))
+  const pubs = !verPub ? [] : basePubs.filter((p) => tipoPub === 'todo' || p.tipo === tipoPub)
+  const hayFiltro = !!q || ver !== 'todo' || filtroNeg || filtroPub
+  const limpiar = () => { setBusqueda(''); setVer('todo'); setCategoria('todo'); setConOpiniones(false); setTipoPub('todo') }
+  // Al pasar a Negocios o Publicaciones se borran los filtros del otro lado (no se ven y confundirian)
+  const cambiarVer = (id) => {
+    const nuevo = ver === id ? 'todo' : id
+    setVer(nuevo)
+    if (nuevo === 'publicaciones') { setCategoria('todo'); setConOpiniones(false) }
+    if (nuevo === 'negocios') setTipoPub('todo')
+  }
+  // Tipos de publicacion con su cantidad (dentro del radio y de la busqueda)
+  const tiposConAlgo = ['OFREZCO', 'NECESITO', 'RECOMIENDO']
+    .map((tipo) => [tipo, basePubs.filter((p) => p.tipo === tipo).length])
+    .filter(([tipo, n]) => n > 0 || tipoPub === tipo)
   // Para el panel: solo las categorias que tienen negocios (dentro del radio y de la busqueda), con su cantidad
   const baseNeg = todosNeg.filter((n) => coincide(n.nombre, n.rubro, n.descripcion, n.resumenIA))
   const tieneOpiniones = (n) => (resenasNeg[n.id]?.n || 0) > 0
@@ -130,6 +153,12 @@ export default function Mapa({ pubs: todasPubs, negocios: todosNeg, nPend, carga
     setFocoLista({ lat: g.items[0].geo.lat, lng: g.items[0].geo.lng, k: g.k, pubId: p?.id || null, n: Date.now() })
     if (window.innerWidth < 900) setFiltrosAbiertos(false) // en celular el panel tapa el mapa
   }
+  // Al abrir un popup Leaflet mueve el mapa para mostrarlo entero: margen para que no quede debajo de los
+  // controles flotantes (celular: radio + buscador + chips arriba, Publicar y la nav abajo; PC: panel a la izquierda)
+  const enPC = typeof window !== 'undefined' && window.innerWidth >= 900
+  const margenPopup = enPC
+    ? { autoPanPaddingTopLeft: [420, 20], autoPanPaddingBottomRight: [20, 20] }
+    : { autoPanPaddingTopLeft: [12, 250], autoPanPaddingBottomRight: [12, 90] }
   const nConOpiniones = baseNeg.filter((n) => (categoria === 'todo' || categoriaNegocio(n.rubro, n.nombre) === categoria) && tieneOpiniones(n)).length
 
   return (
@@ -145,7 +174,7 @@ export default function Mapa({ pubs: todasPubs, negocios: todosNeg, nPend, carga
           const Icono = iconoRubro(n.rubro)
           return (
             <Marker key={n.id} position={[n.geo.lat, n.geo.lng]} icon={n.logoBase64 ? iconoNegocioLogo(n) : iconoNegocio(n.rubro)} ref={(m) => { refs.current[n.id] = m }}>
-              <Popup>
+              <Popup {...margenPopup}>
                 <div className="pop-cabecera">
                   <span className={`ficha chica${n.logoBase64 ? ' logo' : ''}`}>{n.logoBase64 ? <img src={n.logoBase64} alt="" /> : <Icono aria-hidden="true" />}</span>
                   <div>
@@ -168,7 +197,7 @@ export default function Mapa({ pubs: todasPubs, negocios: todosNeg, nPend, carga
         })}
         {agruparPorCelda(pubs).map(({ k, items }) => (
           <Marker key={k} position={[items[0].geo.lat, items[0].geo.lng]} icon={iconoGrupo(items[0].tipo, items.length)} ref={(m) => { refs.current[k] = m }}>
-            <Popup>
+            <Popup {...margenPopup}>
               {items.length > 1 && <div className="pop-titulo" style={{ marginBottom: 8 }}>{t('{n} publicaciones en esta zona', { n: items.length })}</div>}
               <div className="pop-lista">
                 {items.map((p) => {
@@ -213,9 +242,28 @@ export default function Mapa({ pubs: todasPubs, negocios: todosNeg, nPend, carga
             </div>
             <div className="segmentos" role="group" aria-label={t('Ver')}>
               {[['todo', 'Todo'], ['negocios', 'Negocios'], ['publicaciones', 'Publicaciones']].map(([id, txt]) => (
-                <button key={id} type="button" className={ver === id ? 'activo' : ''} aria-pressed={ver === id} onClick={() => setVer(ver === id ? 'todo' : id)}>{t(txt)}</button>
+                <button key={id} type="button" className={ver === id ? 'activo' : ''} aria-pressed={ver === id} onClick={() => cambiarVer(id)}>{t(txt)}</button>
               ))}
             </div>
+            {ver !== 'negocios' && (
+              <>
+                <h4>{t('Tipo de publicación')}</h4>
+                {ver === 'publicaciones' && (
+                  <button type="button" className={'opcion-filtro' + (tipoPub === 'todo' ? ' activo' : '')} aria-pressed={tipoPub === 'todo'} onClick={() => setTipoPub('todo')}>
+                    <Megaphone size={18} aria-hidden="true" />{t('Todas las publicaciones')}<span className="cuenta">{basePubs.length}</span>
+                  </button>
+                )}
+                {tiposConAlgo.map(([tipo, n]) => {
+                  const Icono = ICONO_TIPO[tipo]
+                  return (
+                    <button key={tipo} type="button" className={`opcion-filtro tipo-${tipo}` + (tipoPub === tipo ? ' activo' : '')} aria-pressed={tipoPub === tipo} onClick={() => setTipoPub(tipoPub === tipo ? 'todo' : tipo)}>
+                      <Icono size={18} aria-hidden="true" />{t(NOMBRE_TIPO[tipo])}<span className="cuenta">{n}</span>
+                    </button>
+                  )
+                })}
+                {ver === 'todo' && tiposConAlgo.length === 0 && <p className="muted">{t('Ninguna publicación a {r} de ti.', { r: textoRadio(radioKm) })}</p>}
+              </>
+            )}
             {ver !== 'publicaciones' && (
               <>
                 <h4>{t('Categorías de negocio')}</h4>

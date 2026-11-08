@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, NavLink, Navigate, useNavigate } from 'react-router-dom'
 import { Map, Users, Coins, Siren, WifiOff, LogOut } from 'lucide-react'
 import { EstadoProvider, useEstado } from './lib/estado'
+import { listarCerca } from './lib/db'
+import { RADIO_MINKA_KM } from './lib/geo'
 import { Logo } from './lib/iconos'
 import { useFotoPerfil } from './lib/social'
 import Barrio from './pages/Barrio'
@@ -30,10 +33,23 @@ function Nav({ className }) {
 }
 
 function Barra() {
-  const { modo, setModo, online, aviso, usuario, t } = useEstado()
+  const { modo, setModo, online, aviso, usuario, ubicacion, t } = useEstado()
   const nav = useNavigate()
   const minka = modo === 'minka'
   const fotoPerfil = useFotoPerfil(usuario?.id)
+  // Desde el Modo Barrio: cuantos vecinos piden ayuda en Minka (necesidades abiertas a 3 km, igual que Minka).
+  // Se cuenta al cargar, al volver de Minka y cada minuto; sin senal, Firestore responde con su cache.
+  const [nNecesidades, setNNecesidades] = useState(0)
+  useEffect(() => {
+    if (minka || !ubicacion) return
+    let vivo = true
+    const contar = () => listarCerca('necesidades', ubicacion, RADIO_MINKA_KM)
+      .then((l) => { if (vivo) setNNecesidades(l.filter((n) => n.estado === 'abierta').length) })
+      .catch(() => {})
+    contar()
+    const id = setInterval(contar, 60000)
+    return () => { vivo = false; clearInterval(id) }
+  }, [minka, ubicacion])
   // Emergencia es el interruptor del Modo Minka: cambia toda la app, no es una seccion mas
   const cambiarModo = () => {
     if (minka) {
@@ -53,12 +69,14 @@ function Barra() {
         </div>
         {!minka && <Nav className="nav-arriba" />}
         <div className="barra-acciones">
-          {online
-            ? <span className="estado en-linea" role="status"><span className="solo-lector">{t('En línea')}</span></span>
-            : <span className="estado offline" role="status"><WifiOff size={16} aria-hidden="true" /><span>{t('Sin internet,')}<br />{t('se guarda local')}</span></span>}
-          <button className="btn-modo" onClick={cambiarModo} aria-label={minka ? t('Salir de Minka') : t('Emergencia: entrar a Modo Minka')}>
+          {/* Solo se avisa cuando NO hay internet (dom 16:10: se quito el punto de "En linea") */}
+          {!online && <span className="estado offline" role="status"><WifiOff size={16} aria-hidden="true" /><span>{t('Sin internet,')}<br />{t('se guarda local')}</span></span>}
+          <button className="btn-modo" onClick={cambiarModo}
+            aria-label={minka ? t('Salir de Minka') : t('Emergencia: entrar a Modo Minka') + (nNecesidades > 0 ? '. ' + t('{n} necesidades abiertas', { n: nNecesidades }) : '')}
+            title={!minka && nNecesidades > 0 ? t('{n} necesidades abiertas', { n: nNecesidades }) : undefined}>
             {minka ? <LogOut size={18} aria-hidden="true" /> : <Siren size={18} aria-hidden="true" />}
             <span className="btn-modo-texto">{minka ? t('Salir') : t('Emergencia')}</span>
+            {!minka && nNecesidades > 0 && <span className="btn-modo-cuenta" aria-hidden="true">{nNecesidades > 99 ? '99+' : nNecesidades}</span>}
           </button>
           <NavLink to="/ajustes" className={({ isActive }) => 'avatar-btn' + (isActive ? ' activo' : '')} aria-label={t('Ajustes y perfil')} title={t('Ajustes y perfil')}>
             {fotoPerfil ? <img src={fotoPerfil} alt="" /> : (iniciales(usuario?.nombre) || '?')}

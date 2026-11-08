@@ -84,7 +84,8 @@ export default function Publicacion() {
   const Icono = ICONO_TIPO[pub.tipo] || ICONO_TIPO.OFREZCO
   const mia = pub.autorId === usuario?.id
   const dist = pub.distanciaKm ?? (ubicacion && pub.geo ? distanciaKm(ubicacion, pub.geo) : null)
-  const verMapa = () => nav('/', { state: { foco: { k: claveCelda(pub.geo), lat: pub.geo.lat, lng: pub.geo.lng } } })
+  // pubId: el popup agrupa la zona; con el id se desplaza hasta esta publicacion y la resalta
+  const verMapa = () => nav('/', { state: { foco: { k: claveCelda(pub.geo), lat: pub.geo.lat, lng: pub.geo.lng, pubId: id } } })
 
   return (
     <div className="pantalla detalle">

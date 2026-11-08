@@ -90,7 +90,6 @@ button { cursor: pointer; }
 .marca-lema { font-size: calc(12px * var(--escala)); opacity: .9; }
 .barra-acciones { display: flex; gap: 8px; align-items: center; flex: none; }
 .estado { display: inline-flex; align-items: center; gap: 6px; font-size: calc(12px * var(--escala)); font-weight: 700; line-height: 1.15; }
-.estado.en-linea { width: 12px; height: 12px; border-radius: 50%; background: var(--maiz); box-shadow: 0 0 0 3px rgba(255, 255, 255, .25); }
 .estado.offline { background: var(--maiz); color: var(--tinta); padding: 5px 10px; border-radius: var(--r-s); max-width: 150px; }
 .btn-modo {
   display: inline-flex; align-items: center; gap: 6px; border: 0; border-radius: 999px; padding: 0 14px 0 12px; min-height: 42px;
@@ -99,10 +98,17 @@ button { cursor: pointer; }
 }
 .app.minka .btn-modo { color: var(--rojo-osc); }
 .btn-modo:active { transform: translateY(1px); }
+/* Necesidades abiertas de Minka cerca (3 km): burbuja roja dentro del boton Emergencia */
+.btn-modo { position: relative; }
+.btn-modo-cuenta {
+  display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; margin-right: -4px; border-radius: 999px;
+  background: var(--rojo); color: #fff; font-size: calc(12px * var(--escala)); font-weight: 800; line-height: 1;
+}
 /* Sin internet en un celular angosto: el aviso amarillo ocupa el lugar del texto del boton (queda el icono) */
 @media (max-width: 440px) {
   .barra-superior.sin-internet .btn-modo-texto { display: none; }
   .barra-superior.sin-internet .btn-modo { width: 44px; padding: 0; justify-content: center; }
+  .barra-superior.sin-internet .btn-modo-cuenta { position: absolute; top: -5px; right: -5px; margin: 0; box-shadow: 0 0 0 2px #fff; }
 }
 
 /* Avatar de la barra: abre Ajustes (perfil, accesibilidad, sesion) */
@@ -268,6 +274,8 @@ input:focus, textarea:focus { outline: none; border-color: var(--verde); box-sha
 .opcion-filtro:hover { background: var(--marfil); }
 .opcion-filtro.activo { background: var(--verde-suave); border-color: var(--verde); color: var(--verde-prof); }
 .opcion-filtro svg { color: var(--verde); flex: none; }
+.opcion-filtro.tipo-NECESITO svg { color: var(--terracota-osc); } /* mismo color que el chip de cada tipo */
+.opcion-filtro.tipo-RECOMIENDO svg { color: var(--maiz-osc); }
 .opcion-filtro .cuenta { margin-left: auto; min-width: 26px; text-align: center; padding: 2px 8px; border-radius: 999px; background: var(--marfil); color: var(--gris); font-size: calc(13px * var(--escala)); }
 .opcion-filtro.activo .cuenta { background: var(--verde); color: #fff; }
 .grupos-pubs { display: flex; flex-direction: column; gap: 8px; }
