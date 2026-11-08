@@ -3,7 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 import { traducir } from './i18n'
 import { ubicacionActual, celdaAprox, RADIO_DEFAULT_KM, RADIO_MINKA_KM, ubicacionDemoActiva, setUbicacionDemoActiva } from './geo'
 import { activarAutoSync } from './offlineQueue'
-import { inicializarDemoLocal } from './db'
+import { inicializarDemoLocal, obtener } from './db'
 
 const Ctx = createContext(null)
 
@@ -49,6 +49,19 @@ export function EstadoProvider({ children }) {
 
   useEffect(() => { localStorage.setItem('ayni_modo', modo); setRadioKm(modo === 'minka' ? RADIO_MINKA_KM : RADIO_DEFAULT_KM) }, [modo])
   useEffect(() => { if (usuario) localStorage.setItem('ayni_usuario', JSON.stringify(usuario)) }, [usuario])
+  // Foto y WhatsApp viven en `perfiles` (editable; `usuarios` no): se traen al entrar, por si se cambiaron en otro celular
+  useEffect(() => {
+    if (!usuario?.id) return
+    obtener('perfiles', usuario.id).then((p) => {
+      if (!p) return
+      setUsuario((u) => (u?.id !== usuario.id ? u : {
+        ...u,
+        ...('fotoBase64' in p ? { fotoBase64: p.fotoBase64 || null } : {}),
+        ...(p.whatsapp ? { whatsapp: p.whatsapp } : {}),
+        ...(typeof p.whatsappVisible === 'boolean' ? { whatsappVisible: p.whatsappVisible } : {}),
+      }))
+    }).catch(() => {})
+  }, [usuario?.id])
   useEffect(() => { if (aviso) { const t = setTimeout(() => setAviso(''), 4000); return () => clearTimeout(t) } }, [aviso])
 
   const value = {

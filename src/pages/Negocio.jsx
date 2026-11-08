@@ -10,7 +10,7 @@ import { PUNTOS } from '../lib/puntos'
 import { iconoRubro } from '../lib/iconos'
 import { waLink, msjNegocio, msFecha, haceCuanto, metros } from '../lib/contacto'
 import { Avatar, Estrellas, cargarResenas } from '../lib/social'
-import { categoriaNegocio, nombreCategoria, NEGOCIO_ELIMINADO } from '../lib/negocios'
+import { categoriaNegocio, nombreCategoria, NEGOCIO_ELIMINADO, resenaNegocio } from '../lib/negocios'
 
 const IconoNegocio = ({ rubro }) => createElement(iconoRubro(rubro), { 'aria-hidden': 'true' })
 const Atras = ({ t, onClick }) => <button className="btn-atras" aria-label={t('Atrás')} onClick={onClick}><ArrowLeft size={22} aria-hidden="true" /></button>
@@ -110,7 +110,9 @@ export default function Negocio() {
   )
 
   const dist = neg.distanciaKm ?? (ubicacion && neg.geo ? distanciaKm(ubicacion, neg.geo) : null)
-  const total = (neg.nRecomendaciones || 0) + resenas.n
+  // Estrellas: las de ejemplo de la semilla + las opiniones reales (la lista de abajo muestra solo las reales)
+  const calif = resenaNegocio(neg, resenas)
+  const total = calif?.n || 0
   const verMapa = () => nav('/', { state: { foco: { k: neg.id, lat: neg.geo.lat, lng: neg.geo.lng } } })
 
   return (
@@ -131,7 +133,7 @@ export default function Negocio() {
               <span className="chip neutro">{neg.rubro}</span>
               <span className="chip">{t(nombreCategoria(categoriaNegocio(neg.rubro, neg.nombre)))}</span>
             </div>
-            <div style={{ marginTop: 8 }}><Estrellas valor={resenas.promedio} n={resenas.n} vacio="Sin estrellas aún" t={t} /></div>
+            <div style={{ marginTop: 8 }}><Estrellas valor={calif?.promedio || 0} n={total} vacio="Sin estrellas aún" t={t} /></div>
           </div>
         </div>
         {neg.fotoBase64 && <img className="detalle-foto" src={neg.fotoBase64} alt={t('Foto del negocio')} style={{ marginBottom: 0 }} />}

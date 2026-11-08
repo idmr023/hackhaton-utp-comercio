@@ -2,7 +2,8 @@
 // modo para daltonicos), idioma (espanol / espanol con frases en quechua / quechua), ubicacion demo, salir.
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Smartphone, Users, Coins, BadgeCheck, Type, Contrast, Languages, LocateFixed, LogOut, Eye, EyeOff, Store, Camera, Trash2, Pencil } from 'lucide-react'
+import { Smartphone, Users, Coins, BadgeCheck, Type, Contrast, Languages, LocateFixed, LogOut, Eye, EyeOff, Store, Camera, Trash2, Pencil, MessageCircle } from 'lucide-react'
+import { whatsappDe } from '../lib/contacto'
 import { Avatar, setFotoPerfilCache } from '../lib/social'
 import { recortarCuadrado } from '../lib/foto'
 import { useEstado } from '../lib/estado'
@@ -33,12 +34,38 @@ export default function Ajustes() {
     setAviso(ubicacionDemo ? t('Usando tu ubicación real') : t('Ubicación fija en Surquillo'))
   }
   const [guardandoFoto, setGuardandoFoto] = useState(false)
+  // El documento de perfiles se escribe entero: foto y WhatsApp van siempre juntos para no borrar uno al cambiar el otro
+  const perfilBase = () => ({
+    autorId: usuario.id, usuarioId: usuario.id, nombre: usuario.nombre, fotoBase64: usuario.fotoBase64 || null,
+    whatsapp: usuario.whatsapp || null, whatsappVisible: usuario.whatsappVisible !== false,
+  })
+  // Mi WhatsApp: se puede cambiar (el celular de registro sigue siendo el de entrar)
+  const [wa, setWa] = useState(whatsappDe(usuario))
+  const [waVisible, setWaVisible] = useState(usuario.whatsappVisible !== false)
+  const [guardandoWa, setGuardandoWa] = useState(false)
+  // Si el perfil llega de Firestore despues de abrir Ajustes (estado.jsx lo trae al entrar), mostrar ese numero
+  useEffect(() => { setWa(whatsappDe(usuario)); setWaVisible(usuario.whatsappVisible !== false) }, [usuario.whatsapp, usuario.whatsappVisible]) // eslint-disable-line
+  const waSinCambios = wa === whatsappDe(usuario) && waVisible === (usuario.whatsappVisible !== false)
+  async function guardarWhatsapp(e) {
+    e.preventDefault()
+    if (!/^9\d{8}$/.test(wa)) return setAviso(t('El WhatsApp debe tener 9 dígitos y empezar con 9.'))
+    setGuardandoWa(true)
+    try {
+      await crearSeguro('perfiles', { ...perfilBase(), whatsapp: wa, whatsappVisible: waVisible }, usuario.id)
+      setUsuario({ ...usuario, whatsapp: wa, whatsappVisible: waVisible })
+      // Lo que ya publique: que su boton de WhatsApp lleve al numero nuevo (o se oculte)
+      const mias = await listar('publicaciones', { autorId: usuario.id }, 100).catch(() => [])
+      await Promise.all(mias.map((p) => actualizarSeguro('publicaciones', p.id, { autorWhatsapp: waVisible ? wa : null }).catch(() => {})))
+      setAviso(t('WhatsApp actualizado.'))
+    } catch (err) { console.error('WhatsApp fallo', err); setAviso(t('No se pudo guardar. Intenta de nuevo.')) }
+    finally { setGuardandoWa(false) }
+  }
   // Foto de perfil: cuadrada de 256 px, en la coleccion perfiles (id = usuario.id); tambien en la sesion local
   async function guardarFoto(file) {
     setGuardandoFoto(true)
     try {
       const foto = file ? await recortarCuadrado(file) : null
-      await crearSeguro('perfiles', { autorId: usuario.id, usuarioId: usuario.id, nombre: usuario.nombre, fotoBase64: foto }, usuario.id)
+      await crearSeguro('perfiles', { ...perfilBase(), fotoBase64: foto }, usuario.id)
       setFotoPerfilCache(usuario.id, foto)
       setUsuario({ ...usuario, fotoBase64: foto })
       setAviso(foto ? t('Foto actualizada.') : t('Foto quitada.'))
@@ -90,10 +117,22 @@ export default function Ajustes() {
               {usuario.fotoBase64 && <button className="btn chico secundario" disabled={guardandoFoto} onClick={() => guardarFoto(null)}><Trash2 size={18} aria-hidden="true" />{t('Quitar foto')}</button>}
             </div>
             <div style={{ marginTop: 12 }}>
-              <div className="dato"><Smartphone aria-hidden="true" /><span>{usuario.telefono} <span className="muted">{usuario.whatsappVisible ? t('(WhatsApp visible)') : t('(WhatsApp oculto)')}</span></span></div>
+              <div className="dato"><Smartphone aria-hidden="true" /><span>{t('Celular para entrar:')} {usuario.telefono}</span></div>
               <div className="dato"><Users aria-hidden="true" /><span>{t('Avales: {n} de 2', { n: usuario.avales?.length || 0 })}{usuario.verificado ? t(', vecino verificado') : ''}</span></div>
               <div className="dato"><Coins aria-hidden="true" /><span>{t('Puntos Ayni:')} <b>{saldo ?? '…'}</b></span></div>
             </div>
+            <form className="form-whatsapp" onSubmit={guardarWhatsapp}>
+              <div className="campo">
+                <label htmlFor="mi-whatsapp">{t('Mi WhatsApp')}</label>
+                <input id="mi-whatsapp" type="tel" placeholder={t('9 dígitos')} inputMode="numeric" autoComplete="tel-national" maxLength={9} value={wa} onChange={(e) => setWa(e.target.value.replace(/\D/g, ''))} />
+              </div>
+              <label className="check">
+                <input type="checkbox" checked={waVisible} onChange={(e) => setWaVisible(e.target.checked)} />
+                <span>{t('Mostrar mi WhatsApp a los vecinos que quieran contactarme')}</span>
+              </label>
+              <p className="muted" style={{ margin: 0 }}>{t('Se cambia también en lo que ya publicaste.')}</p>
+              <button className="btn chico" type="submit" disabled={guardandoWa || waSinCambios} style={{ alignSelf: 'flex-start' }}><MessageCircle size={18} aria-hidden="true" />{guardandoWa ? t('Guardando…') : t('Guardar WhatsApp')}</button>
+            </form>
           </div>
           <h2 className="titulo-seccion">{t('Mi negocio')}</h2>
           <div className="tarjeta">

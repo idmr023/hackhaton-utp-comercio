@@ -34,5 +34,29 @@ export const negocioVisible = (n) => !!n && n.estado !== 'retirado' && n.estado 
  *  Nadie lo ve (ni el dueno), y "Registrar mi negocio" empieza de cero. (Las opiniones y comentarios viejos quedan en Firestore.) */
 export const NEGOCIO_ELIMINADO = { estado: 'eliminado', nombre: 'Negocio eliminado', descripcion: null, horario: null, whatsapp: null, fotoBase64: null, logoBase64: null, resumenIA: null, nRecomendaciones: 0 }
 
-/** Cuantos vecinos recomiendan un negocio: los de la semilla (nRecomendaciones) mas las recomendaciones reales. */
-export const totalRecomendaciones = (negocio, resenas) => (negocio.nRecomendaciones || 0) + (resenas?.[negocio.id]?.n || 0)
+/** Estrellas DE EJEMPLO (ficticias, para la demo) de los 15 negocios de la semilla: se toma que los nRecomendaciones
+ *  vecinos de la semilla los calificaron con este promedio. Van en el codigo porque los negocios de la semilla no tienen
+ *  autorId y las reglas no dejan agregarles campos. Las opiniones reales se suman encima (resenaNegocio). */
+const ESTRELLAS_DEMO = {
+  neg_01: 4.5, neg_02: 4.7, neg_03: 4.4, neg_04: 4.8, neg_05: 4.6, neg_06: 4.7, neg_07: 4.2, neg_08: 4.3,
+  neg_09: 4.9, neg_10: 4.6, neg_11: 4.1, neg_12: 4.6, neg_13: 4.4, neg_14: 4.5, neg_15: 4.3,
+}
+
+/** Estrellas de un negocio = las de ejemplo de la semilla + las opiniones reales (`real` = { n, promedio }).
+ *  Cada opinion nueva sube la cantidad en 1 y mueve el promedio. null si no tiene ninguna. */
+export function resenaNegocio(negocio, real) {
+  const nBase = negocio?.nRecomendaciones || 0
+  const nReal = real?.n || 0
+  const n = nBase + nReal
+  if (!n) return null
+  const base = ESTRELLAS_DEMO[negocio.id] ?? 4.5
+  return { n, nReales: nReal, promedio: (base * nBase + (real?.promedio || 0) * nReal) / n }
+}
+
+/** Para el mapa y la lista: { [negocioId]: { n, promedio } } de todos los negocios (ejemplo + reales). */
+export const combinarResenas = (negocios, reales = {}) =>
+  Object.fromEntries(negocios.map((x) => [x.id, resenaNegocio(x, reales[x.id])]).filter(([, r]) => r))
+
+/** Cuantos vecinos recomiendan un negocio: los de la semilla (nRecomendaciones) mas las opiniones reales.
+ *  `resenas` es el resultado de combinarResenas (su n ya suma las dos cosas). */
+export const totalRecomendaciones = (negocio, resenas) => resenas?.[negocio.id]?.n ?? (negocio.nRecomendaciones || 0)

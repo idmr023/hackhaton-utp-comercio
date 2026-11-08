@@ -167,6 +167,8 @@ button { cursor: pointer; }
 .btn-fila.envuelve { flex-wrap: wrap; }
 .btn-fila.envuelve .btn { flex: 1 1 calc(50% - 5px); }
 .mi-negocio + .mi-negocio { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--borde); }
+/* Ajustes: cambiar mi WhatsApp */
+.form-whatsapp { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--borde); }
 
 /* Boton flotante "Publicar": maiz, encima de las capas de Leaflet (z 400-1000) */
 .fab {

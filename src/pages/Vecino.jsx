@@ -8,7 +8,7 @@ import { useEstado } from '../lib/estado'
 import { obtener, listar, crearSeguro } from '../lib/db'
 import { PUNTOS, saldoPuntos } from '../lib/puntos'
 import { ICONO_TIPO } from '../lib/iconos'
-import { waLink, NOMBRE_TIPO, CLASE_TIPO, msFecha, haceCuanto } from '../lib/contacto'
+import { waLink, whatsappDe, NOMBRE_TIPO, CLASE_TIPO, msFecha, haceCuanto } from '../lib/contacto'
 import { Avatar, Estrellas, cargarResenas } from '../lib/social'
 
 const nombre1 = (n) => (n || '').split(' ')[0]
@@ -29,13 +29,18 @@ export default function Vecino() {
   const esYo = id === usuario?.id
 
   async function cargar() {
-    const [usr, ps, rs, s] = await Promise.all([
+    const [usr, perfil, ps, rs, s] = await Promise.all([
       obtener('usuarios', id).catch(() => null),
+      obtener('perfiles', id).catch(() => null), // WhatsApp cambiado en Ajustes (usuarios no se puede editar)
       listar('publicaciones', { autorId: id }, 50),
       cargarResenas(id).catch(() => ({ lista: [], n: 0, promedio: 0 })),
       saldoPuntos(id).catch(() => null),
     ])
-    setU(usr); setPubs(ps.filter((p) => p.estado !== 'retirada').sort((a, b) => msFecha(b.fecha) - msFecha(a.fecha))); setResenas(rs); setSaldo(s)
+    setU(usr && perfil ? {
+      ...usr,
+      ...(perfil.whatsapp ? { whatsapp: perfil.whatsapp } : {}),
+      ...(typeof perfil.whatsappVisible === 'boolean' ? { whatsappVisible: perfil.whatsappVisible } : {}),
+    } : usr); setPubs(ps.filter((p) => p.estado !== 'retirada').sort((a, b) => msFecha(b.fecha) - msFecha(a.fecha))); setResenas(rs); setSaldo(s)
     const mia = rs.lista.find((r) => r.deId === usuario?.id)
     if (mia) { setEstrellas(mia.estrellas || 0); setTexto(mia.texto || '') }
     setCargado(true)
@@ -94,8 +99,8 @@ export default function Vecino() {
           <div className="stat"><b>{resenas.n}</b><span>{t(resenas.n === 1 ? 'recomendación' : 'recomendaciones')}</span></div>
           <div className="stat"><b>{saldo ?? '–'}</b><span>{t('puntos Ayni')}</span></div>
         </div>
-        {u?.whatsappVisible && u?.telefono && !esYo && (
-          <a className="btn whatsapp" href={waLink(u.telefono, t('Hola {nombre}, te vi en Ayni. ¿Podemos coordinar?', { nombre: nombre1(nombre) }))} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" />WhatsApp</a>
+        {u?.whatsappVisible && whatsappDe(u) && !esYo && (
+          <a className="btn whatsapp" href={waLink(whatsappDe(u),t('Hola {nombre}, te vi en Ayni. ¿Podemos coordinar?', { nombre: nombre1(nombre) }))} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" />WhatsApp</a>
         )}
       </div>
 

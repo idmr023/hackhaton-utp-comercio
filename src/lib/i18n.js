@@ -143,6 +143,8 @@ export const QU = {
   'Ubicación del local': 'Wasip kitin', 'Arrastra el pin o toca el mapa hasta el punto exacto. Los negocios se muestran con su ubicación real.': 'Pinta aysay utaq mapata ñit\'iy chiqan kitikama. Qhatukunaqa chiqan kitinkuwan rikukunku.',
   'Usar mi ubicación actual': 'Kunan kitiyta llamk\'achiy',
   'Buscar negocio o publicación': 'Qhatuta utaq willakuyta maskhay', 'Publicaciones': 'Willakuykuna', 'Con opiniones': 'Rimayniyuq', 'Borrar filtros': 'Akllaykunata pichay', 'Cerrar filtros': 'Akllaykunata wichqay', 'Publicaciones, de la más cercana a la más lejana': 'Willakuykuna, aswan qayllamanta aswan karuman', 'Ninguna publicación a {r} de ti.': 'Manam ima willakuypas {r} qayllaykipi kanchu.', 'Ver': 'Qhaway', 'Categorías de negocio': 'Qhatu t\'aqakuna', 'Ningún negocio a {r} de ti.': 'Manam ima qhatupas {r} qayllaykipi kanchu.', 'Tipo de publicación': 'Willakuypa layan', 'Todas las publicaciones': 'Llapan willakuykuna',
+  'Celular para entrar:': 'Yaykunapaq celular:', 'Mi WhatsApp': 'WhatsAppniy', 'Guardar WhatsApp': 'WhatsAppta waqaychay', 'WhatsApp actualizado.': 'WhatsApp musuqchasqañam.',
+  'Se cambia también en lo que ya publicaste.': 'Willakusqaykikunapipas musuqchakunqam.', 'El WhatsApp debe tener 9 dígitos y empezar con 9.': 'WhatsAppqa 9 yupayniyuqmi, 9 yupaywan qallarinan.',
   'Nada coincide con «{q}» a {r} de ti.': 'Manam imapas «{q}» nisqawan tupanchu {r} qayllaykipi.', 'Nada con esos filtros a {r} de ti.': 'Manam imapas chay akllaykunawan kanchu {r} qayllaykipi.',
   // Registro: entrar con PIN
   'Entra a tu barrio': 'Llaqtaykiman yaykuy', 'Entrar': 'Yaykuy', 'Crear cuenta': 'Cuentata kichay', 'Entrando…': 'Yaykuchkani…', 'PIN': 'PIN',

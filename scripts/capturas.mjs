@@ -58,6 +58,8 @@ const PANTALLAS = [
   ['mapa_filtros_pubs', '/', () => estado(true, true), "(async () => { document.querySelector('.buscador button')?.click(); await new Promise((r) => setTimeout(r, 300)); [...document.querySelectorAll('.panel-filtros .segmentos button')].find((b) => b.textContent.includes('Publicaciones'))?.click() })()"],
   // "Ver en el mapa" desde el detalle: el mapa se arma de cero y debe abrir el popup de esa publicacion
   ['publicacion_ver_mapa', '/publicacion/pub_05', () => estado(true, true), "(async () => { [...document.querySelectorAll('button')].find((b) => b.textContent.includes('Ver en el mapa'))?.click(); await new Promise((r) => setTimeout(r, 1500)) })()"],
+  // Vecinos → pestana Negocios (estrellas de ejemplo + reales)
+  ['vecinos_negocios', '/vecinos', () => estado(true, true), "[...document.querySelectorAll('.segmentos button')].find((b) => b.textContent.includes('Negocios'))?.click()"],
   ['publicar', '/publicar', () => estado(true, true)],
   ['puntos', '/puntos', () => estado(true, true)],
   ['vecinos', '/vecinos', () => estado(true, true)],

@@ -13,7 +13,7 @@ import { distanciaKm } from '../lib/geo'
 import { CATEGORIAS_MINKA, parteLocal, resumirZona } from '../lib/ia'
 import { PUNTOS, calcularPuntos, codigo4 } from '../lib/puntos'
 import { ICONO_MINKA, svg } from '../lib/iconos'
-import { haceCuanto, msFecha } from '../lib/contacto'
+import { haceCuanto, msFecha, miWhatsapp as whatsappVisibleDe } from '../lib/contacto'
 
 // Confirmar en persona: < 200 m entre celulares. Del otro solo tenemos su celda (~300 m), por eso +220 m de margen.
 const DIST_CONFIRMAR_KM = 0.42
@@ -109,7 +109,7 @@ export default function Minka() {
   const [parte, setParte] = useState(null) // { texto, fuente: 'gemini'|'local', hora }
 
   const quien = (x) => (x.autorId === usuario?.id ? t('Tú') : x.autorNombre)
-  const miWhatsapp = usuario?.whatsappVisible ? usuario.telefono : null
+  const miWhatsapp = whatsappVisibleDe(usuario) // el de Ajustes o el celular de registro, solo si es visible
   const distA = (geo) => (ubicacion && geo ? aDistancia(distanciaKm(ubicacion, geo)) : '')
 
   async function cargar() {

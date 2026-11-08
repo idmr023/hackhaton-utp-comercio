@@ -6,7 +6,7 @@ import { MapPin } from 'lucide-react'
 import { useEstado } from '../lib/estado'
 import { listarCerca } from '../lib/db'
 import { pendientes } from '../lib/offlineQueue'
-import { cargarResenasNegocios, negocioVisible } from '../lib/negocios'
+import { cargarResenasNegocios, combinarResenas, negocioVisible } from '../lib/negocios'
 import Mapa from './Mapa'
 import Vecinos from './Vecinos'
 
@@ -46,7 +46,8 @@ export default function Barrio({ vista }) {
 
   // Ambas rutas renderizan este mismo componente, asi que el foco sobrevive al cambio de pestana
   const elegir = (f) => { setFoco({ ...f, n: Date.now() }); nav('/') }
-  const datos = { pubs, negocios, nPend, cargado, resenasNeg }
+  // Estrellas de cada negocio: las de ejemplo de la semilla + las opiniones reales
+  const datos = { pubs, negocios, nPend, cargado, resenasNeg: combinarResenas(negocios, resenasNeg) }
   return (
     <div className={`barrio vista-${vista}`}>
       {vista === 'lista'

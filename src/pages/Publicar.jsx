@@ -14,6 +14,7 @@ import { clasificar } from '../lib/ia'
 import { ICONO_TIPO, svg } from '../lib/iconos'
 import { comprimirFoto, recortarCuadrado } from '../lib/foto'
 import { NEGOCIO_ELIMINADO } from '../lib/negocios'
+import { whatsappDe, miWhatsapp } from '../lib/contacto'
 
 const TIPOS = [
   { id: 'OFREZCO', titulo: 'Ofrezco', sub: 'un servicio o producto', color: '', ejemplo: 'Ej: Arreglo lavadoras a domicilio, S/ 30 la visita' },
@@ -64,7 +65,7 @@ export default function Publicar() {
   const [fotoLocal, setFotoLocal] = useState('') // foto del local; aparte de `foto` para que no aparezca al publicar Ofrezco/Necesito/Recomiendo
   const [pos, setPos] = useState(null) // ubicacion EXACTA del local (los negocios son lugares publicos): la del negocio guardado o la actual
   const [centrar, setCentrar] = useState(0)
-  const [neg, setNeg] = useState(NEGOCIO_VACIO(usuario?.telefono))
+  const [neg, setNeg] = useState(NEGOCIO_VACIO(whatsappDe(usuario)))
   const nav = useNavigate()
   const rec = useRef(null)
 
@@ -72,13 +73,13 @@ export default function Publicar() {
   function abrirNegocio(n) {
     setEditando(n)
     const conocido = RUBROS.includes(n.rubro)
-    setNeg({ nombre: n.nombre || '', rubro: conocido ? n.rubro : 'Otro', rubroOtro: conocido ? '' : (n.rubro || ''), horario: n.horario || '', whatsapp: n.whatsapp || usuario.telefono || '', descripcion: n.descripcion || '' })
+    setNeg({ nombre: n.nombre || '', rubro: conocido ? n.rubro : 'Otro', rubroOtro: conocido ? '' : (n.rubro || ''), horario: n.horario || '', whatsapp: n.whatsapp || whatsappDe(usuario), descripcion: n.descripcion || '' })
     setFotoLocal(n.fotoBase64 || ''); setLogo(n.logoBase64 || '')
     if (n.geo) setPos({ lat: n.geo.lat, lng: n.geo.lng })
   }
   // Formulario vacio para registrar otro negocio
   function nuevoNegocio() {
-    setEditando(null); setNeg(NEGOCIO_VACIO(usuario?.telefono)); setFotoLocal(''); setLogo('')
+    setEditando(null); setNeg(NEGOCIO_VACIO(whatsappDe(usuario))); setFotoLocal(''); setLogo('')
     setPos(ubicacion ? { lat: ubicacion.lat, lng: ubicacion.lng } : null); setCentrar((c) => c + 1)
   }
   useEffect(() => {
@@ -120,7 +121,7 @@ export default function Publicar() {
     const docu = conGeo({
       tipo, texto: texto.trim(), categoria, categoriaFuente: fuente, fotoBase64: foto || null,
       autorId: usuario.id, autorNombre: usuario.nombre, estado: online ? 'activa' : 'enCola',
-      autorWhatsapp: usuario.whatsappVisible ? usuario.telefono : null, // solo si acepto mostrarlo
+      autorWhatsapp: miWhatsapp(usuario), // solo si acepto mostrarlo (el de Ajustes o el celular de registro)
     }, geoAprox)
     const id = nuevoId('publicaciones') // mismo id en cualquier reintento: nunca se duplica
     try {

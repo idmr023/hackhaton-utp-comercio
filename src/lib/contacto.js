@@ -2,6 +2,10 @@
 import { traducir } from './i18n'
 const es = (s, v) => traducir('es', s, v)
 export const waLink = (num, msj) => `https://wa.me/51${num}?text=${encodeURIComponent(msj)}`
+/** WhatsApp de un vecino: el que puso en Ajustes (coleccion perfiles) o, si no cambio nada, su celular de registro. */
+export const whatsappDe = (u) => u?.whatsapp || u?.telefono || ''
+/** El WhatsApp que va en lo que publico: solo si acepte mostrarlo. */
+export const miWhatsapp = (u) => (u?.whatsappVisible ? whatsappDe(u) || null : null)
 const corto = (t, n = 40) => (t.length > n ? t.slice(0, n).trim() + '…' : t)
 const nombre1 = (n) => (n || '').split(' ')[0]
 const MSJ_PUB = {
