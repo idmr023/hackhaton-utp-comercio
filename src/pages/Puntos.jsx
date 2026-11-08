@@ -70,23 +70,25 @@ export default function Puntos() {
           {misCanjes.map((c) => (
             <div key={c.id} style={{ marginTop: 8 }}>
               <div className="codigo-canje">{conEspacio(c.codigo6)}</div>
-              <div className="muted">{c.titulo} · {c.negocioNombre} · vence el {venceEl(c.fecha)}</div>
+              <div>{c.titulo}, en {c.negocioNombre}</div>
+              <div className="muted">Vence el {venceEl(c.fecha)}</div>
             </div>
           ))}
         </div>
       )}
 
-      <div className="titulo-seccion">Canjea en negocios de tu barrio</div>
+      <h2 className="titulo-seccion">Canjea en negocios de tu barrio</h2>
       {recompensas.length === 0 && <div className="muted">Aún no hay recompensas en tu barrio.</div>}
+      {recompensas.length > 0 && <div className="tarjeta lista">
       {recompensas.map((r) => {
         const quedan = Math.max(0, r.stock - (usados[r.id] || 0))
         return (
-          <div key={r.id} className="tarjeta recompensa">
+          <div key={r.id} className="recompensa">
             <div className="recompensa-icono">{emojiRubro(r.negocioNombre)}</div>
             <div className="recompensa-info">
               <h3 style={{ margin: 0 }}>{r.titulo}</h3>
               <div className="muted">{r.negocioNombre}</div>
-              <div style={{ marginTop: 4 }}><span className="costo">{r.costoPuntos} puntos</span> <span className="muted">· quedan {quedan}</span></div>
+              <div style={{ marginTop: 4 }}><span className="costo">{r.costoPuntos} puntos</span> <span className="muted">quedan {quedan}</span></div>
             </div>
             <button className="btn chico" disabled={enviando || quedan === 0} onClick={() => canjear(r)}>
               {quedan === 0 ? 'Agotado' : 'Canjear'}
@@ -94,6 +96,7 @@ export default function Puntos() {
           </div>
         )
       })}
+      </div>}
     </div>
   )
 }

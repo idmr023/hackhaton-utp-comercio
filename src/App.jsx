@@ -28,7 +28,9 @@ function Barra() {
           </div>
         </div>
         <div className="barra-acciones">
-          <span className={'estado' + (online ? '' : ' offline')}>{online ? 'En línea' : 'Sin internet · se guarda local'}</span>
+          <span className={'estado' + (online ? ' en-linea' : ' offline')} title={online ? 'En línea' : undefined}>
+            {online ? <span className="solo-lector">En línea</span> : <span>Sin internet<br />se guarda local</span>}
+          </span>
           <button className="btn-modo" onClick={cambiarModo}>{modo === 'minka' ? 'Salir' : '🆘 Emergencia'}</button>
         </div>
       </header>

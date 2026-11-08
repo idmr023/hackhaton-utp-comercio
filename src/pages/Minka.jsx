@@ -280,7 +280,10 @@ export default function Minka() {
 
       <div className="tarjeta">
         <h3>Cerca de ti ({radioKm} km)</h3>
-        <div>🔴 {necesidades.length} necesidades abiertas · 🟢 {recursos.length} recursos disponibles</div>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <span className="chip" style={{ background: 'var(--grana-claro)', color: 'var(--grana)' }}>🆘 {necesidades.length} necesidades abiertas</span>
+          <span className="chip verde">🤝 {recursos.length} recursos disponibles</span>
+        </div>
         {ubicacion && (
           <div style={{ height: 260, marginTop: 10, borderRadius: 10, overflow: 'hidden' }}>
             <MapContainer center={[ubicacion.lat, ubicacion.lng]} zoom={15} className="mapa" zoomControl={false}>

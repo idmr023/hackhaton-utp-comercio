@@ -45,7 +45,7 @@ export default function Perfil() {
         </div>
       </div>
 
-      <div className="titulo-seccion">Accesibilidad e idioma</div>
+      <h2 className="titulo-seccion">Accesibilidad e idioma</h2>
       <div className="tarjeta" style={{ paddingTop: 6, paddingBottom: 6 }}>
         {interruptor('letraGrande', '🔠 Letra grande')}
         {interruptor('altoContraste', '🌓 Alto contraste')}

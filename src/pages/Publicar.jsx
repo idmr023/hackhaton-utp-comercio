@@ -7,9 +7,9 @@ import { encolar } from '../lib/offlineQueue'
 import { clasificar } from '../lib/ia'
 
 const TIPOS = [
-  { id: 'OFREZCO', emoji: '🛠️', titulo: 'Ofrezco', sub: 'un servicio o producto', fondo: '#d7eef5' },
-  { id: 'NECESITO', emoji: '🙋', titulo: 'Necesito', sub: 'ayuda o algo del barrio', fondo: '#fde7d2' },
-  { id: 'RECOMIENDO', emoji: '⭐', titulo: 'Recomiendo', sub: 'un negocio u oficio', fondo: '#fff4cc' },
+  { id: 'OFREZCO', emoji: '🛠️', titulo: 'Ofrezco', sub: 'un servicio o producto', fondo: '#e3f1e8' },
+  { id: 'NECESITO', emoji: '🙋', titulo: 'Necesito', sub: 'ayuda o algo del barrio', fondo: '#fde6d4' },
+  { id: 'RECOMIENDO', emoji: '⭐', titulo: 'Recomiendo', sub: 'un negocio u oficio', fondo: '#fff3cc' },
 ]
 
 /** Comprime una foto a ~800px / JPEG 0.6 y devuelve base64 (sin Firebase Storage). */
@@ -78,7 +78,7 @@ export default function Publicar() {
     <div className="pantalla">
       <h2>¿Qué quieres publicar?</h2>
       <p className="muted" style={{ marginTop: -8 }}>Tus vecinos de hasta 1 km lo verán en el mapa.</p>
-      <div className="opciones-tipo">
+      <div className="tarjeta lista">
         {TIPOS.map((t) => (
           <button key={t.id} className="opcion" onClick={() => setTipo(t.id)}>
             <span className="opcion-icono" style={{ background: t.fondo }}>{t.emoji}</span>

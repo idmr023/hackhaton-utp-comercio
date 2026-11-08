@@ -20,6 +20,7 @@
 Enlace secundario en las 3: **Saltar**.
 
 ## 2. Registro
+- Portada: logo 🤝 · título **Crea tu cuenta de vecino** · subtítulo *Ayni, tu barrio se ayuda* (faja tejida arriba)
 - Título: **Crea tu cuenta de vecino**
 - Campos (placeholder): `Tu nombre` · `Celular (9 dígitos)` · `DNI (8 dígitos)`
 - Casilla 1: *Autorizo validar mi DNI en RENIEC. Ayni guarda solo una huella (hash), nunca mi número de DNI.*
@@ -37,7 +38,7 @@ Enlace secundario en las 3: **Saltar**.
 
 ## 3. Barra superior
 - Marca a la izquierda: logo 🤝 + **Ayni** / *tu barrio se ayuda* · en emergencia: logo 🆘 + **Modo Minka** / *emergencia en tu zona* (se recorta con … si no hay espacio)
-- Conexión: `En línea` · amarillo: `Sin internet · se guarda local`
+- Conexión: con internet solo un punto verde (el texto `En línea` queda para lector de pantalla) · sin internet: píldora amarilla en dos líneas `Sin internet` / `se guarda local`
 - Botón derecha (blanco, letra roja): **🆘 Emergencia** (en barrio) / **Salir** (en Minka)
 
 ## 4. Mapa (Modo Barrio)
@@ -51,7 +52,7 @@ Enlace secundario en las 3: **Saltar**.
   - Nombre, rubro
   - **⭐ Recomendado por 12 vecinos de tu zona**
   - Resumen IA entre comillas: *"Rápido, cobra justo y atiende domingos."*
-  - Distancia: `a 350 m · 5 min a pie`
+  - Distancia y horario: `A 350 m de ti, atiende 7am-10pm` (en publicaciones: `Eduardo Brito, a 151 m`) · arriba del mapa, etiquetas `🏪 15 negocios` y `📝 11 publicaciones`
   - Botones: **💬 WhatsApp** · **⭐ Recomendar** (solo vecinos verificados; si no: *Necesitas 2 avales de vecinos para recomendar*)
 - Popup de publicación: chips `NECESITO` `Oficios` · texto · `Lucía P. · a 200 m`
 - Botón flotante: **+** (aria: "Publicar")
@@ -94,7 +95,7 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 - Aviso al hacer match: *¡Match! Juan P., a 2 cuadras, tiene agua.* / *¡Match! María G., a 1 cuadra, necesita agua (¡Ahora!).*
 - Tarjeta verde arriba de los botones (la ven los dos, al entrar a Minka; máx. 3): *Lucía, a 2 cuadras, tiene botiquín. Toca para coordinar.* / *María G., a 1 cuadra, necesita agua (¡Ahora!). Toca para coordinar.* → botón **💬 Coordinar por WhatsApp** · sin WhatsApp: *No compartió su WhatsApp: búscalo en el mapa de su zona.*
 - Distancias: `a menos de 1 cuadra` · `a 1 cuadra` · `a N cuadras` (1 cuadra ≈ 100 m)
-- Tarjeta cerca: título **Cerca de ti (3 km)** · `🔴 3 necesidades abiertas · 🟢 5 recursos disponibles`
+- Tarjeta cerca: título **Cerca de ti (3 km)** · etiquetas `🆘 3 necesidades abiertas` (roja) y `🤝 5 recursos disponibles` (verde)
 - Boletín: título **📰 Boletín Minka** · vacío: *Sin avisos por ahora.*
 - Parte de zona (arriba del boletín): **Resumen de tu zona, 7:05 p. m.:** {texto} · debajo: `✨ Resumido con IA a partir de los reportes vecinales` (Gemini, máx. 35 palabras, sin inventar) o `Resumen automático de los reportes vecinales` (respaldo local: *4 pedidos de ayuda abiertos (2 de agua, 1 de medicina, 1 de albergue), 2 urgentes. 4 vecinos ofrecen ayuda (botiquín, agua, enfermera/o, vehículo). 2 ayudas ya coordinadas.*) · vacío: *Sin pedidos de ayuda abiertos.*
 - Salir de Minka (confirmación del navegador): *¿Terminó la emergencia en tu zona?* → Aceptar = **Sí, volver al barrio** / Cancelar = **Seguir en Minka**
@@ -110,7 +111,7 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 - Quien ayudó ve: *Cuando ayudes, dale este código para confirmar:* **6197** → luego `✔ Jessica confirmó tu ayuda: +20 puntos Ayni`
 - Antifraude (misma pareja en el mes 100% / 50% / 0; máx. 3 ayudas y 30 puntos por día): *Gracias. Ayuda confirmada. Esta vez no suma puntos: ya se ayudaron varias veces este mes.* · *Gracias. Ayuda confirmada. Carlos ya llegó al máximo de puntos de hoy.*
 - Agotado: botón `Agotado` · *Se agotó esta recompensa. Prueba otra.* · error: *No se pudo canjear. Intenta de nuevo.* · vacío: *Aún no hay recompensas en tu barrio.*
-- Tarjeta verde **Tus códigos de canje** (últimos 3): **482 913** · `1 pan francés gratis · Panadería La Espiga de Oro · vence el 14 nov`
+- Tarjeta verde **🎟️ Tus códigos de canje** (últimos 3): **482 913** · `1 pan francés gratis con tu compra, en Panadería La Espiga de Oro` · `Vence el 14 nov`
 
 ## 8. Perfil
 - Chips: **Validado en RENIEC** / **Pendiente de verificación** · `Avales: 1 / 2` · **Vecino verificado ✔**

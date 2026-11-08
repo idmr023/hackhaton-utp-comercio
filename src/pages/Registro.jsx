@@ -66,7 +66,7 @@ export default function Registro() {
       <div className="portada-cabecera">
         <div className="portada-logo">🤝</div>
         <h1>Crea tu cuenta de vecino</h1>
-        <p>Ayni · tu barrio se ayuda</p>
+        <p>Ayni, tu barrio se ayuda</p>
       </div>
       <div className="portada-cuerpo">
         <div className="tarjeta" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -84,8 +84,8 @@ export default function Registro() {
           {error && <div style={{ color: 'var(--rojo)', fontWeight: 600 }}>{error}</div>}
           <button className="btn" disabled={!valido || cargando} onClick={registrar}>{cargando ? 'Verificando…' : 'Entrar a mi barrio'}</button>
         </div>
-        <p className="muted" style={{ textAlign: 'center' }}>¿Ya tienes cuenta? Escribe el mismo celular y DNI y entras directo.</p>
-        <p className="muted" style={{ textAlign: 'center' }}>🔒 Tu ubicación se guarda aproximada (~300 m). Nadie ve tu casa exacta.</p>
+        <p className="muted">¿Ya tienes cuenta? Escribe el mismo celular y DNI y entras directo.</p>
+        <p className="muted">🔒 Tu ubicación se guarda aproximada (~300 m). Nadie ve tu casa exacta.</p>
       </div>
     </div>
   )

@@ -82,7 +82,8 @@ export default function Mapa() {
         </div>
         {(ubicacionDemo || nPend > 0 || negocios.length > 0) && (
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {negocios.length > 0 && <span className="chip verde">🏪 {negocios.length} negocios · {pubs.length} publicaciones</span>}
+            {negocios.length > 0 && <span className="chip verde">🏪 {negocios.length} negocios</span>}
+            {pubs.length > 0 && <span className="chip">📝 {pubs.length} publicaciones</span>}
             {ubicacionDemo && <span className="chip">📍 Ubicación demo: Surquillo</span>}
             {nPend > 0 && <span className="chip pendiente">{nPend} publicación(es) pendiente(s) de subir</span>}
           </div>
@@ -98,7 +99,8 @@ export default function Mapa() {
             <Marker key={n.id} position={[n.geo.lat, n.geo.lng]} icon={iconoNegocio(n.rubro)}>
               <Popup>
                 <div className="pop-titulo">{emojiRubro(n.rubro)} {n.nombre}</div>
-                <div className="muted">{n.rubro} · a {(n.distanciaKm * 1000).toFixed(0)} m{n.horario ? ` · ${n.horario}` : ''}</div>
+                <div className="muted">{n.rubro}</div>
+                <div className="muted">A {(n.distanciaKm * 1000).toFixed(0)} m de ti{n.horario ? `, atiende ${n.horario}` : ''}</div>
                 <div className="recomendado" style={{ marginTop: 6 }}>⭐ Recomendado por {n.nRecomendaciones || 0} vecinos de tu zona</div>
                 {n.resumenIA && <div style={{ fontStyle: 'italic', marginTop: 4 }}>"{n.resumenIA}"</div>}
                 {n.whatsapp && <a className="pop-wa" href={waLink(n.whatsapp, `Hola, te vi en Ayni como ${n.rubro}. ¿Estás disponible?`)} target="_blank" rel="noreferrer">💬 WhatsApp</a>}
@@ -114,7 +116,7 @@ export default function Mapa() {
                     <div key={p.id} style={{ padding: '6px 0', borderTop: i ? '1px solid var(--linea)' : 'none' }}>
                       <span className="chip">{EMOJI_TIPO[p.tipo]} {p.tipo}</span> <span className="chip verde">{p.categoria}</span>
                       <div style={{ margin: "4px 0 2px", fontWeight: 600 }}>{p.texto}</div>
-                      <span className="muted">{p.autorId === usuario?.id ? 'Tú' : p.autorNombre} · {(p.distanciaKm * 1000).toFixed(0)} m</span>
+                      <span className="muted">{p.autorId === usuario?.id ? 'Tú' : p.autorNombre}, a {(p.distanciaKm * 1000).toFixed(0)} m</span>
                       {p.autorWhatsapp && p.autorId !== usuario?.id && (
                         <div><a className="pop-wa" href={waLink(p.autorWhatsapp, (MSJ_PUB[p.tipo] || MSJ_PUB.OFREZCO)(p))} target="_blank" rel="noreferrer">💬 WhatsApp</a></div>
                       )}
