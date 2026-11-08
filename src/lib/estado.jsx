@@ -16,6 +16,16 @@ export function EstadoProvider({ children }) {
   const [radioKm, setRadioKm] = useState(RADIO_DEFAULT_KM)
   const [aviso, setAviso] = useState('')
   const [ubicacionDemo, setUbicacionDemoState] = useState(ubicacionDemoActiva)
+  // Accesibilidad e idioma (Perfil): { letraGrande, altoContraste, quechua }
+  const [prefs, setPrefs] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('ayni_prefs')) || {} } catch { return {} }
+  })
+  const setPref = (k, v) => setPrefs((p) => ({ ...p, [k]: v }))
+  useEffect(() => {
+    try { localStorage.setItem('ayni_prefs', JSON.stringify(prefs)) } catch { /* sin storage */ }
+    document.documentElement.classList.toggle('letra-grande', !!prefs.letraGrande)
+    document.documentElement.classList.toggle('alto-contraste', !!prefs.altoContraste)
+  }, [prefs])
 
   // Activa/apaga la ubicacion fija de Surquillo y vuelve a ubicar
   const setUbicacionDemo = (activa) => {
@@ -37,7 +47,7 @@ export function EstadoProvider({ children }) {
 
   const value = {
     usuario, setUsuario, modo, setModo, online, ubicacion, radioKm, setRadioKm, aviso, setAviso,
-    ubicacionDemo, setUbicacionDemo,
+    ubicacionDemo, setUbicacionDemo, prefs, setPref,
     // Ubicacion aproximada (celda ~300 m): es la que se guarda en cualquier documento.
     geoAprox: ubicacion ? celdaAprox(ubicacion) : null,
   }

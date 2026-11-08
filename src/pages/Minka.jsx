@@ -69,7 +69,9 @@ function Centrar({ centro }) {
 }
 
 export default function Minka() {
-  const { usuario, geoAprox, ubicacion, radioKm, setModo, setAviso } = useEstado()
+  const { usuario, geoAprox, ubicacion, radioKm, setModo, setAviso, prefs } = useEstado()
+  const q = !!prefs?.quechua // frases en quechua (Perfil)
+  const avisar = (t) => setAviso(q ? t.replace(/^Gracias/, 'Sulpayki, gracias') : t)
   const [paso, setPaso] = useState(null) // null | 'ayuda' | 'urgencia' | 'puedo'
   const [tipoPedido, setTipoPedido] = useState(null)
   const [enviando, setEnviando] = useState(false)
@@ -140,7 +142,7 @@ export default function Minka() {
   async function accion(fn) {
     setEnviando(true)
     try { await fn(); setPaso(null); setTipoPedido(null); await cargar() }
-    catch (e) { console.error('Minka: no se pudo guardar', e); setAviso('No se pudo enviar. Intenta de nuevo.') }
+    catch (e) { console.error('Minka: no se pudo guardar', e); avisar('No se pudo enviar. Intenta de nuevo.') }
     finally { setEnviando(false) }
   }
 
@@ -148,7 +150,7 @@ export default function Minka() {
 
   const estoyBien = () => accion(async () => {
     const { sinSenal } = await crearSeguro('estados_minka', { ...base(), estado: 'bien', zona: geoAprox })
-    setAviso(sinSenal ? 'Sin señal: tu aviso se guardó y se enviará solo.' : 'Avisamos que estás bien ✔')
+    avisar(sinSenal ? 'Sin señal: tu aviso se guardó y se enviará solo.' : 'Avisamos que estás bien ✔')
   })
 
   // NECESITO: busca el recurso disponible mas cercano que sirva; si hay, la necesidad nace "atendida"
@@ -161,12 +163,12 @@ export default function Minka() {
       ...base(), tipo: tipoPedido, urgencia, estado: r ? 'atendida' : 'abierta', asignadoA: r?.id || null,
       match: r ? { id: r.id, autorId: r.autorId, nombre: r.autorNombre, whatsapp: r.whatsapp || null, tipo: r.tipo, geo: r.geo } : null,
     }, geoAprox), id)
-    if (!r) return setAviso(sinSenal ? 'Sin señal: tu pedido se guardó y se enviará solo.' : 'Pedido enviado a tus vecinos. Te avisamos cuando alguien pueda ayudar.')
+    if (!r) return avisar(sinSenal ? 'Sin señal: tu pedido se guardó y se enviará solo.' : 'Pedido enviado a tus vecinos. Te avisamos cuando alguien pueda ayudar.')
     await actualizarSeguro('recursos', r.id, {
       disponible: false, asignadoA: id,
       match: { id, autorId: usuario.id, nombre: usuario.nombre, whatsapp: miWhatsapp, tipo: tipoPedido, urgencia, geo: geoAprox },
     })
-    setAviso(`¡Match! ${r.autorNombre}, ${aDistancia(r.distanciaKm)}, tiene ${min(r.tipo)}.`)
+    avisar(`¡Match! ${r.autorNombre}, ${aDistancia(r.distanciaKm)}, tiene ${min(r.tipo)}.`)
   })
 
   // PUEDO AYUDAR: busca la necesidad abierta mas urgente (y luego mas cercana) que este recurso cubre
@@ -179,26 +181,26 @@ export default function Minka() {
       ...base(), tipo, disponible: !n, asignadoA: n?.id || null,
       match: n ? { id: n.id, autorId: n.autorId, nombre: n.autorNombre, whatsapp: n.whatsapp || null, tipo: n.tipo, urgencia: n.urgencia, geo: n.geo } : null,
     }, geoAprox), id)
-    if (!n) return setAviso(sinSenal ? 'Sin señal: tu ayuda se guardó y se enviará sola.' : 'Gracias. Tu ayuda ya aparece en el mapa (+20 puntos al confirmar).')
+    if (!n) return avisar(sinSenal ? 'Sin señal: tu ayuda se guardó y se enviará sola.' : 'Gracias. Tu ayuda ya aparece en el mapa (+20 puntos al confirmar).')
     await actualizarSeguro('necesidades', n.id, {
       estado: 'atendida', asignadoA: id,
       match: { id, autorId: usuario.id, nombre: usuario.nombre, whatsapp: miWhatsapp, tipo, geo: geoAprox },
     })
-    setAviso(`¡Match! ${n.autorNombre}, ${aDistancia(n.distanciaKm)}, necesita ${min(n.tipo)} (${textoUrgencia(n.urgencia)}).`)
+    avisar(`¡Match! ${n.autorNombre}, ${aDistancia(n.distanciaKm)}, necesita ${min(n.tipo)} (${textoUrgencia(n.urgencia)}).`)
   })
 
   // Quien RECIBIO confirma con el codigo de 4 digitos de quien ayudo, estando juntos. Da puntos a quien ayudo.
   const confirmar = (m) => accion(async () => {
-    if ((codigos[m.key] || '') !== codigo4(m.otro.id)) return setAviso('Ese código no es. Pídeselo de nuevo a quien te ayudó.')
-    if (!ubicacion || distanciaKm(ubicacion, m.otro.geo) > DIST_CONFIRMAR_KM) return setAviso('Tienen que estar juntos para confirmar (menos de 200 m).')
+    if ((codigos[m.key] || '') !== codigo4(m.otro.id)) return avisar('Ese código no es. Pídeselo de nuevo a quien te ayudó.')
+    if (!ubicacion || distanciaKm(ubicacion, m.otro.geo) > DIST_CONFIRMAR_KM) return avisar('Tienen que estar juntos para confirmar (menos de 200 m).')
     const ayudaId = m.otro.autorId || (await obtener('recursos', m.otro.id))?.autorId // matches viejos no guardaban autorId
-    if (!ayudaId) return setAviso('No se pudo enviar. Intenta de nuevo.')
+    if (!ayudaId) return avisar('No se pudo enviar. Intenta de nuevo.')
     const { puntos, motivo } = await calcularPuntos(ayudaId, usuario.id, PUNTOS.MINKA)
     await crearSeguro('ayudas_intercambios', {
       tipo: 'MINKA', autorId: usuario.id, ayudaId, ayudaNombre: m.otro.nombre, recibeId: usuario.id, recibeNombre: usuario.nombre,
       necesidadId: m.key, recursoId: m.otro.id, puntos, motivo, confirmadoPorReceptor: true,
     }, `ayuda_${m.otro.id}`) // id fijo: una sola confirmacion por ayuda
-    setAviso(motivo === 'pareja' ? 'Gracias. Ayuda confirmada. Esta vez no suma puntos: ya se ayudaron varias veces este mes.'
+    avisar(motivo === 'pareja' ? 'Gracias. Ayuda confirmada. Esta vez no suma puntos: ya se ayudaron varias veces este mes.'
       : motivo === 'tope_dia' && puntos === 0 ? `Gracias. Ayuda confirmada. ${m.otro.nombre} ya llegó al máximo de puntos de hoy.`
         : `Gracias. ${m.otro.nombre} recibió +${puntos} puntos Ayni.`)
   })
@@ -272,9 +274,9 @@ export default function Minka() {
         )
       })}
 
-      <button className="btn gigante bien" disabled={enviando} onClick={estoyBien}>✅ ESTOY BIEN</button>
-      <button className="btn gigante ayuda" onClick={() => setPaso('ayuda')}>🆘 NECESITO AYUDA</button>
-      <button className="btn gigante puedo" onClick={() => setPaso('puedo')}>🤝 PUEDO AYUDAR</button>
+      <button className="btn gigante bien" style={{ flexDirection: 'column', gap: 2 }} disabled={enviando} onClick={estoyBien}>✅ ESTOY BIEN{q && <span className="quechua">Allinllachu?</span>}</button>
+      <button className="btn gigante ayuda" style={{ flexDirection: 'column', gap: 2 }} onClick={() => setPaso('ayuda')}>🆘 NECESITO AYUDA{q && <span className="quechua">Yanapaway!</span>}</button>
+      <button className="btn gigante puedo" style={{ flexDirection: 'column', gap: 2 }} onClick={() => setPaso('puedo')}>🤝 PUEDO AYUDAR{q && <span className="quechua">Yanapasqayki</span>}</button>
 
       <div className="tarjeta">
         <h3>Cerca de ti ({radioKm} km)</h3>

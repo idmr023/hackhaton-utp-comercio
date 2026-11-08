@@ -131,7 +131,8 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 - Aviso bajo el botón (una vez): *Queda en un lugar público. Ayni no interviene en pagos.*
 
 ## 10. Accesibilidad y quechua
-- Interruptor en perfil: **Letra grande** · **Alto contraste**
+- Perfil → tarjeta **Accesibilidad e idioma** con 3 interruptores: **🔠 Letra grande** (toda la letra +25 %) · **🌓 Alto contraste** (colores oscuros, bordes negros) · **🗣️ Frases en quechua**. Se recuerdan en el celular.
+- Con quechua activado (subtítulo en cursiva bajo el español): botones de Minka *Allinllachu?* / *Yanapaway!* / *Yanapasqayki* · agradecimientos de Minka empiezan *Sulpayki, gracias…* · en Perfil bajo el nombre *Wasimasi (vecino/a)*
 - Idioma: **Español / Quechua** (en la demo, 5 frases; el resto queda en español)
 
 | Español | Quechua (Cusco-Collao) | Dónde |
