@@ -4,7 +4,7 @@
 import { readFileSync } from 'node:fs'
 import 'dotenv/config'
 import { initializeApp } from 'firebase/app'
-import { getFirestore, collection, addDoc, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore'
+import { getFirestore, collection, addDoc, doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore'
 import { geohashForLocation } from 'geofire-common'
 
 const cfg = {
@@ -17,17 +17,21 @@ const db = getFirestore(initializeApp(cfg))
 const semilla = JSON.parse(readFileSync(new URL('../datos/semilla.json', import.meta.url)))
 
 // Con `id` fijo: se crea una sola vez (correr seed 2 veces no duplica). Sin `id`: addDoc.
+// Si ya existe y la semilla trae campos nuevos, se agregan (solo docs con autorId: lo exigen las reglas).
 for (const [col, docs] of Object.entries(semilla)) {
-  let nuevos = 0
+  let nuevos = 0, completados = 0, sinPermiso = 0
   for (const { id, ...d } of docs) {
     if (d.geo) d.geohash = geohashForLocation([d.geo.lat, d.geo.lng])
     const datos = { ...d, fecha: serverTimestamp() }
     if (!id) { await addDoc(collection(db, col), datos); nuevos++; continue }
     const ref = doc(db, col, id)
-    if ((await getDoc(ref)).exists()) continue
-    await setDoc(ref, datos); nuevos++
+    const snap = await getDoc(ref)
+    if (!snap.exists()) { await setDoc(ref, datos); nuevos++; continue }
+    const faltan = Object.fromEntries(Object.entries(d).filter(([k]) => !(k in snap.data())))
+    if (!Object.keys(faltan).length) continue
+    try { await updateDoc(ref, faltan); completados++ } catch { sinPermiso++ }
   }
-  console.log(`${col}: ${nuevos} nuevos, ${docs.length - nuevos} ya existian`)
+  console.log(`${col}: ${nuevos} nuevos, ${completados} completados${sinPermiso ? `, ${sinPermiso} sin permiso para completar` : ''}`)
 }
 console.log('Semilla cargada.')
 process.exit(0)

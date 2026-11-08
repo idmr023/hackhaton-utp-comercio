@@ -54,6 +54,7 @@ export default function Publicar() {
     const docu = conGeo({
       tipo, texto: texto.trim(), categoria, categoriaFuente: fuente, fotoBase64: foto || null,
       autorId: usuario.id, autorNombre: usuario.nombre, estado: online ? 'activa' : 'enCola',
+      autorWhatsapp: usuario.whatsappVisible ? usuario.telefono : null, // solo si acepto mostrarlo
     }, geoAprox)
     const id = nuevoId('publicaciones') // mismo id en cualquier reintento: nunca se duplica
     try {

@@ -17,12 +17,12 @@
     {"id": "neg_15", "nombre": "Zapatería Don Pepe", "rubro": "Reparación de Calzado", "geo": {"lat": -12.1165, "lng": -77.0215}, "horario": "9am-6pm", "whatsapp": "985893049", "nRecomendaciones": 11, "resumenIA": "Revive calzado antiguo con costuras y suelas de alta resistencia.", "insignias": []}
   ],
   "publicaciones": [
-    {"id": "pub_01", "tipo": "OFREZCO", "categoria": "Oficios", "texto": "Arreglo lavadoras y refrigeradoras a domicilio", "geo": {"lat": -12.1122, "lng": -77.0229}, "autorId": "vec_03", "autorNombre": "Carlos M.", "estado": "activa"},
-    {"id": "pub_02", "tipo": "NECESITO", "categoria": "Hogar", "texto": "Necesito prestado un taladro por 1 hora", "geo": {"lat": -12.1149, "lng": -77.0229}, "autorId": "vec_02", "autorNombre": "María G.", "estado": "activa"},
-    {"id": "pub_03", "tipo": "RECOMIENDO", "categoria": "Alimentos", "texto": "El menú de El Sabor Norteño está buenazo, S/ 13", "geo": {"lat": -12.1149, "lng": -77.0202}, "autorId": "vec_06", "autorNombre": "Elena S.", "estado": "activa"},
-    {"id": "pub_04", "tipo": "OFREZCO", "categoria": "Educacion", "texto": "Doy clases de matemática a escolares, la primera es gratis", "geo": {"lat": -12.1149, "lng": -77.0229}, "autorId": "vec_08", "autorNombre": "Sofía B.", "estado": "activa"},
-    {"id": "pub_05", "tipo": "NECESITO", "categoria": "Mascotas", "texto": "Busco quién pasee a mi perro en las mañanas", "geo": {"lat": -12.1149, "lng": -77.0229}, "autorId": "vec_09", "autorNombre": "Jorge H.", "estado": "activa"},
-    {"id": "pub_06", "tipo": "RECOMIENDO", "categoria": "Oficios", "texto": "Don Carlos me arregló la fuga en 20 minutos, muy honesto", "geo": {"lat": -12.1149, "lng": -77.0202}, "autorId": "vec_04", "autorNombre": "Ana T.", "estado": "activa"}
+    {"id": "pub_01", "tipo": "OFREZCO", "categoria": "Oficios", "texto": "Arreglo lavadoras y refrigeradoras a domicilio", "geo": {"lat": -12.1122, "lng": -77.0229}, "autorId": "vec_03", "autorNombre": "Carlos M.", "estado": "activa", "autorWhatsapp": "985893049"},
+    {"id": "pub_02", "tipo": "NECESITO", "categoria": "Hogar", "texto": "Necesito prestado un taladro por 1 hora", "geo": {"lat": -12.1149, "lng": -77.0229}, "autorId": "vec_02", "autorNombre": "María G.", "estado": "activa", "autorWhatsapp": "985893049"},
+    {"id": "pub_03", "tipo": "RECOMIENDO", "categoria": "Alimentos", "texto": "El menú de El Sabor Norteño está buenazo, S/ 13", "geo": {"lat": -12.1149, "lng": -77.0202}, "autorId": "vec_06", "autorNombre": "Elena S.", "estado": "activa", "autorWhatsapp": "985893049"},
+    {"id": "pub_04", "tipo": "OFREZCO", "categoria": "Educacion", "texto": "Doy clases de matemática a escolares, la primera es gratis", "geo": {"lat": -12.1149, "lng": -77.0229}, "autorId": "vec_08", "autorNombre": "Sofía B.", "estado": "activa", "autorWhatsapp": "985893049"},
+    {"id": "pub_05", "tipo": "NECESITO", "categoria": "Mascotas", "texto": "Busco quién pasee a mi perro en las mañanas", "geo": {"lat": -12.1149, "lng": -77.0229}, "autorId": "vec_09", "autorNombre": "Jorge H.", "estado": "activa", "autorWhatsapp": "985893049"},
+    {"id": "pub_06", "tipo": "RECOMIENDO", "categoria": "Oficios", "texto": "Don Carlos me arregló la fuga en 20 minutos, muy honesto", "geo": {"lat": -12.1149, "lng": -77.0202}, "autorId": "vec_04", "autorNombre": "Ana T.", "estado": "activa", "autorWhatsapp": "985893049"}
   ],
   "recompensas": [
     {"id": "rec_01", "negocioId": "neg_02", "negocioNombre": "Panadería La Espiga de Oro", "titulo": "1 pan francés gratis con tu compra", "costoPuntos": 10, "stock": 20, "vigencia": "2026-12-31"},

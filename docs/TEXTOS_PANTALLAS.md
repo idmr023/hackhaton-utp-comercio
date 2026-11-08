@@ -96,7 +96,7 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 - Distancias: `a menos de 1 cuadra` · `a 1 cuadra` · `a N cuadras` (1 cuadra ≈ 100 m)
 - Tarjeta cerca: título **Cerca de ti (3 km)** · `🔴 3 necesidades abiertas · 🟢 5 recursos disponibles`
 - Boletín: título **📰 Boletín Minka** · vacío: *Sin avisos por ahora.*
-- Parte de zona (IA): *Resumen de tu zona, 4:10 pm: 3 familias sin agua en la cuadra 5, 1 herido leve atendido, acopio en el parque.*
+- Parte de zona (arriba del boletín): **Resumen de tu zona, 7:05 p. m.:** {texto} · debajo: `✨ Resumido con IA a partir de los reportes vecinales` (Gemini, máx. 35 palabras, sin inventar) o `Resumen automático de los reportes vecinales` (respaldo local: *4 pedidos de ayuda abiertos (2 de agua, 1 de medicina, 1 de albergue), 2 urgentes. 4 vecinos ofrecen ayuda (botiquín, agua, enfermera/o, vehículo). 2 ayudas ya coordinadas.*) · vacío: *Sin pedidos de ayuda abiertos.*
 - Salir de Minka (confirmación del navegador): *¿Terminó la emergencia en tu zona?* → Aceptar = **Sí, volver al barrio** / Cancelar = **Seguir en Minka**
 
 ## 7. Puntos Ayni
@@ -121,8 +121,11 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 - **Cerrar sesión**
 
 ## 9. WhatsApp (mensaje precargado)
-- Negocio: *Hola, te vi en Ayni como {rubro} en {zona}. ¿Estás disponible?*
-- Vecino que ofrece: *Hola {nombre}, vi en Ayni que ofreces {texto corto}. ¿Podemos coordinar?*
+- Negocio: *Hola, te vi en Ayni como {rubro}. ¿Estás disponible?*
+- Publicación (botón 💬 WhatsApp en el popup del mapa; solo si el autor aceptó mostrar su WhatsApp y no es tuya; texto corto = 40 caracteres):
+  - Ofrezco: *Hola {nombre}, vi en Ayni que ofreces "{texto corto}". ¿Podemos coordinar?*
+  - Necesito: *Hola {nombre}, vi en Ayni que necesitas "{texto corto}". ¿Te puedo ayudar?*
+  - Recomiendo: *Hola {nombre}, vi tu recomendación en Ayni: "{texto corto}". ¿Me cuentas más?*
 - Minka (quien pidió): *Hola {nombre}, soy {yo} de Ayni. Necesito {tipo} y estás a {distancia}. ¿Puedes ayudar?*
 - Minka (quien ofrece): *Hola {nombre}, soy {yo} de Ayni. Vi que necesitas {tipo} y estoy a {distancia}. ¿Te ayudo?*
 - Aviso bajo el botón (una vez): *Queda en un lugar público. Ayni no interviene en pagos.*

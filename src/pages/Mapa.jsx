@@ -14,6 +14,16 @@ const icono = (emoji) => L.divIcon({ html: `<div style="font-size:26px;line-heig
 const ICONOS = { NEGOCIO: icono('🏪'), YO: icono('📍') }
 const EMOJI_TIPO = { OFREZCO: '🛠️', NECESITO: '🙋', RECOMIENDO: '⭐' }
 
+// WhatsApp con mensaje precargado (textos en docs/TEXTOS_PANTALLAS.md §9)
+const waLink = (num, msj) => `https://wa.me/51${num}?text=${encodeURIComponent(msj)}`
+const corto = (t, n = 40) => (t.length > n ? t.slice(0, n).trim() + '…' : t)
+const nombre1 = (n) => (n || '').split(' ')[0]
+const MSJ_PUB = {
+  OFREZCO: (p) => `Hola ${nombre1(p.autorNombre)}, vi en Ayni que ofreces "${corto(p.texto)}". ¿Podemos coordinar?`,
+  NECESITO: (p) => `Hola ${nombre1(p.autorNombre)}, vi en Ayni que necesitas "${corto(p.texto)}". ¿Te puedo ayudar?`,
+  RECOMIENDO: (p) => `Hola ${nombre1(p.autorNombre)}, vi tu recomendación en Ayni: "${corto(p.texto)}". ¿Me cuentas más?`,
+}
+
 // Icono de un grupo de publicaciones: emoji de la mas reciente + contador si hay varias
 const iconoGrupo = (emoji, n) => L.divIcon({
   html: `<div style="position:relative;font-size:26px;line-height:1">${emoji}${n > 1
@@ -81,7 +91,7 @@ export default function Mapa() {
                 <span className="recomendado">⭐ Recomendado por {n.nRecomendaciones || 0} vecinos de tu zona</span><br />
                 {n.resumenIA && <i>"{n.resumenIA}"</i>}<br />
                 <span className="muted">{(n.distanciaKm * 1000).toFixed(0)} m</span><br />
-                {n.whatsapp && <a href={`https://wa.me/51${n.whatsapp}?text=${encodeURIComponent('Hola, te vi en Ayni. ')}`} target="_blank" rel="noreferrer">💬 WhatsApp</a>}
+                {n.whatsapp && <a href={waLink(n.whatsapp, `Hola, te vi en Ayni como ${n.rubro}. ¿Estás disponible?`)} target="_blank" rel="noreferrer">💬 WhatsApp</a>}
               </Popup>
             </Marker>
           ))}
@@ -95,6 +105,9 @@ export default function Mapa() {
                       <span className="chip">{p.tipo}</span> <span className="chip">{p.categoria}</span><br />
                       {p.texto}<br />
                       <span className="muted">{p.autorId === usuario?.id ? 'Tú' : p.autorNombre} · {(p.distanciaKm * 1000).toFixed(0)} m</span>
+                      {p.autorWhatsapp && p.autorId !== usuario?.id && (
+                        <><br /><a href={waLink(p.autorWhatsapp, (MSJ_PUB[p.tipo] || MSJ_PUB.OFREZCO)(p))} target="_blank" rel="noreferrer">💬 WhatsApp</a></>
+                      )}
                     </div>
                   ))}
                 </div>

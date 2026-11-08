@@ -60,3 +60,46 @@ export async function resumirComentarios(comentarios) {
     return comentarios.slice(0, 2).join(' · ')
   }
 }
+
+// ---- Parte de zona (Modo Minka) ----
+// datos = { pedidos: [{tipo:'agua', urgente:true}], ofrecen: ['botiquín', 'agua'], coordinadas: 3, avisos: ['...'] }
+const pl = (n, uno, varios) => `${n} ${n === 1 ? uno : varios}`
+function contarTipos(lista) {
+  const c = {}
+  lista.forEach((t) => { c[t] = (c[t] || 0) + 1 })
+  return Object.entries(c).sort((a, b) => b[1] - a[1]).map(([t, n]) => `${n} de ${t}`).join(', ')
+}
+
+/** Resumen armado sin IA, con los numeros reales: siempre disponible (respaldo). */
+export function parteLocal({ pedidos = [], ofrecen = [], coordinadas = 0 }) {
+  const urgentes = pedidos.filter((p) => p.urgente).length
+  const partes = [
+    pedidos.length
+      ? `${pl(pedidos.length, 'pedido de ayuda abierto', 'pedidos de ayuda abiertos')} (${contarTipos(pedidos.map((p) => p.tipo))})${urgentes ? `, ${pl(urgentes, 'urgente', 'urgentes')}` : ''}`
+      : 'Sin pedidos de ayuda abiertos',
+    ofrecen.length ? `${pl(ofrecen.length, 'vecino ofrece', 'vecinos ofrecen')} ayuda (${[...new Set(ofrecen)].join(', ')})` : null,
+    coordinadas ? `${pl(coordinadas, 'ayuda ya coordinada', 'ayudas ya coordinadas')}` : null,
+  ]
+  return partes.filter(Boolean).join('. ') + '.'
+}
+
+/** Parte de zona con Gemini (6 s); si no hay clave, internet o falla: parteLocal. */
+export async function resumirZona(datos) {
+  const local = parteLocal(datos)
+  if (!genAI || !navigator.onLine) return { texto: local, fuente: 'local' }
+  try {
+    const model = genAI.getGenerativeModel({ model: MODELO })
+    const prompt = `Eres el boletín vecinal de emergencia de un barrio de Lima. Con estos datos escribe UN parte de zona `
+      + `de máximo 35 palabras, claro y calmado, en español peruano. No inventes datos, nombres ni lugares que no estén aquí. `
+      + `Sin saludos ni emojis.\nDatos: ${JSON.stringify(datos)}\nResumen base: ${local}`
+    const res = await Promise.race([
+      model.generateContent(prompt),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 6000)),
+    ])
+    const texto = res.response.text().trim().replace(/\s+/g, ' ')
+    return texto ? { texto, fuente: 'gemini' } : { texto: local, fuente: 'local' }
+  } catch (e) {
+    console.warn('Gemini (parte de zona) fallo, uso respaldo', e.message)
+    return { texto: local, fuente: 'local' }
+  }
+}

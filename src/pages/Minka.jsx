@@ -7,7 +7,7 @@ import 'leaflet/dist/leaflet.css'
 import { useEstado } from '../lib/estado'
 import { conGeo, listarCerca, listar, obtener, nuevoId, crearSeguro, actualizarSeguro } from '../lib/db'
 import { distanciaKm } from '../lib/geo'
-import { CATEGORIAS_MINKA } from '../lib/ia'
+import { CATEGORIAS_MINKA, parteLocal, resumirZona } from '../lib/ia'
 import { PUNTOS, calcularPuntos, codigo4 } from '../lib/puntos'
 
 // Confirmar en persona: < 200 m entre celulares. Del otro solo tenemos su celda (~300 m), por eso +220 m de margen.
@@ -79,6 +79,7 @@ export default function Minka() {
   const [matches, setMatches] = useState([]) // mis pedidos/ayudas que ya tienen pareja
   const [codigos, setCodigos] = useState({}) // codigo escrito por match (quien recibio)
   const [confirmadas, setConfirmadas] = useState({}) // recursoId -> ayuda confirmada (como quien recibe o quien ayuda)
+  const [parte, setParte] = useState(null) // { texto, fuente: 'gemini'|'local', hora }
 
   const quien = (x) => (x.autorId === usuario?.id ? 'Tú' : x.autorNombre)
   const miWhatsapp = usuario?.whatsappVisible ? usuario.telefono : null
@@ -87,8 +88,8 @@ export default function Minka() {
   async function cargar() {
     if (!ubicacion) return
     try {
-      const [nec, rec, avs, misNec, misRec, recibidas, dadas] = await Promise.all([
-        listarCerca('necesidades', ubicacion, radioKm, { estado: 'abierta' }),
+      const [necTodas, rec, avs, misNec, misRec, recibidas, dadas] = await Promise.all([
+        listarCerca('necesidades', ubicacion, radioKm),
         listarCerca('recursos', ubicacion, radioKm, { disponible: true }),
         listar('avisos_minka', {}, 10),
         listar('necesidades', { autorId: usuario.id, estado: 'atendida' }, 20),
@@ -96,6 +97,8 @@ export default function Minka() {
         listar('ayudas_intercambios', { recibeId: usuario.id }, 100),
         listar('ayudas_intercambios', { ayudaId: usuario.id }, 100),
       ])
+      const nec = necTodas.filter((n) => n.estado === 'abierta')
+      actualizarParte(nec, rec, necTodas.length - nec.length, avs)
       setConfirmadas(Object.fromEntries([...recibidas, ...dadas].map((a) => [a.recursoId, a])))
       setNecesidades(nec.sort((a, b) => (b.urgencia || 0) - (a.urgencia || 0)))
       setRecursos(rec)
@@ -106,7 +109,33 @@ export default function Minka() {
       ].sort((a, b) => msFecha(b.fecha) - msFecha(a.fecha)).slice(0, 3))
     } catch (e) { console.warn('Minka: no se pudo cargar', e) }
   }
-  useEffect(() => { setModo('minka'); cargar() }, [ubicacion, radioKm]) // eslint-disable-line
+  // Modo Minka solo al ENTRAR. Si dependiera de radioKm, al tocar "Salir" (barrio = radio 1 km) esta
+  // pantalla, aun visible mientras navega, volvia a activar Minka y no dejaba salir.
+  useEffect(() => { setModo('minka') }, []) // eslint-disable-line
+  useEffect(() => { cargar() }, [ubicacion, radioKm]) // eslint-disable-line
+
+  // Parte de zona: resumen local al instante; Gemini lo mejora. Se reusa 15 min si los datos no cambian.
+  async function actualizarParte(abiertas, rec, coordinadas, avs) {
+    const datos = {
+      pedidos: abiertas.map((n) => ({ tipo: min(n.tipo), urgente: n.urgencia === 3 })),
+      ofrecen: rec.map((r) => min(r.tipo)),
+      coordinadas,
+      avisos: avs.map((a) => a.texto),
+    }
+    const clave = JSON.stringify(datos)
+    const hora = new Date().toLocaleTimeString('es-PE', { hour: 'numeric', minute: '2-digit' })
+    try {
+      const c = JSON.parse(localStorage.getItem('ayni_parte_zona'))
+      if (c?.clave === clave && Date.now() - c.t < 15 * 60000) return setParte(c.parte)
+    } catch { /* sin cache */ }
+    setParte({ texto: parteLocal(datos), fuente: 'local', hora })
+    const r = await resumirZona(datos)
+    const p = { ...r, hora }
+    setParte(p)
+    if (r.fuente === 'gemini') {
+      try { localStorage.setItem('ayni_parte_zona', JSON.stringify({ clave, t: Date.now(), parte: p })) } catch { /* sin storage */ }
+    }
+  }
 
   async function accion(fn) {
     setEnviando(true)
@@ -277,6 +306,12 @@ export default function Minka() {
 
       <div className="tarjeta">
         <h3>📰 Boletín Minka</h3>
+        {parte && (
+          <div style={{ background: 'var(--rojo-claro)', padding: 10, borderRadius: 8, marginBottom: 8 }}>
+            <b>Resumen de tu zona, {parte.hora}:</b> {parte.texto}
+            <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>{parte.fuente === 'gemini' ? '✨ Resumido con IA a partir de los reportes vecinales' : 'Resumen automático de los reportes vecinales'}</div>
+          </div>
+        )}
         {avisos.length === 0 && <div className="muted">Sin avisos por ahora.</div>}
         {avisos.map((a) => <div key={a.id}>• {a.texto}</div>)}
       </div>
