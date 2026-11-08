@@ -64,6 +64,7 @@ const PANTALLAS = [
   ['puntos', '/puntos', () => estado(true, true)],
   ['vecinos', '/vecinos', () => estado(true, true)],
   ['ajustes', '/ajustes', () => estado(true, true)],
+  ['ajustes_celular', '/ajustes', () => estado(true, true), "[...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Cambiar')?.click()"],
   ['publicacion', '/publicacion/pub_01', () => estado(true, true)],
   ['vecino', '/vecino/vec_03', () => estado(true, true)],
   ['negocio', '/negocio/neg_01', () => estado(true, true)],

@@ -6,12 +6,12 @@
 import { useState } from 'react'
 import { Lock, CircleAlert, Eye, EyeOff, LogIn, UserPlus } from 'lucide-react'
 import { useEstado } from '../lib/estado'
-import { crear, listar, obtener, conTiempo, crearSeguro } from '../lib/db'
+import { crear, conTiempo, crearSeguro } from '../lib/db'
 import { sha256 } from '../lib/hash'
 import { Logo } from '../lib/iconos'
+import { hashPin, cuentasConCelular } from '../lib/cuenta'
 
 const KEY_ULTIMO = 'ayni_ultimo_celular'
-const hashPin = (pin, dniHash) => sha256(`${pin}|${dniHash}`) // el hash del DNI hace de sal
 
 export default function Registro() {
   const { setUsuario, geoAprox, setAviso, t } = useEstado()
@@ -41,11 +41,11 @@ export default function Registro() {
   async function entrar() {
     setCargando(true); setError('')
     try {
-      const cuentas = await conTiempo(listar('usuarios', { telefono }, 10), 8000)
+      // El celular para entrar puede haberse cambiado en Ajustes (accesos.telefono): cuentasConCelular lo resuelve
+      const cuentas = await conTiempo(cuentasConCelular(telefono), 8000)
       if (!cuentas.length) return setError(t('No hay ninguna cuenta con ese celular. Crea una.'))
       let sinPin = 0
-      for (const u of cuentas) {
-        const acceso = await obtener('accesos', u.id).catch(() => null)
+      for (const { u, acceso } of cuentas) {
         if (!acceso?.pinHash) { sinPin++; continue }
         if (acceso.pinHash === await hashPin(pin, u.dniHash)) {
           entrarCon(u)
@@ -70,8 +70,11 @@ export default function Registro() {
       const pinHash = await hashPin(pin, dniHash)
       // Mismo celular + DNI = ya tiene cuenta (otro celular u otro link): entra a esa, sin duplicar ni gastar Didit
       try {
-        const [existente] = await conTiempo(listar('usuarios', { telefono, dniHash }, 1), 5000)
+        // Con el celular para entrar o con el de registro (el DNI prueba que es la misma persona); el PIN nuevo
+        // y el celular escrito quedan como los de entrar
+        const existente = (await conTiempo(cuentasConCelular(telefono, { deDni: true }), 5000)).find(({ u }) => u.dniHash === dniHash)?.u
         if (existente) {
+          existente.telefono = telefono
           await crearSeguro('accesos', { autorId: existente.id, usuarioId: existente.id, telefono, pinHash }, existente.id)
           entrarCon(existente)
           setAviso(t('¡Hola de nuevo, {nombre}! Tu PIN quedó guardado.', { nombre: existente.nombre.split(' ')[0] }))

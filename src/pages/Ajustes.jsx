@@ -4,10 +4,11 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Smartphone, Users, Coins, BadgeCheck, Type, Contrast, Languages, LocateFixed, LogOut, Eye, EyeOff, Store, Camera, Trash2, Pencil, MessageCircle } from 'lucide-react'
 import { whatsappDe } from '../lib/contacto'
+import { hashPin, cuentasConCelular } from '../lib/cuenta'
 import { Avatar, setFotoPerfilCache } from '../lib/social'
 import { recortarCuadrado } from '../lib/foto'
 import { useEstado } from '../lib/estado'
-import { MODO_DEMO_LOCAL, listar, crearSeguro, actualizarSeguro } from '../lib/db'
+import { MODO_DEMO_LOCAL, listar, obtener, crearSeguro, actualizarSeguro } from '../lib/db'
 import { NEGOCIO_ELIMINADO } from '../lib/negocios'
 import { saldoPuntos } from '../lib/puntos'
 import { IDIOMAS } from '../lib/i18n'
@@ -39,6 +40,34 @@ export default function Ajustes() {
     autorId: usuario.id, usuarioId: usuario.id, nombre: usuario.nombre, fotoBase64: usuario.fotoBase64 || null,
     whatsapp: usuario.whatsapp || null, whatsappVisible: usuario.whatsappVisible !== false,
   })
+  // Cambiar el celular para ENTRAR: va en accesos.telefono (usuarios no se puede editar); se confirma con el PIN actual.
+  // El WhatsApp no cambia solo: queda fijo en perfiles y se cambia aparte en "Mi WhatsApp".
+  const [cambiandoCel, setCambiandoCel] = useState(false)
+  const [celNuevo, setCelNuevo] = useState('')
+  const [pinCel, setPinCel] = useState('')
+  const [guardandoCel, setGuardandoCel] = useState(false)
+  async function guardarCelular(e) {
+    e.preventDefault()
+    if (!/^9\d{8}$/.test(celNuevo)) return setAviso(t('El celular debe tener 9 dígitos y empezar con 9.'))
+    if (celNuevo === usuario.telefono) return setAviso(t('Ese ya es tu celular para entrar.'))
+    setGuardandoCel(true)
+    try {
+      const acceso = await obtener('accesos', usuario.id)
+      if (!acceso?.pinHash) return setAviso(t('Tu cuenta aún no tiene PIN. Sal y toca "Crear cuenta" con tu celular y DNI para crear uno.'))
+      const dniHash = usuario.dniHash || (await obtener('usuarios', usuario.id))?.dniHash
+      if (acceso.pinHash !== await hashPin(pinCel, dniHash)) return setAviso(t('El PIN no coincide.'))
+      const otras = (await cuentasConCelular(celNuevo)).filter(({ u }) => u.id !== usuario.id)
+      if (otras.length) return setAviso(t('Ese celular ya es de otra cuenta.'))
+      const wa = whatsappDe(usuario) // el WhatsApp sigue siendo el de antes
+      await crearSeguro('perfiles', { ...perfilBase(), whatsapp: wa }, usuario.id)
+      await actualizarSeguro('accesos', usuario.id, { telefono: celNuevo })
+      try { localStorage.setItem('ayni_ultimo_celular', celNuevo) } catch { /* sin storage */ }
+      setUsuario({ ...usuario, telefono: celNuevo, whatsapp: wa })
+      setCambiandoCel(false); setCelNuevo(''); setPinCel('')
+      setAviso(t('Celular actualizado. Desde ahora entras con {cel}.', { cel: celNuevo }))
+    } catch (err) { console.error('Cambiar celular fallo', err); setAviso(t('No se pudo guardar. Intenta de nuevo.')) }
+    finally { setGuardandoCel(false) }
+  }
   // Mi WhatsApp: se puede cambiar (el celular de registro sigue siendo el de entrar)
   const [wa, setWa] = useState(whatsappDe(usuario))
   const [waVisible, setWaVisible] = useState(usuario.whatsappVisible !== false)
@@ -117,7 +146,26 @@ export default function Ajustes() {
               {usuario.fotoBase64 && <button className="btn chico secundario" disabled={guardandoFoto} onClick={() => guardarFoto(null)}><Trash2 size={18} aria-hidden="true" />{t('Quitar foto')}</button>}
             </div>
             <div style={{ marginTop: 12 }}>
-              <div className="dato"><Smartphone aria-hidden="true" /><span>{t('Celular para entrar:')} {usuario.telefono}</span></div>
+              <div className="dato"><Smartphone aria-hidden="true" /><span style={{ flex: 1 }}>{t('Celular para entrar:')} {usuario.telefono}</span>
+                {!cambiandoCel && <button type="button" className="btn chico secundario" style={{ flex: 'none' }} onClick={() => setCambiandoCel(true)}><Pencil size={16} aria-hidden="true" />{t('Cambiar')}</button>}
+              </div>
+              {cambiandoCel && (
+                <form className="form-whatsapp" style={{ marginTop: 0, borderTop: 0, paddingTop: 4 }} onSubmit={guardarCelular}>
+                  <div className="campo">
+                    <label htmlFor="cel-nuevo">{t('Celular nuevo para entrar')}</label>
+                    <input id="cel-nuevo" type="tel" placeholder={t('9 dígitos')} inputMode="numeric" autoComplete="tel-national" maxLength={9} value={celNuevo} onChange={(e) => setCelNuevo(e.target.value.replace(/\D/g, ''))} />
+                  </div>
+                  <div className="campo">
+                    <label htmlFor="pin-cel">{t('Tu PIN actual (para confirmar)')}</label>
+                    <input id="pin-cel" type="password" placeholder="••••" inputMode="numeric" autoComplete="current-password" maxLength={6} value={pinCel} onChange={(e) => setPinCel(e.target.value.replace(/\D/g, ''))} />
+                  </div>
+                  <p className="muted" style={{ margin: 0 }}>{t('Tu WhatsApp no cambia; si también es nuevo, cámbialo abajo.')}</p>
+                  <div className="btn-fila">
+                    <button className="btn chico" type="submit" disabled={guardandoCel || !/^9\d{8}$/.test(celNuevo) || !/^\d{4,6}$/.test(pinCel)}><Smartphone size={18} aria-hidden="true" />{guardandoCel ? t('Guardando…') : t('Guardar celular')}</button>
+                    <button className="btn chico secundario" type="button" onClick={() => { setCambiandoCel(false); setCelNuevo(''); setPinCel('') }}>{t('Cancelar')}</button>
+                  </div>
+                </form>
+              )}
               <div className="dato"><Users aria-hidden="true" /><span>{t('Avales: {n} de 2', { n: usuario.avales?.length || 0 })}{usuario.verificado ? t(', vecino verificado') : ''}</span></div>
               <div className="dato"><Coins aria-hidden="true" /><span>{t('Puntos Ayni:')} <b>{saldo ?? '…'}</b></span></div>
             </div>
