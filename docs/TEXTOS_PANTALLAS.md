@@ -154,7 +154,7 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 - Salir de Minka (confirmación del navegador): *¿Terminó la emergencia en tu zona?* → Aceptar = **Sí, volver al barrio.** Cancelar = **Seguir en Minka**
 
 ## 7. Puntos Ayni
-- Encabezado: `Tus puntos Ayni` · número grande · *Ayuda confirmada +10 · Recomendación +2 · Minka +20*
+- Encabezado: `Tus puntos Ayni` · número grande · *Ayuda en Minka +20 · Recomendación +2 · Opinar un negocio +2* (dom 17:55: antes decía "Ayuda confirmada +10", que es del roadmap)
 - Sección: **Canjea en negocios de tu barrio**
 - Tarjeta: título de la recompensa · `Panadería San Martín · 10 puntos · quedan 20` · botón **Canjear**
 - Faltan puntos: *Te faltan 6 puntos. Ayuda a un vecino para ganar más.*

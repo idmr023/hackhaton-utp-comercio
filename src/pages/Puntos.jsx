@@ -1,7 +1,7 @@
 // Puntos Ayni: saldo (libro de movimientos, ver lib/puntos.js), catalogo de recompensas y canje con codigo de 6 digitos.
 // Antifraude del canje: no alcanza el saldo, 1 canje por negocio por semana, stock = stock - canjes hechos.
 import { useEffect, useState } from 'react'
-import { Coins, Ticket, HeartHandshake, Star, Siren } from 'lucide-react'
+import { Coins, Ticket, Star, Siren } from 'lucide-react'
 import { useEstado } from '../lib/estado'
 import { listar, crearSeguro } from '../lib/db'
 import { saldoPuntos, msFecha } from '../lib/puntos'
@@ -66,9 +66,9 @@ export default function Puntos() {
         </div>
         <span className="ficha"><Coins aria-hidden="true" /></span>
         <div className="chips">
-          <span className="chip"><HeartHandshake aria-hidden="true" />{t('Ayuda confirmada +10')}</span>
+          <span className="chip"><Siren aria-hidden="true" />{t('Ayuda en Minka +20')}</span>
           <span className="chip"><Star aria-hidden="true" />{t('Recomendación +2')}</span>
-          <span className="chip"><Siren aria-hidden="true" />{t('Minka +20')}</span>
+          <span className="chip"><Star aria-hidden="true" />{t('Opinar un negocio +2')}</span>
         </div>
       </div>
 

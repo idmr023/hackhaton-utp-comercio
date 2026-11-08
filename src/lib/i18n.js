@@ -116,7 +116,7 @@ export const QU = {
   '{nombre}, {dist}, necesita {tipo}{urg}. Toca para coordinar.': '{nombre}, {dist}, {tipo}ta munan{urg}. Rimanakunapaq ñit\'iy.',
   'a menos de 1 cuadra': 'huk cuadramanta pisipi', 'a 1 cuadra': 'huk cuadrapi', 'a {n} cuadras': '{n} cuadrakunapi',
   // Puntos
-  'Tus puntos Ayni': 'Ayni puntuykikuna', 'Ayuda confirmada +10': 'Yanapay chiqaqchasqa +10', 'Recomendación +2': 'Allinmi niy +2', 'Minka +20': 'Minka +20',
+  'Tus puntos Ayni': 'Ayni puntuykikuna', 'Ayuda confirmada +10': 'Yanapay chiqaqchasqa +10', 'Ayuda en Minka +20': 'Minkapi yanapay +20', 'Opinar un negocio +2': 'Qhatumanta rimay +2', 'Recomendación +2': 'Allinmi niy +2', 'Minka +20': 'Minka +20',
   'Tus códigos de canje': 'Chhalanapaq kodigoykikuna', '{t}, en {neg}': '{t}, {neg}pi', 'Vence el {f}': '{f} p\'unchawpi tukukun',
   'Canjea en negocios de tu barrio': 'Llaqtaykip qhatunkunapi chhalay', 'Aún no hay recompensas en tu barrio.': 'Manaraq llaqtaykipi chaninchaykuna kanchu.',
   '{n} puntos': '{n} puntukuna', 'quedan {n}': '{n} puchun', 'Canjear': 'Chhalay', 'Agotado': 'Tukukun',
