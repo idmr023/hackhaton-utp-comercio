@@ -4,6 +4,7 @@
 // Pantallas: tutorial, registro, mapa, publicar, puntos, perfil, minka, minka_acc, perfil_acc, offline, minka_abajo
 import { spawn } from 'node:child_process'
 import { writeFileSync, mkdirSync } from 'node:fs'
+import { resolve } from 'node:path'
 
 const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe'
 const BASE = 'http://localhost:5173'
@@ -13,12 +14,14 @@ const solo = process.argv[3]?.split(',')
 mkdirSync(salida, { recursive: true })
 const dormir = (ms) => new Promise((r) => setTimeout(r, ms))
 
-const chrome = spawn(CHROME, ['--headless=new', `--remote-debugging-port=${PUERTO}`, `--user-data-dir=${salida}/_perfil`,
+const chrome = spawn(CHROME, ['--headless=new', `--remote-debugging-port=${PUERTO}`, `--user-data-dir=${resolve(salida, '_perfil')}`,
   '--hide-scrollbars', '--no-first-run', '--no-default-browser-check', 'about:blank'], { stdio: 'ignore' })
-let pagina
-for (let i = 0; i < 40 && !pagina; i++) {
-  try { pagina = (await (await fetch(`http://127.0.0.1:${PUERTO}/json`)).json()).find((t) => t.type === 'page') } catch { await dormir(250) }
+let pagina, lista = []
+for (let i = 0; i < 120 && !pagina; i++) {
+  try { lista = await (await fetch(`http://127.0.0.1:${PUERTO}/json`)).json(); pagina = lista.find((t) => t.type === 'page') } catch { /* Chrome aun no responde */ }
+  if (!pagina) await dormir(250)
 }
+if (!pagina) { console.error('Chrome no abrio ninguna pagina. Targets:', JSON.stringify(lista)); chrome.kill(); process.exit(1) }
 const ws = new WebSocket(pagina.webSocketDebuggerUrl)
 await new Promise((r) => { ws.onopen = r })
 let n = 0
@@ -55,9 +58,21 @@ const PANTALLAS = [
   ['perfil_acc', '/perfil', () => estado(true, true, 'barrio', "localStorage.setItem('ayni_prefs', JSON.stringify({ letraGrande: true, altoContraste: true, quechua: true }))")],
   ['offline', '/', () => estado(true, true), "window.dispatchEvent(new Event('offline'))"],
   ['minka_abajo', '/minka', () => estado(true, true, 'minka'), 'window.scrollTo(0, 99999); document.querySelector(".contenido")?.scrollTo(0, 99999)'],
+  // Pantalla ancha (PC / tablet): riel de navegacion a la izquierda, contenido centrado
+  ['pc_mapa', '/', () => estado(true, true), '', 1280],
+  ['pc_minka', '/minka', () => estado(true, true, 'minka'), '', 1280],
+  ['pc_puntos', '/puntos', () => estado(true, true), '', 1280],
+  ['pc_registro', '/', () => estado(true, false), '', 1280],
 ]
-for (const [nombre, ruta, prep, despues] of PANTALLAS) {
+let anchoActual = 390
+for (const [nombre, ruta, prep, despues, ancho = 390] of PANTALLAS) {
   if (solo && !solo.includes(nombre)) continue
+  if (ancho !== anchoActual) {
+    anchoActual = ancho
+    await cdp('Emulation.setDeviceMetricsOverride', ancho > 600
+      ? { width: ancho, height: 800, deviceScaleFactor: 1, mobile: false }
+      : { width: 390, height: 844, deviceScaleFactor: 1.5, mobile: true })
+  }
   await prep()
   await cdp('Page.navigate', { url: BASE + ruta }); await dormir(4500)
   if (despues) { await js(despues); await dormir(800) }

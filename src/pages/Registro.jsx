@@ -1,10 +1,12 @@
 // Registro: telefono + DNI. El DNI se valida en RENIEC via el mini servidor (Didit).
 // Se guarda solo el HASH del DNI. Si Didit no responde: estado "pendiente".
-// TODO (sab): reemplazar el telefono por Firebase Auth con SMS (signInWithPhoneNumber).
+// Mismo celular + DNI = entra a la cuenta existente (no duplica, no gasta Didit).
 import { useState } from 'react'
+import { Lock, CircleAlert } from 'lucide-react'
 import { useEstado } from '../lib/estado'
 import { crear, listar, conTiempo } from '../lib/db'
 import { sha256 } from '../lib/hash'
+import { Logo } from '../lib/iconos'
 
 export default function Registro() {
   const { setUsuario, geoAprox, setAviso } = useEstado()
@@ -64,15 +66,27 @@ export default function Registro() {
   return (
     <div className="portada">
       <div className="portada-cabecera">
-        <div className="portada-logo">🤝</div>
+        <div className="marca">
+          <Logo size={40} />
+          <div className="marca-texto"><div className="marca-nombre">Ayni</div><div className="marca-lema">tu barrio se ayuda</div></div>
+        </div>
         <h1>Crea tu cuenta de vecino</h1>
-        <p>Ayni, tu barrio se ayuda</p>
+        <p>Con tu celular y tu DNI entras a tu barrio. Lo que necesitas está a 10 cuadras.</p>
       </div>
       <div className="portada-cuerpo">
-        <div className="tarjeta" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <input placeholder="Tu nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-          <input placeholder="Celular (9 dígitos)" inputMode="numeric" maxLength={9} value={telefono} onChange={(e) => setTelefono(e.target.value.replace(/\D/g, ''))} />
-          <input placeholder="DNI (8 dígitos)" inputMode="numeric" maxLength={8} value={dni} onChange={(e) => setDni(e.target.value.replace(/\D/g, ''))} />
+        <form className="tarjeta" onSubmit={(e) => { e.preventDefault(); if (valido && !cargando) registrar() }}>
+          <div className="campo">
+            <label htmlFor="reg-nombre">Tu nombre</label>
+            <input id="reg-nombre" autoComplete="name" placeholder="Ej: Rosa Quispe" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+          </div>
+          <div className="campo">
+            <label htmlFor="reg-celular">Celular</label>
+            <input id="reg-celular" placeholder="9 dígitos" inputMode="numeric" autoComplete="tel-national" maxLength={9} value={telefono} onChange={(e) => setTelefono(e.target.value.replace(/\D/g, ''))} />
+          </div>
+          <div className="campo">
+            <label htmlFor="reg-dni">DNI</label>
+            <input id="reg-dni" placeholder="8 dígitos" inputMode="numeric" maxLength={8} value={dni} onChange={(e) => setDni(e.target.value.replace(/\D/g, ''))} />
+          </div>
           <label className="check">
             <input type="checkbox" checked={consiente} onChange={(e) => setConsiente(e.target.checked)} />
             <span>Autorizo validar mi DNI en RENIEC. Ayni guarda solo una huella (hash), nunca mi número de DNI.</span>
@@ -81,11 +95,11 @@ export default function Registro() {
             <input type="checkbox" checked={whatsappVisible} onChange={(e) => setWhatsappVisible(e.target.checked)} />
             <span>Mostrar mi WhatsApp a los vecinos que quieran contactarme</span>
           </label>
-          {error && <div style={{ color: 'var(--rojo)', fontWeight: 600 }}>{error}</div>}
-          <button className="btn" disabled={!valido || cargando} onClick={registrar}>{cargando ? 'Verificando…' : 'Entrar a mi barrio'}</button>
-        </div>
+          {error && <div className="error" role="alert"><CircleAlert size={20} aria-hidden="true" />{error}</div>}
+          <button type="submit" className="btn" disabled={!valido || cargando}>{cargando ? 'Verificando…' : 'Entrar a mi barrio'}</button>
+        </form>
         <p className="muted">¿Ya tienes cuenta? Escribe el mismo celular y DNI y entras directo.</p>
-        <p className="muted">🔒 Tu ubicación se guarda aproximada (~300 m). Nadie ve tu casa exacta.</p>
+        <p className="nota"><Lock aria-hidden="true" /><span>Tu ubicación se guarda aproximada (~300 m). Nadie ve tu casa exacta.</span></p>
       </div>
     </div>
   )

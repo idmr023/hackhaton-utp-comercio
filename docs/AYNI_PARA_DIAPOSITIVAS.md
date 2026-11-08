@@ -41,7 +41,7 @@ Los ganadores de ediciones anteriores usaron nombres en quechua y al jurado le g
 - **No hay login por SMS:** el equipo lo descartó por tiempo y riesgo en vivo. Celular + DNI validado ya cubre la identidad.
 
 ### 3.2 Modo Barrio
-- **Mapa** con tu posición (punto azul) y los negocios con el **ícono de su rubro**: 🥖 panadería, 💊 farmacia, 🔧 gasfitero, 🐾 veterinaria, 🍗 pollería…
+- **Mapa** con tu posición (punto azul) y los negocios con el **ícono de su rubro**: panadería (croissant), farmacia (pastilla), gasfitero, veterinaria, pollería…
 - **Ficha del negocio:** recomendaciones, resumen, distancia, horario y **botón de WhatsApp**.
 - **Publicar en 3 toques:** Ofrezco / Necesito / Recomiendo, con foto o **dictado por voz**.
   - La **IA (Gemini)** clasifica sola cada publicación en Oficios, Alimentos, Salud, Hogar, Transporte, Educación, Mascotas u Otro.
@@ -50,11 +50,11 @@ Los ganadores de ediciones anteriores usaron nombres en quechua y al jurado le g
 - **Sin señal:** activas el modo avión, publicas, la app avisa *"Sin internet: guardado, se subirá solo"*, y al volver la señal se sube **una sola vez**.
 
 ### 3.3 Modo Minka (emergencia)
-- Un botón **🆘 Emergencia** cambia toda la app a rojo con **3 botones gigantes**:
-  - ✅ **Estoy bien** (avisa que estás a salvo)
-  - 🆘 **Necesito ayuda**: agua, medicina, albergue, rescate, comida u otro, con urgencia *Puede esperar / Hoy / ¡Ahora!*
-  - 🤝 **Puedo ayudar**: enfermera/o, botiquín, agua, comida, generador, vehículo o espacio
-- **Mapa de emergencia (radio de 3 km):** pastillas rojas 🆘 (necesidades) y verdes 🤝 (recursos) por zona.
+- Un botón **Emergencia** (sirena) cambia toda la app a rojo con **3 botones gigantes**:
+  - **Estoy bien** (avisa que estás a salvo)
+  - **Necesito ayuda**: agua, medicina, albergue, rescate, comida u otro, con urgencia *Puede esperar / Hoy / ¡Ahora!*
+  - **Puedo ayudar**: enfermera/o, botiquín, agua, comida, generador, vehículo o espacio
+- **Mapa de emergencia (radio de 3 km):** pastillas rojas con sirena (necesidades) y verdes con manos (recursos) por zona.
 - **Match automático:**
   - Si pides **agua**, la app encuentra al vecino más cercano que tiene agua y avisa *"¡Match! Juan P., a 2 cuadras, tiene agua"*.
   - Si ofreces ayuda, te asigna la necesidad **más urgente** cercana.
@@ -136,7 +136,7 @@ CELULAR DEL VECINO (app web instalable / PWA: React + Vite)
 | **A. Registro** | Tutorial → celular + DNI → "Validado en RENIEC" |
 | **B. Publicar en 3 toques** | + → Necesito → escribir o dictar → Publicar → aparece en el mapa del otro celular |
 | **C. Sin señal** | Modo avión → publicar → *"Sin internet: guardado"* → quitar modo avión → se sube sola, una vez |
-| **D. Negocio + WhatsApp** | Tocar 🥖 → *"Recomendado por 24 vecinos"* → WhatsApp con mensaje listo |
+| **D. Negocio + WhatsApp** | Tocar el pin de la panadería → *"Recomendado por 24 vecinos"* → WhatsApp con mensaje listo |
 | **E. Minka con 2 celulares** | Emergencia → celular A pide comida (¡Ahora!) → celular B ofrece comida → "¡Match!" en los dos → WhatsApp → código de 4 dígitos → +20 puntos |
 | **F. Canje** | Puntos → Canjear "1 pan francés gratis" → código de 6 dígitos → saldo baja |
 | **G. Inclusión** | Perfil → letra grande, alto contraste, quechua → Minka con las frases en quechua |
@@ -197,38 +197,43 @@ CELULAR DEL VECINO (app web instalable / PWA: React + Vite)
 | ¿Qué gana El Comercio? | Un canal de contenido útil en emergencias (Boletín Minka), presencia diaria en el barrio y datos agregados por zona. |
 
 ## 10. Identidad visual (para que las slides combinen con la app)
-- **Concepto:** **"faja tejida"**: reciprocidad andina hecha franja de colores, como un chumpi. Se usa como franja delgada arriba o abajo de cada slide; no hay que llenar todo de patrones.
-- **Colores:**
+- **Concepto:** **"tejido verde"**: Ayni es reciprocidad, y la identidad es el verde andino sobre un fondo marfil cálido. El maíz marca lo que suma (puntos, publicar) y la terracota lo que se pide. El **rojo queda solo para Minka**. El único gesto decorativo es la **faja** (franja tejida) delgada: en la app va bajo la barra, en la portada y en la tarjeta de puntos; en las slides, una franja arriba o abajo. No llenar de patrones.
+- **Colores** (los mismos de `docs/PALETA_COLORES.md`):
 
   | Nombre | Hex | Uso |
   |---|---|---|
-  | Añil | `#1c3557` | marca, títulos, fondos oscuros |
-  | Grana (cochinilla) | `#b4232a` | Minka, emergencia |
-  | Maíz | `#f4b400` | acento, números destacados |
-  | Muña | `#2d7a4f` | ayuda, confirmado |
-  | Cal | `#f3f5f2` | fondo claro |
+  | Verde andino | `#2F6B4F` | marca, botones, navegación activa |
+  | Verde profundo | `#24543E` | títulos, fondos oscuros (portada, tarjeta de puntos) |
+  | Verde suave | `#E6F0E9` | fondos de etiquetas y fichas |
+  | Teal | `#2F7C78` | ubicación, información, botón "Estoy bien" |
+  | Marfil | `#F7F5EF` | fondo general |
+  | Maíz | `#E6B84A` | puntos, botón Publicar, acentos (texto oscuro encima) |
+  | Terracota | `#C66A4A` | "Necesito" (para texto usar la oscura `#8E4530`) |
+  | Rojo Minka | `#B33A3A` | solo emergencia |
+  | Tinta | `#26332C` | texto |
 
-- **Faja:** franjas repetidas de grana, maíz, blanco, muña, maíz, blanco.
+- **Faja:** franjas repetidas de verde profundo, maíz, marfil, terracota, maíz, marfil.
+- **Logo:** dos flechas que se persiguen en círculo (ida y vuelta = reciprocidad), en verde profundo sobre un círculo maíz. Está en `public/icon.svg` y como componente `Logo` en la app.
 - **Tipografías** (gratis en Google Fonts):
   - **Big Shoulders Display** (extra negrita) para títulos y números.
   - **Atkinson Hyperlegible** para el texto.
-- **Íconos:** los mismos emojis de la app (🤝 🆘 🥖 💊 🔧).
-- **Estilo:** fondo claro o añil, sin degradados ni violeta, y frases en minúscula normal (no TODO EN MAYÚSCULAS).
+- **Íconos:** **Lucide** (lucide.dev, trazo 2 px), los mismos de la app: mapa, sirena, monedas, persona; mano que ofrece / megáfono / estrella para Ofrezco / Necesito / Recomiendo. **Nada de emojis.**
+- **Estilo:** fondo marfil o verde profundo, paneles planos con borde, sin degradados ni violeta, frases en minúscula normal (mayúsculas solo en los 3 botones de Minka).
 
 ## 11. Estructura de la presentación: 15 slides
 Cada slide tiene **un solo mensaje**. Las capturas se sacan desde el celular, con el link del túnel y `?demo=1` (sección 6). La columna "Dato que se queda" es lo que el jurado debería recordar.
 
 | # | Título sugerido | Qué va (máx. 3 puntos) | Visual | Dato que se queda |
 |---|---|---|---|---|
-| 1 | **Ayni: tu barrio se ayuda** | Nombre y lema · nombre del equipo · Hackathon UTP – El Comercio 2026 | Logo 🤝 en círculo maíz sobre añil + faja abajo | Ayni = hoy por ti, mañana por mí |
+| 1 | **Ayni: tu barrio se ayuda** | Nombre y lema · nombre del equipo · Hackathon UTP – El Comercio 2026 | Logo (flechas en círculo maíz) sobre verde profundo + faja abajo | Ayni = hoy por ti, mañana por mí |
 | 2 | **El problema** | No sabemos en quién confiar para un gasfitero o una bodega cerca · los emprendimientos del barrio no se hacen ver · en un sismo nadie sabe quién necesita qué | Foto o ilustración simple del barrio (sin texto encima) | La ayuda existe, pero no se encuentra |
-| 3 | **Nuestra respuesta: una app, dos modos** | **Modo Barrio** para el día a día · **Modo Minka** para emergencias · funciona en el celular, sin descargar de una tienda | Dos capturas lado a lado: mapa (añil) y Minka (grana) | Barrio + Minka |
-| 4 | **Cumplimos todo el reto** | Lista con ✔ de lo que pedía el reto (tabla de la sección 2) | Checklist en dos columnas | 10 de 10 pedidos cubiertos |
+| 3 | **Nuestra respuesta: una app, dos modos** | **Modo Barrio** para el día a día · **Modo Minka** para emergencias · funciona en el celular, sin descargar de una tienda | Dos capturas lado a lado: mapa (verde) y Minka (rojo) | Barrio + Minka |
+| 4 | **Cumplimos todo el reto** | Lista con check de lo que pedía el reto (tabla de la sección 2) | Checklist en dos columnas | 10 de 10 pedidos cubiertos |
 | 5 | **Vecinos de verdad** | Registro con celular + DNI validado en **RENIEC** · se guarda solo una huella del DNI · ubicación aproximada (~300 m), nunca tu casa | Capturas: registro + perfil con "Validado en RENIEC" | Identidad real, privacidad cuidada |
 | 6 | **Tu barrio en un mapa** | Negocios a menos de 1 km con su ícono · *"Recomendado por 24 vecinos de tu zona"* + resumen · WhatsApp con mensaje listo | Captura del mapa + ficha de Panadería La Espiga de Oro | Recomendaciones de vecinos, no de desconocidos |
 | 7 | **Publicar en 3 toques** | + → Ofrezco / Necesito / Recomiendo → escribir, foto o voz · la IA (Gemini) la clasifica sola · aparece en el mapa de los vecinos | Tres capturas en fila: +, tipo, publicar | 3 toques |
 | 8 | **Funciona sin internet** | Modo avión → publicas igual → *"Sin internet: guardado, se subirá solo"* · al volver la señal se sube una sola vez | Captura con el aviso amarillo "Sin internet" | Sin señal también funciona |
-| 9 | **Modo Minka: emergencia** | 3 botones gigantes: Estoy bien / Necesito ayuda / Puedo ayudar · urgencia: Puede esperar · Hoy · ¡Ahora! · mapa 🆘 / 🤝 y resumen de zona escrito por IA | Captura de los 3 botones + boletín con el resumen | Toda la app cambia en un toque |
+| 9 | **Modo Minka: emergencia** | 3 botones gigantes: Estoy bien / Necesito ayuda / Puedo ayudar · urgencia: Puede esperar · Hoy · ¡Ahora! · mapa de necesidades y recursos · resumen de zona escrito por IA | Captura de los 3 botones + boletín con el resumen | Toda la app cambia en un toque |
 | 10 | **Match automático** | Pides agua → *"Juan P., a 2 cuadras, tiene agua"* · Coordinar por WhatsApp · se confirma en persona con un código de 4 dígitos | Captura de la tarjeta verde de match con el código | La app une al que necesita con el que puede |
 | 11 | **Puntos que traen clientes** | Ayudar suma puntos · se canjean en negocios del barrio (pan gratis, descuento) con código de 6 dígitos · antifraude: 20 → 10 → 0 por pareja, máx. 3 ayudas al día | Captura de Puntos (saldo + recompensas) | El emprendimiento gana clientes sin pagar |
 | 12 | **Para todos los vecinos** | Frases en quechua (*Yanapaway!*, *Sulpayki*) · letra grande y alto contraste · fuente para baja visión, voz, botones grandes | Captura de Minka con quechua + perfil con los interruptores | Inclusión de verdad |

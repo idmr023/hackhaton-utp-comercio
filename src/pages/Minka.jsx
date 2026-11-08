@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import { ArrowLeft, MessageCircle, CircleCheck, Newspaper, Sparkles, Megaphone, HeartHandshake, Siren, KeyRound } from 'lucide-react'
 import { useEstado } from '../lib/estado'
 import { conGeo, listarCerca, listar, obtener, nuevoId, crearSeguro, actualizarSeguro } from '../lib/db'
 import { distanciaKm } from '../lib/geo'
 import { CATEGORIAS_MINKA, parteLocal, resumirZona } from '../lib/ia'
 import { PUNTOS, calcularPuntos, codigo4 } from '../lib/puntos'
+import { ICONO_MINKA, svg } from '../lib/iconos'
 
 // Confirmar en persona: < 200 m entre celulares. Del otro solo tenemos su celda (~300 m), por eso +220 m de margen.
 const DIST_CONFIRMAR_KM = 0.42
@@ -17,10 +19,6 @@ const RECURSOS = ['enfermera', 'botiquin', 'agua', 'comida', 'generador', 'vehic
 const ETIQUETA = {
   agua: 'AGUA', medicina: 'MEDICINA', albergue: 'ALBERGUE', rescate: 'RESCATE', comida: 'COMIDA', otro: 'OTRO',
   enfermera: 'ENFERMERA/O', botiquin: 'BOTIQUÍN', generador: 'GENERADOR', vehiculo: 'VEHÍCULO', espacio: 'ESPACIO',
-}
-const EMOJI = {
-  agua: '💧', medicina: '💊', albergue: '🏠', rescate: '🚒', comida: '🍲', otro: '❓',
-  enfermera: '🩺', botiquin: '🩹', generador: '🔋', vehiculo: '🚗', espacio: '🏠',
 }
 // Que recursos sirven para cada pedido (match automatico)
 const SIRVE = {
@@ -36,17 +34,19 @@ const aDistancia = (km) => {
 }
 const waLink = (num, msj) => `https://wa.me/51${num}?text=${encodeURIComponent(msj)}`
 const msFecha = (f) => (f == null ? Infinity : f.seconds ? f.seconds * 1000 : Number(f) || 0)
+const Icono = ({ tipo, ...p }) => { const C = ICONO_MINKA[tipo] || ICONO_MINKA.otro; return <C aria-hidden="true" {...p} /> }
 
-const iconoYo = L.divIcon({ html: '<div style="font-size:26px;line-height:1">📍</div>', className: '', iconSize: [30, 30], iconAnchor: [15, 15] })
+const Atras = ({ onClick }) => <button className="btn-atras" aria-label="Atrás" onClick={onClick}><ArrowLeft size={22} aria-hidden="true" /></button>
+
+const iconoYo = L.divIcon({ html: '<div class="pin pin-yo"></div>', className: '', iconSize: [20, 20], iconAnchor: [10, 10] })
 
 // Una pastilla por celda (~300 m): rojo = cuantas necesidades, verde = cuantos recursos
 function iconoCelda(nNec, nRec) {
-  const ancho = (nNec ? 54 : 0) + (nRec ? 54 : 0)
-  const parte = (color, emoji, n) => `<span style="background:${color};padding:4px 8px">${emoji} ${n}</span>`
+  const ancho = (nNec ? 58 : 0) + (nRec ? 58 : 0)
+  const parte = (cls, Ic, n) => `<span class="${cls}">${svg(Ic, { size: 15 })}${n}</span>`
   return L.divIcon({
-    className: '', iconSize: [ancho, 28], iconAnchor: [ancho / 2, 14],
-    html: `<div style="display:inline-flex;border-radius:14px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.35);font:700 14px sans-serif;color:#fff;white-space:nowrap">${
-      nNec ? parte('#c0392b', '🆘', nNec) : ''}${nRec ? parte('#2e8b57', '🤝', nRec) : ''}</div>`,
+    className: '', iconSize: [ancho, 30], iconAnchor: [ancho / 2, 15],
+    html: `<div class="pastilla">${nNec ? parte('nec', Siren, nNec) : ''}${nRec ? parte('rec', HeartHandshake, nRec) : ''}</div>`,
   })
 }
 
@@ -150,7 +150,7 @@ export default function Minka() {
 
   const estoyBien = () => accion(async () => {
     const { sinSenal } = await crearSeguro('estados_minka', { ...base(), estado: 'bien', zona: geoAprox })
-    avisar(sinSenal ? 'Sin señal: tu aviso se guardó y se enviará solo.' : 'Avisamos que estás bien ✔')
+    avisar(sinSenal ? 'Sin señal: tu aviso se guardó y se enviará solo.' : 'Avisamos que estás bien')
   })
 
   // NECESITO: busca el recurso disponible mas cercano que sirva; si hay, la necesidad nace "atendida"
@@ -207,118 +207,145 @@ export default function Minka() {
 
   if (paso === 'ayuda') return (
     <div className="pantalla">
-      <h2>¿Qué necesitas?</h2>
+      <div className="cabecera"><Atras onClick={() => setPaso(null)} /><h2>¿Qué necesitas?</h2></div>
       <div className="opciones-tipo">
         {CATEGORIAS_MINKA.map((t) => (
-          <button key={t} className="btn ayuda" onClick={() => { setTipoPedido(t); setPaso('urgencia') }}>{EMOJI[t]} {ETIQUETA[t]}</button>
+          <button key={t} className="btn alto ayuda" onClick={() => { setTipoPedido(t); setPaso('urgencia') }}><Icono tipo={t} />{ETIQUETA[t]}</button>
         ))}
       </div>
-      <button className="btn secundario" onClick={() => setPaso(null)}>Atrás</button>
     </div>
   )
   if (paso === 'urgencia') return (
     <div className="pantalla">
-      <h2>{EMOJI[tipoPedido]} {ETIQUETA[tipoPedido]}: ¿qué tan urgente?</h2>
-      {URGENCIAS.map(([u, txt]) => (
-        <button key={u} className="btn gigante ayuda" disabled={enviando} onClick={() => necesito(u)}>{txt}</button>
-      ))}
-      <button className="btn secundario" onClick={() => setPaso('ayuda')}>Atrás</button>
+      <div className="cabecera">
+        <Atras onClick={() => setPaso('ayuda')} />
+        <span className="ficha rojo"><Icono tipo={tipoPedido} /></span>
+        <h2>{ETIQUETA[tipoPedido]}: ¿qué tan urgente?</h2>
+      </div>
+      <div className="minka-botones">
+        {URGENCIAS.map(([u, txt]) => (
+          <button key={u} className="btn gigante ayuda" style={{ justifyContent: 'center' }} disabled={enviando} onClick={() => necesito(u)}>{txt}</button>
+        ))}
+      </div>
     </div>
   )
   if (paso === 'puedo') return (
     <div className="pantalla">
-      <h2>¿Con qué puedes ayudar?</h2>
+      <div className="cabecera"><Atras onClick={() => setPaso(null)} /><h2>¿Con qué puedes ayudar?</h2></div>
       <div className="opciones-tipo">
-        {RECURSOS.map((t) => <button key={t} className="btn puedo" disabled={enviando} onClick={() => puedo(t)}>{EMOJI[t]} {ETIQUETA[t]}</button>)}
+        {RECURSOS.map((t) => <button key={t} className="btn alto puedo" disabled={enviando} onClick={() => puedo(t)}><Icono tipo={t} />{ETIQUETA[t]}</button>)}
       </div>
-      <button className="btn secundario" onClick={() => setPaso(null)}>Atrás</button>
     </div>
   )
 
   return (
-    <div className="pantalla">
-      {matches.map((m) => {
-        const yo = usuario.nombre.split(' ')[0]
-        const dist = distA(m.otro.geo)
-        const conf = confirmadas[m.rol === 'pedi' ? m.otro.id : m.key] // ayuda ya confirmada
-        const texto = m.rol === 'pedi'
-          ? `${m.otro.nombre}, ${dist}, tiene ${min(m.otro.tipo)}. Toca para coordinar.`
-          : `${m.otro.nombre}, ${dist}, necesita ${min(m.otro.tipo)}${m.otro.urgencia ? ` (${textoUrgencia(m.otro.urgencia)})` : ''}. Toca para coordinar.`
-        const msj = m.rol === 'pedi'
-          ? `Hola ${m.otro.nombre}, soy ${yo} de Ayni. Necesito ${min(m.miTipo)} y estás ${dist}. ¿Puedes ayudar?`
-          : `Hola ${m.otro.nombre}, soy ${yo} de Ayni. Vi que necesitas ${min(m.otro.tipo)} y estoy ${dist}. ¿Te ayudo?`
-        return (
-          <div key={m.key} className="tarjeta tarjeta-match">
-            <b>🤝 {EMOJI[m.otro.tipo]} {texto}</b>
-            {m.otro.whatsapp
-              ? <a className="btn puedo" style={{ marginTop: 10, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                  href={waLink(m.otro.whatsapp, msj)} target="_blank" rel="noreferrer">💬 Coordinar por WhatsApp</a>
-              : <div className="muted" style={{ marginTop: 6 }}>No compartió su WhatsApp: búscalo en el mapa de su zona.</div>}
-            {/* Confirmar la ayuda en persona (codigo de 4 digitos) */}
-            {m.rol === 'pedi' && (conf
-              ? <div style={{ marginTop: 10 }}>✔ Ayuda confirmada</div>
-              : <div style={{ marginTop: 10 }}>
-                  <b>¿Te ayudaron?</b> Pide a quien te ayudó su código de 4 dígitos.
-                  <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
-                    <input placeholder="Código" inputMode="numeric" maxLength={4} style={{ flex: 1 }} value={codigos[m.key] || ''}
-                      onChange={(e) => setCodigos({ ...codigos, [m.key]: e.target.value.replace(/\D/g, '') })} />
-                    <button className="btn" style={{ width: 'auto' }} disabled={enviando || (codigos[m.key] || '').length !== 4}
-                      onClick={() => confirmar(m)}>Confirmar ayuda</button>
-                  </div>
-                </div>)}
-            {m.rol === 'ofreci' && (conf
-              ? <div style={{ marginTop: 10 }}>✔ {conf.recibeNombre} confirmó tu ayuda: +{conf.puntos || 0} puntos Ayni</div>
-              : <div style={{ marginTop: 10 }}>Cuando ayudes, dale este código para confirmar:{' '}
-                  <div className="codigo-ayuda">{codigo4(m.key)}</div></div>)}
+    <div className="pantalla ancha">
+      <div className="minka-columnas">
+        <div>
+          {matches.map((m) => {
+            const yo = usuario.nombre.split(' ')[0]
+            const dist = distA(m.otro.geo)
+            const conf = confirmadas[m.rol === 'pedi' ? m.otro.id : m.key] // ayuda ya confirmada
+            const texto = m.rol === 'pedi'
+              ? `${m.otro.nombre}, ${dist}, tiene ${min(m.otro.tipo)}. Toca para coordinar.`
+              : `${m.otro.nombre}, ${dist}, necesita ${min(m.otro.tipo)}${m.otro.urgencia ? ` (${textoUrgencia(m.otro.urgencia)})` : ''}. Toca para coordinar.`
+            const msj = m.rol === 'pedi'
+              ? `Hola ${m.otro.nombre}, soy ${yo} de Ayni. Necesito ${min(m.miTipo)} y estás ${dist}. ¿Puedes ayudar?`
+              : `Hola ${m.otro.nombre}, soy ${yo} de Ayni. Vi que necesitas ${min(m.otro.tipo)} y estoy ${dist}. ¿Te ayudo?`
+            return (
+              <div key={m.key} className="tarjeta tarjeta-match">
+                <div className="fila">
+                  <span className="ficha"><Icono tipo={m.otro.tipo} /></span>
+                  <div><h3 style={{ margin: 0 }}>Hay un vecino para ti</h3><div>{texto}</div></div>
+                </div>
+                {m.otro.whatsapp
+                  ? <a className="btn whatsapp" style={{ marginTop: 12 }} href={waLink(m.otro.whatsapp, msj)} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" />Coordinar por WhatsApp</a>
+                  : <div className="muted" style={{ marginTop: 8 }}>No compartió su WhatsApp: búscalo en el mapa de su zona.</div>}
+                {/* Confirmar la ayuda en persona (codigo de 4 digitos) */}
+                {m.rol === 'pedi' && (conf
+                  ? <div className="fila-icono" style={{ marginTop: 12, fontWeight: 700 }}><CircleCheck size={20} style={{ color: 'var(--verde)' }} aria-hidden="true" />Ayuda confirmada</div>
+                  : <div style={{ marginTop: 12 }}>
+                      <b>¿Te ayudaron?</b> Pide a quien te ayudó su código de 4 dígitos.
+                      <div className="btn-fila" style={{ marginTop: 8 }}>
+                        <input placeholder="Código" aria-label="Código de 4 dígitos" inputMode="numeric" maxLength={4} style={{ flex: 1 }} value={codigos[m.key] || ''}
+                          onChange={(e) => setCodigos({ ...codigos, [m.key]: e.target.value.replace(/\D/g, '') })} />
+                        <button className="btn" style={{ flex: 'none', width: 'auto' }} disabled={enviando || (codigos[m.key] || '').length !== 4}
+                          onClick={() => confirmar(m)}>Confirmar ayuda</button>
+                      </div>
+                    </div>)}
+                {m.rol === 'ofreci' && (conf
+                  ? <div className="fila-icono" style={{ marginTop: 12, fontWeight: 700 }}><CircleCheck size={20} style={{ color: 'var(--verde)' }} aria-hidden="true" />{conf.recibeNombre} confirmó tu ayuda: +{conf.puntos || 0} puntos Ayni</div>
+                  : <div style={{ marginTop: 12 }}>
+                      <div className="fila-icono"><KeyRound size={18} aria-hidden="true" />Cuando ayudes, dale este código para confirmar:</div>
+                      <div className="codigo-ayuda">{codigo4(m.key)}</div>
+                    </div>)}
+              </div>
+            )
+          })}
+
+          <div className="minka-botones">
+            <button className="btn gigante bien" disabled={enviando} onClick={estoyBien}>
+              <Icono tipo="bien" /><span className="texto">Estoy bien{q && <span className="quechua">Allinllachu?</span>}</span>
+            </button>
+            <button className="btn gigante ayuda" onClick={() => setPaso('ayuda')}>
+              <Icono tipo="ayuda" /><span className="texto">Necesito ayuda{q && <span className="quechua">Yanapaway!</span>}</span>
+            </button>
+            <button className="btn gigante puedo" onClick={() => setPaso('puedo')}>
+              <Icono tipo="puedo" /><span className="texto">Puedo ayudar{q && <span className="quechua">Yanapasqayki</span>}</span>
+            </button>
           </div>
-        )
-      })}
-
-      <button className="btn gigante bien" style={{ flexDirection: 'column', gap: 2 }} disabled={enviando} onClick={estoyBien}>✅ ESTOY BIEN{q && <span className="quechua">Allinllachu?</span>}</button>
-      <button className="btn gigante ayuda" style={{ flexDirection: 'column', gap: 2 }} onClick={() => setPaso('ayuda')}>🆘 NECESITO AYUDA{q && <span className="quechua">Yanapaway!</span>}</button>
-      <button className="btn gigante puedo" style={{ flexDirection: 'column', gap: 2 }} onClick={() => setPaso('puedo')}>🤝 PUEDO AYUDAR{q && <span className="quechua">Yanapasqayki</span>}</button>
-
-      <div className="tarjeta">
-        <h3>Cerca de ti ({radioKm} km)</h3>
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          <span className="chip" style={{ background: 'var(--grana-claro)', color: 'var(--grana)' }}>🆘 {necesidades.length} necesidades abiertas</span>
-          <span className="chip verde">🤝 {recursos.length} recursos disponibles</span>
         </div>
-        {ubicacion && (
-          <div style={{ height: 260, marginTop: 10, borderRadius: 10, overflow: 'hidden' }}>
-            <MapContainer center={[ubicacion.lat, ubicacion.lng]} zoom={15} className="mapa" zoomControl={false}>
-              <TileLayer attribution="&copy; OpenStreetMap" url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              <Centrar centro={ubicacion} />
-              <Marker position={[ubicacion.lat, ubicacion.lng]} icon={iconoYo}><Popup>Tú ({usuario?.nombre})</Popup></Marker>
-              {agruparPorCelda(necesidades, recursos).map((c) => (
-                <Marker key={c.k} position={[c.geo.lat, c.geo.lng]} icon={iconoCelda(c.nec.length, c.rec.length)}>
-                  <Popup>
-                    {c.nec.length > 0 && <b style={{ color: 'var(--rojo)' }}>Necesitan ayuda</b>}
-                    {c.nec.map((n) => <div key={n.id}>{EMOJI[n.tipo]} {ETIQUETA[n.tipo] || n.tipo} · {textoUrgencia(n.urgencia)} — {quien(n)}</div>)}
-                    {c.rec.length > 0 && <b style={{ color: 'var(--verde)' }}>Pueden ayudar</b>}
-                    {c.rec.map((r) => <div key={r.id}>{EMOJI[r.tipo]} {ETIQUETA[r.tipo] || r.tipo} — {quien(r)}</div>)}
-                    <span className="muted">a {(c.distanciaKm * 1000).toFixed(0)} m</span>
-                  </Popup>
-                </Marker>
-              ))}
-            </MapContainer>
-          </div>
-        )}
-        {necesidades.slice(0, 5).map((n) => (
-          <div key={n.id} className="muted">• {EMOJI[n.tipo]} {ETIQUETA[n.tipo] || n.tipo} ({textoUrgencia(n.urgencia)}) a {(n.distanciaKm * 1000).toFixed(0)} m — {quien(n)}</div>
-        ))}
-      </div>
 
-      <div className="tarjeta">
-        <h3>📰 Boletín Minka</h3>
-        {parte && (
-          <div style={{ background: 'var(--rojo-claro)', padding: 10, borderRadius: 8, marginBottom: 8 }}>
-            <b>Resumen de tu zona, {parte.hora}:</b> {parte.texto}
-            <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>{parte.fuente === 'gemini' ? '✨ Resumido con IA a partir de los reportes vecinales' : 'Resumen automático de los reportes vecinales'}</div>
+        <div>
+          <div className="tarjeta">
+            <h3>Cerca de ti ({radioKm} km)</h3>
+            <div className="chips">
+              <span className="chip rojo"><Siren aria-hidden="true" />{necesidades.length} necesidades abiertas</span>
+              <span className="chip"><HeartHandshake aria-hidden="true" />{recursos.length} recursos disponibles</span>
+            </div>
+            {ubicacion && (
+              <div className="mapa-mini">
+                <MapContainer center={[ubicacion.lat, ubicacion.lng]} zoom={15} className="mapa" zoomControl={false}>
+                  <TileLayer attribution="&copy; OpenStreetMap" url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                  <Centrar centro={ubicacion} />
+                  <Marker position={[ubicacion.lat, ubicacion.lng]} icon={iconoYo}><Popup>Tú ({usuario?.nombre})</Popup></Marker>
+                  {agruparPorCelda(necesidades, recursos).map((c) => (
+                    <Marker key={c.k} position={[c.geo.lat, c.geo.lng]} icon={iconoCelda(c.nec.length, c.rec.length)}>
+                      <Popup>
+                        {c.nec.length > 0 && <b style={{ color: 'var(--rojo)' }}>Necesitan ayuda</b>}
+                        {c.nec.map((n) => <div key={n.id} className="fila-icono"><Icono tipo={n.tipo} size={16} />{ETIQUETA[n.tipo] || n.tipo}, {textoUrgencia(n.urgencia)}: {quien(n)}</div>)}
+                        {c.rec.length > 0 && <b style={{ color: 'var(--verde)', display: 'block', marginTop: c.nec.length ? 6 : 0 }}>Pueden ayudar</b>}
+                        {c.rec.map((r) => <div key={r.id} className="fila-icono"><Icono tipo={r.tipo} size={16} />{ETIQUETA[r.tipo] || r.tipo}: {quien(r)}</div>)}
+                        <span className="muted">a {(c.distanciaKm * 1000).toFixed(0)} m</span>
+                      </Popup>
+                    </Marker>
+                  ))}
+                </MapContainer>
+              </div>
+            )}
+            {necesidades.length > 0 && (
+              <div className="lista-necesidades">
+                {necesidades.slice(0, 5).map((n) => (
+                  <div key={n.id}><Icono tipo={n.tipo} /><span>{ETIQUETA[n.tipo] || n.tipo} ({textoUrgencia(n.urgencia)}) a {(n.distanciaKm * 1000).toFixed(0)} m, {quien(n)}</span></div>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-        {avisos.length === 0 && <div className="muted">Sin avisos por ahora.</div>}
-        {avisos.map((a) => <div key={a.id}>• {a.texto}</div>)}
+
+          <div className="tarjeta">
+            <h3 className="fila-icono"><Newspaper size={20} style={{ color: 'var(--rojo)' }} aria-hidden="true" />Boletín Minka</h3>
+            {parte && (
+              <div className="parte-zona">
+                <b>Resumen de tu zona, {parte.hora}:</b> {parte.texto}
+                <div className="fuente">
+                  {parte.fuente === 'gemini' ? <><Sparkles aria-hidden="true" />Resumido con IA a partir de los reportes vecinales</> : 'Resumen automático de los reportes vecinales'}
+                </div>
+              </div>
+            )}
+            {avisos.length === 0 && <div className="muted">Sin avisos por ahora.</div>}
+            {avisos.map((a) => <div key={a.id} className="aviso-item"><Megaphone aria-hidden="true" /><span>{a.texto}</span></div>)}
+          </div>
+        </div>
       </div>
     </div>
   )

@@ -1,15 +1,17 @@
-// Publicar en 3 toques: (1) boton + ya se toco  (2) elegir tipo  (3) texto/foto/voz + Publicar
+// Publicar en 3 toques: (1) boton Publicar ya se toco  (2) elegir tipo  (3) texto/foto/voz + Publicar
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ArrowLeft, ChevronRight, Mic, Camera, MapPin, WifiOff } from 'lucide-react'
 import { useEstado } from '../lib/estado'
 import { crear, conGeo, conTiempo, nuevoId } from '../lib/db'
 import { encolar } from '../lib/offlineQueue'
 import { clasificar } from '../lib/ia'
+import { ICONO_TIPO } from '../lib/iconos'
 
 const TIPOS = [
-  { id: 'OFREZCO', emoji: '🛠️', titulo: 'Ofrezco', sub: 'un servicio o producto', fondo: '#e3f1e8' },
-  { id: 'NECESITO', emoji: '🙋', titulo: 'Necesito', sub: 'ayuda o algo del barrio', fondo: '#fde6d4' },
-  { id: 'RECOMIENDO', emoji: '⭐', titulo: 'Recomiendo', sub: 'un negocio u oficio', fondo: '#fff3cc' },
+  { id: 'OFREZCO', titulo: 'Ofrezco', sub: 'un servicio o producto', color: '', ejemplo: 'Ej: Arreglo lavadoras a domicilio, S/ 30 la visita' },
+  { id: 'NECESITO', titulo: 'Necesito', sub: 'ayuda o algo del barrio', color: 'terracota', ejemplo: 'Ej: Necesito gasfitero para una fuga hoy' },
+  { id: 'RECOMIENDO', titulo: 'Recomiendo', sub: 'un negocio u oficio', color: 'maiz', ejemplo: 'Ej: La bodega de Doña Rosa fía y abre temprano' },
 ]
 
 /** Comprime una foto a ~800px / JPEG 0.6 y devuelve base64 (sin Firebase Storage). */
@@ -26,6 +28,13 @@ function comprimirFoto(file) {
     img.src = URL.createObjectURL(file)
   })
 }
+
+// Los 3 toques como barra de progreso (el toque 1 fue el boton Publicar del mapa)
+const Pasos = ({ actual }) => (
+  <div className="pasos" aria-label={`Paso ${actual} de 3`}>
+    {[1, 2, 3].map((n) => <i key={n} className={n < actual ? 'hecho' : n === actual ? 'actual' : ''} />)}
+  </div>
+)
 
 export default function Publicar() {
   const { usuario, geoAprox, online, setAviso } = useEstado()
@@ -59,7 +68,7 @@ export default function Publicar() {
     const id = nuevoId('publicaciones') // mismo id en cualquier reintento: nunca se duplica
     try {
       if (online) {
-        try { await conTiempo(crear('publicaciones', docu, id), 6000); setAviso('Publicado en tu barrio ✔') }
+        try { await conTiempo(crear('publicaciones', docu, id), 6000); setAviso('Publicado en tu barrio') }
         catch (e) {
           if (e.message !== 'timeout') throw e
           // Senal debil: Firestore ya la tiene en su cola local y la sube sola (no encolar = no duplicar)
@@ -76,40 +85,53 @@ export default function Publicar() {
   // TOQUE 2: elegir tipo
   if (!tipo) return (
     <div className="pantalla">
+      <Pasos actual={2} />
       <h2>¿Qué quieres publicar?</h2>
-      <p className="muted" style={{ marginTop: -8 }}>Tus vecinos de hasta 1 km lo verán en el mapa.</p>
+      <p className="muted">Tus vecinos de hasta 1 km lo verán en el mapa.</p>
       <div className="tarjeta lista">
-        {TIPOS.map((t) => (
-          <button key={t.id} className="opcion" onClick={() => setTipo(t.id)}>
-            <span className="opcion-icono" style={{ background: t.fondo }}>{t.emoji}</span>
-            <span><span className="opcion-titulo">{t.titulo}</span><span className="opcion-sub">{t.sub}</span></span>
-            <span className="opcion-flecha">›</span>
-          </button>
-        ))}
+        {TIPOS.map((t) => {
+          const Icono = ICONO_TIPO[t.id]
+          return (
+            <button key={t.id} className="opcion" onClick={() => setTipo(t.id)}>
+              <span className={`ficha ${t.color}`}><Icono aria-hidden="true" /></span>
+              <span className="opcion-texto"><span className="opcion-titulo">{t.titulo}</span><span className="opcion-sub">{t.sub}</span></span>
+              <ChevronRight className="opcion-flecha" aria-hidden="true" />
+            </button>
+          )
+        })}
       </div>
       <button className="btn secundario" onClick={() => nav(-1)}>Cancelar</button>
     </div>
   )
 
   // TOQUE 3: contenido + Publicar
+  const t = TIPOS.find((x) => x.id === tipo)
+  const Icono = ICONO_TIPO[tipo]
   return (
     <div className="pantalla">
-      <div className="fila">
-        <span className="opcion-icono" style={{ background: TIPOS.find((t) => t.id === tipo).fondo }}>{TIPOS.find((t) => t.id === tipo).emoji}</span>
-        <div><h2>{TIPOS.find((t) => t.id === tipo).titulo}</h2><div className="muted">{TIPOS.find((t) => t.id === tipo).sub}</div></div>
+      <Pasos actual={3} />
+      <div className="cabecera">
+        <button className="btn-atras" aria-label="Atrás" onClick={() => setTipo(null)}><ArrowLeft size={22} aria-hidden="true" /></button>
+        <span className={`ficha ${t.color}`}><Icono aria-hidden="true" /></span>
+        <div><h2>{t.titulo}</h2><div className="muted">{t.sub}</div></div>
       </div>
-      <textarea rows={4} placeholder="Ej: Necesito gasfitero para una fuga hoy" value={texto} onChange={(e) => setTexto(e.target.value)} autoFocus />
-      <div style={{ display: 'flex', gap: 10 }}>
-        <button className="btn secundario" onClick={dictar} disabled={grabando}>{grabando ? '🎙️ Escuchando…' : '🎙️ Hablar'}</button>
-        <label className="btn secundario" style={{ cursor: 'pointer' }}>📷 Foto
+      <div className="campo">
+        <label htmlFor="texto-pub">¿Qué quieres decir?</label>
+        <textarea id="texto-pub" rows={4} placeholder={t.ejemplo} value={texto} onChange={(e) => setTexto(e.target.value)} autoFocus />
+      </div>
+      <div className="btn-fila">
+        <button className="btn secundario" onClick={dictar} disabled={grabando}><Mic aria-hidden="true" />{grabando ? 'Escuchando…' : 'Hablar'}</button>
+        <label className="btn secundario"><Camera aria-hidden="true" />Foto
           <input type="file" accept="image/*" capture="environment" style={{ display: 'none' }}
             onChange={async (e) => e.target.files[0] && setFoto(await comprimirFoto(e.target.files[0]))} />
         </label>
       </div>
-      {foto && <img src={foto} alt="" style={{ maxHeight: 180, borderRadius: 14, objectFit: 'cover', boxShadow: 'var(--sombra)' }} />}
-      <p className="muted">📍 Se publica con tu ubicación aproximada. {!online && 'Estás sin internet: se guardará y subirá solo.'}</p>
+      {foto && <img src={foto} alt="Foto que acompaña tu publicación" className="foto-previa" />}
+      <p className="nota">
+        {online ? <MapPin aria-hidden="true" /> : <WifiOff aria-hidden="true" />}
+        <span>Se publica con tu ubicación aproximada.{!online && ' Estás sin internet: se guardará y subirá solo.'}</span>
+      </p>
       <button className="btn" disabled={!texto.trim() || enviando} onClick={publicar}>{enviando ? 'Publicando…' : 'Publicar'}</button>
-      <button className="btn secundario" onClick={() => setTipo(null)}>Atrás</button>
     </div>
   )
 }

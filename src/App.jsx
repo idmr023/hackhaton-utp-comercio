@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route, NavLink, Navigate, useNavigate } from 'react-router-dom'
+import { Map, Siren, Coins, UserRound, WifiOff, LogOut } from 'lucide-react'
 import { EstadoProvider, useEstado } from './lib/estado'
+import { Logo } from './lib/iconos'
 import Mapa from './pages/Mapa'
 import Publicar from './pages/Publicar'
 import Minka from './pages/Minka'
@@ -11,30 +13,34 @@ import Puntos from './pages/Puntos'
 function Barra() {
   const { modo, setModo, online, aviso } = useEstado()
   const nav = useNavigate()
+  const minka = modo === 'minka'
   const cambiarModo = () => {
-    if (modo === 'minka') {
-      if (!window.confirm('¿Terminó la emergencia en tu zona?\n\nAceptar = Sí, volver al barrio · Cancelar = Seguir en Minka')) return
+    if (minka) {
+      if (!window.confirm('¿Terminó la emergencia en tu zona?\n\nAceptar = Sí, volver al barrio. Cancelar = Seguir en Minka')) return
       setModo('barrio'); nav('/')
     } else { setModo('minka'); nav('/minka') }
   }
   return (
     <>
-      <header className="barra-superior">
+      <header className={'barra-superior' + (online ? '' : ' sin-internet')}>
         <div className="marca">
-          <div className="marca-logo">{modo === 'minka' ? '🆘' : '🤝'}</div>
-          <div>
-            <div className="marca-nombre">{modo === 'minka' ? 'Modo Minka' : 'Ayni'}</div>
-            <div className="marca-lema">{modo === 'minka' ? 'emergencia en tu zona' : 'tu barrio se ayuda'}</div>
+          <Logo size={38} fondo={minka ? '#fff' : 'var(--maiz)'} trazo={minka ? 'var(--rojo)' : 'var(--verde-prof)'} />
+          <div className="marca-texto">
+            <div className="marca-nombre">{minka ? 'Modo Minka' : 'Ayni'}</div>
+            <div className="marca-lema">{minka ? 'emergencia en tu zona' : 'tu barrio se ayuda'}</div>
           </div>
         </div>
         <div className="barra-acciones">
-          <span className={'estado' + (online ? ' en-linea' : ' offline')} title={online ? 'En línea' : undefined}>
-            {online ? <span className="solo-lector">En línea</span> : <span>Sin internet<br />se guarda local</span>}
-          </span>
-          <button className="btn-modo" onClick={cambiarModo}>{modo === 'minka' ? 'Salir' : '🆘 Emergencia'}</button>
+          {online
+            ? <span className="estado en-linea" role="status"><span className="solo-lector">En línea</span></span>
+            : <span className="estado offline" role="status"><WifiOff size={16} aria-hidden="true" /><span>Sin internet,<br />se guarda local</span></span>}
+          <button className="btn-modo" onClick={cambiarModo} aria-label={minka ? 'Salir de Minka' : 'Emergencia: entrar a Modo Minka'}>
+            {minka ? <LogOut size={18} aria-hidden="true" /> : <Siren size={18} aria-hidden="true" />}
+            <span className="btn-modo-texto">{minka ? 'Salir' : 'Emergencia'}</span>
+          </button>
         </div>
       </header>
-      {aviso && <div className="toast">{aviso}</div>}
+      {aviso && <div className="toast" role="status">{aviso}</div>}
     </>
   )
 }
@@ -42,11 +48,11 @@ function Barra() {
 function Nav() {
   const cls = ({ isActive }) => (isActive ? 'activo' : '')
   return (
-    <nav className="nav">
-      <NavLink to="/" className={cls} end><span>🗺️</span>Mapa</NavLink>
-      <NavLink to="/minka" className={cls}><span>🆘</span>Minka</NavLink>
-      <NavLink to="/puntos" className={cls}><span>⭐</span>Puntos</NavLink>
-      <NavLink to="/perfil" className={cls}><span>👤</span>Perfil</NavLink>
+    <nav className="nav" aria-label="Secciones">
+      <NavLink to="/" className={cls} end><Map aria-hidden="true" />Mapa</NavLink>
+      <NavLink to="/minka" className={cls}><Siren aria-hidden="true" />Minka</NavLink>
+      <NavLink to="/puntos" className={cls}><Coins aria-hidden="true" />Puntos</NavLink>
+      <NavLink to="/perfil" className={cls}><UserRound aria-hidden="true" />Perfil</NavLink>
     </nav>
   )
 }
