@@ -135,7 +135,7 @@ export default function Ajustes() {
                 <div style={{ marginTop: 6 }}>
                   {usuario.verificacion === 'reniec'
                     ? <span className="chip"><BadgeCheck aria-hidden="true" />{t('Validado en RENIEC')}</span>
-                    : <span className="chip pendiente">{t('Pendiente de verificación')}</span>}
+                    : <span className="chip pendiente">{t('DNI en verificación con RENIEC')}</span>}
                 </div>
               </div>
             </div>

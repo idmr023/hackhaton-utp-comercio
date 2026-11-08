@@ -42,7 +42,7 @@ Enlace secundario en las 3: **Saltar**.
   - Celular inválido: *El celular debe tener 9 dígitos y empezar con 9.*
   - Ya existe: *Ya hay una cuenta con ese DNI. ¿Es tuya? Entra con tu celular.*
   - Sin internet / Didit caído (no es error, es aviso): *No pudimos validar tu DNI ahora. Puedes entrar; lo validamos cuando vuelva la señal.*
-- Estado en Ajustes: chip **Validado en RENIEC** / chip amarillo **Pendiente de verificación**
+- Estado en Ajustes: chip **Validado en RENIEC** / chip amarillo **DNI en verificación con RENIEC** (antes "Pendiente de verificación"; con la clave live sin recarga, todos los registros nuevos quedan así)
 
 ## 3. Barra superior
 - Marca a la izquierda: logo (casa verde con sonrisa en un círculo maíz) + **Ayni** / *tu barrio se ayuda* · en emergencia: el mismo logo + **Modo Minka** / *emergencia en tu zona* (se recorta con … si no hay espacio)
@@ -168,7 +168,7 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 
 ## 8. Ajustes (se abre desde el avatar de la barra; `/perfil` redirige aquí)
 - Título: **Ajustes** · tarjeta de tu cuenta (avatar con foto o iniciales, nombre, chip de verificación; botones **Poner foto de perfil** / **Cambiar foto** y **Quitar foto**, avisos *Foto actualizada.* / *Foto quitada.*; la foto se recorta cuadrada y se ve en la barra, en Vecinos, comentarios y perfiles; texto *Celular para entrar: 9xxxxxxxx* con botón **Cambiar** (abre: **Celular nuevo para entrar** + **Tu PIN actual (para confirmar)** + nota *Tu WhatsApp no cambia; si también es nuevo, cámbialo abajo.* + **Guardar celular** / **Cancelar**; avisos *Celular actualizado. Desde ahora entras con 9xxxxxxxx.* · *El PIN no coincide.* · *Ese celular ya es de otra cuenta.* · *Ese ya es tu celular para entrar.* · *Tu cuenta aún no tiene PIN...*; se guarda en accesos.telefono y el celular anterior deja de servir para entrar), avales, puntos; formulario **Mi WhatsApp** (campo de 9 dígitos que empieza con 9 + casilla *Mostrar mi WhatsApp a los vecinos que quieran contactarme* + nota *Se cambia también en lo que ya publicaste.* + botón **Guardar WhatsApp**, apagado si no hay cambios; aviso *WhatsApp actualizado.* o *El WhatsApp debe tener 9 dígitos y empezar con 9.*; se guarda en perfiles y actualiza autorWhatsapp de mis publicaciones; el celular de registro sigue siendo el de entrar) · sección **Mi negocio** (*¿Tienes un negocio u oficio? Ponlo en el mapa para que tus vecinos lo encuentren.* + botón **Registrar mi negocio**; si ya tiene: un bloque por negocio con nombre o logo, rubro, chip *Quitado del mapa* si corresponde y botones **Editar**, **Ver página**, **Quitar del mapa**, **Eliminar**; abajo **Registrar otro negocio**) · secciones **Accesibilidad e idioma** y **Ubicación y cuenta**. En PC, cuenta y negocio a la izquierda y secciones a la derecha.
-- Chips: **Validado en RENIEC** (con check) / **Pendiente de verificación** · `Avales: 1 de 2` · `, vecino verificado`
+- Chips: **Validado en RENIEC** (con check) / **DNI en verificación con RENIEC** · `Avales: 1 de 2` · `, vecino verificado`
 - WhatsApp: `(WhatsApp visible)` / `(WhatsApp oculto)` · interruptor: *Mostrar mi WhatsApp*
 - Botón en perfil de otro vecino: **Lo conozco (avalar)** · éxito: *Avalaste a Lucía. Le falta 1 aval más.*
 - Reportar publicación: **Reportar** → *¿Qué pasa con esta publicación?* `Es falsa · Es ofensiva · No es de este barrio` → *Gracias. Con 3 reportes se oculta.*

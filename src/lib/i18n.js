@@ -124,7 +124,7 @@ export const QU = {
   'Se agotó esta recompensa. Prueba otra.': 'Kay chaninchay tukukurqun. Hukta akllay.', 'Ya canjeaste aquí esta semana. Prueba otro negocio.': 'Kay semanapi kaypi chhalarqankiña. Huk qhatuta akllay.',
   'Tu código: {c}. Muéstralo en {neg}. Vence en 7 días.': 'Kodigoyki: {c}. {neg}pi rikuchiy. 7 p\'unchawpi tukukun.', 'No se pudo canjear. Intenta de nuevo.': 'Manam chhalayta atikurqanchu. Huktawan ruway.',
   // Ajustes
-  'Ajustes': 'Allichaykuna', 'Wasimasi (vecino/a)': 'Wasimasi', 'Pendiente de verificación': 'Chiqaqchanapaq suyachkan',
+  'Ajustes': 'Allichaykuna', 'Wasimasi (vecino/a)': 'Wasimasi', 'Pendiente de verificación': 'Chiqaqchanapaq suyachkan', 'DNI en verificación con RENIEC': 'DNI RENIEC-wan chiqaqchakuchkan',
   '(WhatsApp visible)': '(WhatsApp rikukun)', '(WhatsApp oculto)': '(WhatsApp pakasqa)', 'Avales: {n} de 2': 'Takyachiqkuna: {n} / 2', ', vecino verificado': ', chiqaq wasimasi', 'Puntos Ayni:': 'Ayni puntukuna:',
   'Accesibilidad e idioma': 'Yanapakuykuna, simi', 'Letra grande': 'Hatun qillqa', 'Toda la letra un 25 % más grande': 'Llapan qillqa 25 % aswan hatun',
   'Alto contraste': 'Aswan rikch\'aq llimp\'ikuna', 'Colores oscuros y bordes marcados': 'Yana llimp\'ikuna, sinchi patakuna',
