@@ -20,13 +20,16 @@ function Barra() {
   return (
     <>
       <header className="barra-superior">
-        <div>{modo === 'minka' ? '🆘 MODO MINKA' : '🤝 Ayni'}</div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+        <div className="marca">
+          <div className="marca-logo">{modo === 'minka' ? '🆘' : '🤝'}</div>
+          <div>
+            <div className="marca-nombre">{modo === 'minka' ? 'Modo Minka' : 'Ayni'}</div>
+            <div className="marca-lema">{modo === 'minka' ? 'emergencia en tu zona' : 'tu barrio se ayuda'}</div>
+          </div>
+        </div>
+        <div className="barra-acciones">
           <span className={'estado' + (online ? '' : ' offline')}>{online ? 'En línea' : 'Sin internet · se guarda local'}</span>
-          <button className="btn secundario" style={{ width: 'auto', minHeight: 34, padding: '4px 10px', fontSize: 13 }}
-            onClick={cambiarModo}>
-            {modo === 'minka' ? 'Salir' : 'Emergencia'}
-          </button>
+          <button className="btn-modo" onClick={cambiarModo}>{modo === 'minka' ? 'Salir' : '🆘 Emergencia'}</button>
         </div>
       </header>
       {aviso && <div className="toast">{aviso}</div>}

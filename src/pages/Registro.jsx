@@ -62,23 +62,31 @@ export default function Registro() {
   }
 
   return (
-    <div className="pantalla" style={{ minHeight: '100dvh', justifyContent: 'center' }}>
-      <h1>Crea tu cuenta de vecino</h1>
-      <input placeholder="Tu nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-      <input placeholder="Celular (9 dígitos)" inputMode="numeric" maxLength={9} value={telefono} onChange={(e) => setTelefono(e.target.value.replace(/\D/g, ''))} />
-      <input placeholder="DNI (8 dígitos)" inputMode="numeric" maxLength={8} value={dni} onChange={(e) => setDni(e.target.value.replace(/\D/g, ''))} />
-      <label style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 15 }}>
-        <input type="checkbox" style={{ width: 24 }} checked={consiente} onChange={(e) => setConsiente(e.target.checked)} />
-        Autorizo validar mi DNI en RENIEC. Ayni guarda solo una huella (hash), nunca mi número de DNI.
-      </label>
-      <label style={{ display: 'flex', gap: 10, alignItems: 'center', fontSize: 15 }}>
-        <input type="checkbox" style={{ width: 24 }} checked={whatsappVisible} onChange={(e) => setWhatsappVisible(e.target.checked)} />
-        Mostrar mi WhatsApp a los vecinos que quieran contactarme
-      </label>
-      {error && <div style={{ color: 'var(--rojo)' }}>{error}</div>}
-      <button className="btn" disabled={!valido || cargando} onClick={registrar}>{cargando ? 'Verificando…' : 'Entrar a mi barrio'}</button>
-      <p className="muted">¿Ya tienes cuenta? Escribe el mismo celular y DNI y entras directo.</p>
-      <p className="muted">Tu ubicación se guarda aproximada (~300 m). Nadie ve tu casa exacta.</p>
+    <div className="portada">
+      <div className="portada-cabecera">
+        <div className="portada-logo">🤝</div>
+        <h1>Crea tu cuenta de vecino</h1>
+        <p>Ayni · tu barrio se ayuda</p>
+      </div>
+      <div className="portada-cuerpo">
+        <div className="tarjeta" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <input placeholder="Tu nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+          <input placeholder="Celular (9 dígitos)" inputMode="numeric" maxLength={9} value={telefono} onChange={(e) => setTelefono(e.target.value.replace(/\D/g, ''))} />
+          <input placeholder="DNI (8 dígitos)" inputMode="numeric" maxLength={8} value={dni} onChange={(e) => setDni(e.target.value.replace(/\D/g, ''))} />
+          <label className="check">
+            <input type="checkbox" checked={consiente} onChange={(e) => setConsiente(e.target.checked)} />
+            <span>Autorizo validar mi DNI en RENIEC. Ayni guarda solo una huella (hash), nunca mi número de DNI.</span>
+          </label>
+          <label className="check">
+            <input type="checkbox" checked={whatsappVisible} onChange={(e) => setWhatsappVisible(e.target.checked)} />
+            <span>Mostrar mi WhatsApp a los vecinos que quieran contactarme</span>
+          </label>
+          {error && <div style={{ color: 'var(--rojo)', fontWeight: 600 }}>{error}</div>}
+          <button className="btn" disabled={!valido || cargando} onClick={registrar}>{cargando ? 'Verificando…' : 'Entrar a mi barrio'}</button>
+        </div>
+        <p className="muted" style={{ textAlign: 'center' }}>¿Ya tienes cuenta? Escribe el mismo celular y DNI y entras directo.</p>
+        <p className="muted" style={{ textAlign: 'center' }}>🔒 Tu ubicación se guarda aproximada (~300 m). Nadie ve tu casa exacta.</p>
+      </div>
     </div>
   )
 }

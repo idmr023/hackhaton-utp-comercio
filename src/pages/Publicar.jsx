@@ -7,9 +7,9 @@ import { encolar } from '../lib/offlineQueue'
 import { clasificar } from '../lib/ia'
 
 const TIPOS = [
-  { id: 'OFREZCO', emoji: '🛠️', titulo: 'Ofrezco', sub: 'un servicio o producto' },
-  { id: 'NECESITO', emoji: '🙋', titulo: 'Necesito', sub: 'ayuda o algo del barrio' },
-  { id: 'RECOMIENDO', emoji: '⭐', titulo: 'Recomiendo', sub: 'un negocio u oficio' },
+  { id: 'OFREZCO', emoji: '🛠️', titulo: 'Ofrezco', sub: 'un servicio o producto', fondo: '#d7eef5' },
+  { id: 'NECESITO', emoji: '🙋', titulo: 'Necesito', sub: 'ayuda o algo del barrio', fondo: '#fde7d2' },
+  { id: 'RECOMIENDO', emoji: '⭐', titulo: 'Recomiendo', sub: 'un negocio u oficio', fondo: '#fff4cc' },
 ]
 
 /** Comprime una foto a ~800px / JPEG 0.6 y devuelve base64 (sin Firebase Storage). */
@@ -77,11 +77,13 @@ export default function Publicar() {
   if (!tipo) return (
     <div className="pantalla">
       <h2>¿Qué quieres publicar?</h2>
+      <p className="muted" style={{ marginTop: -8 }}>Tus vecinos de hasta 1 km lo verán en el mapa.</p>
       <div className="opciones-tipo">
         {TIPOS.map((t) => (
-          <button key={t.id} className="btn secundario" onClick={() => setTipo(t.id)}>
-            <span style={{ fontSize: 30 }}>{t.emoji}</span>
-            <span style={{ textAlign: 'left' }}><b>{t.titulo}</b><br /><small className="muted">{t.sub}</small></span>
+          <button key={t.id} className="opcion" onClick={() => setTipo(t.id)}>
+            <span className="opcion-icono" style={{ background: t.fondo }}>{t.emoji}</span>
+            <span><span className="opcion-titulo">{t.titulo}</span><span className="opcion-sub">{t.sub}</span></span>
+            <span className="opcion-flecha">›</span>
           </button>
         ))}
       </div>
@@ -92,8 +94,11 @@ export default function Publicar() {
   // TOQUE 3: contenido + Publicar
   return (
     <div className="pantalla">
-      <h2>{TIPOS.find((t) => t.id === tipo).emoji} {TIPOS.find((t) => t.id === tipo).titulo}</h2>
-      <textarea rows={3} placeholder="Ej: Necesito gasfitero para una fuga hoy" value={texto} onChange={(e) => setTexto(e.target.value)} autoFocus />
+      <div className="fila">
+        <span className="opcion-icono" style={{ background: TIPOS.find((t) => t.id === tipo).fondo }}>{TIPOS.find((t) => t.id === tipo).emoji}</span>
+        <div><h2>{TIPOS.find((t) => t.id === tipo).titulo}</h2><div className="muted">{TIPOS.find((t) => t.id === tipo).sub}</div></div>
+      </div>
+      <textarea rows={4} placeholder="Ej: Necesito gasfitero para una fuga hoy" value={texto} onChange={(e) => setTexto(e.target.value)} autoFocus />
       <div style={{ display: 'flex', gap: 10 }}>
         <button className="btn secundario" onClick={dictar} disabled={grabando}>{grabando ? '🎙️ Escuchando…' : '🎙️ Hablar'}</button>
         <label className="btn secundario" style={{ cursor: 'pointer' }}>📷 Foto
@@ -101,7 +106,7 @@ export default function Publicar() {
             onChange={async (e) => e.target.files[0] && setFoto(await comprimirFoto(e.target.files[0]))} />
         </label>
       </div>
-      {foto && <img src={foto} alt="" style={{ maxHeight: 160, borderRadius: 10, objectFit: 'cover' }} />}
+      {foto && <img src={foto} alt="" style={{ maxHeight: 180, borderRadius: 14, objectFit: 'cover', boxShadow: 'var(--sombra)' }} />}
       <p className="muted">📍 Se publica con tu ubicación aproximada. {!online && 'Estás sin internet: se guardará y subirá solo.'}</p>
       <button className="btn" disabled={!texto.trim() || enviando} onClick={publicar}>{enviando ? 'Publicando…' : 'Publicar'}</button>
       <button className="btn secundario" onClick={() => setTipo(null)}>Atrás</button>

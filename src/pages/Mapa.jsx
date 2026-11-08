@@ -8,10 +8,15 @@ import { useEstado } from '../lib/estado'
 import { listarCerca } from '../lib/db'
 import { RADIOS_KM } from '../lib/geo'
 import { pendientes } from '../lib/offlineQueue'
+import { emojiRubro } from '../lib/rubros'
 
-// Iconos simples por tipo (emoji en divIcon: no depende de imagenes externas)
-const icono = (emoji) => L.divIcon({ html: `<div style="font-size:26px;line-height:1">${emoji}</div>`, className: '', iconSize: [30, 30], iconAnchor: [15, 15] })
-const ICONOS = { NEGOCIO: icono('🏪'), YO: icono('📍') }
+// Pines del mapa (divIcon con clases de index.css: no dependen de imagenes externas)
+const ICONO_YO = L.divIcon({ html: '<div class="pin pin-yo"></div>', className: '', iconSize: [20, 20], iconAnchor: [10, 10] })
+
+const cacheIconos = {}
+const iconoNegocio = (rubro) => (cacheIconos[rubro] ??= L.divIcon({
+  html: `<div class="pin pin-negocio">${emojiRubro(rubro)}</div>`, className: '', iconSize: [34, 34], iconAnchor: [17, 17], popupAnchor: [0, -14],
+}))
 const EMOJI_TIPO = { OFREZCO: '🛠️', NECESITO: '🙋', RECOMIENDO: '⭐' }
 
 // WhatsApp con mensaje precargado (textos en docs/TEXTOS_PANTALLAS.md §9)
@@ -24,11 +29,10 @@ const MSJ_PUB = {
   RECOMIENDO: (p) => `Hola ${nombre1(p.autorNombre)}, vi tu recomendación en Ayni: "${corto(p.texto)}". ¿Me cuentas más?`,
 }
 
-// Icono de un grupo de publicaciones: emoji de la mas reciente + contador si hay varias
-const iconoGrupo = (emoji, n) => L.divIcon({
-  html: `<div style="position:relative;font-size:26px;line-height:1">${emoji}${n > 1
-    ? `<span style="position:absolute;top:-8px;right:-12px;background:#d62828;color:#fff;border-radius:10px;font:700 12px sans-serif;padding:2px 6px">${n}</span>` : ''}</div>`,
-  className: '', iconSize: [30, 30], iconAnchor: [15, 15],
+// Grupo de publicaciones: circulo del color del tipo de la mas reciente + contador si hay varias
+const iconoGrupo = (tipo, n) => L.divIcon({
+  html: `<div class="pin pin-pub ${tipo}">${EMOJI_TIPO[tipo] || EMOJI_TIPO.OFREZCO}${n > 1 ? `<span class="pin-contador">${n}</span>` : ''}</div>`,
+  className: '', iconSize: [38, 38], iconAnchor: [19, 19], popupAnchor: [0, -16],
 })
 
 // Las publicaciones se guardan en una celda aproximada (~300 m), asi que varias caen en el
@@ -44,9 +48,11 @@ function agruparPorCelda(pubs) {
   return [...grupos].map(([k, items]) => ({ k, items: items.sort((a, b) => msFecha(b.fecha) - msFecha(a.fecha)) }))
 }
 
-function Centrar({ centro }) {
+// Zoom segun el radio: con 1 km los pines se distinguen (el circulo puede salir del borde; se puede alejar)
+const ZOOM_RADIO = { 0.5: 17, 1: 16, 2: 15, 5: 13 }
+function Centrar({ centro, zoom }) {
   const map = useMap()
-  useEffect(() => { if (centro) map.setView([centro.lat, centro.lng], 15) }, [centro, map])
+  useEffect(() => { if (centro) map.setView([centro.lat, centro.lng], zoom) }, [centro, zoom, map])
   return null
 }
 
@@ -64,49 +70,53 @@ export default function Mapa() {
     pendientes().then((l) => setNPend(l.length))
   }, [ubicacion, radioKm])
 
-  if (!ubicacion) return <div className="pantalla"><p>Buscando tu ubicación…</p></div>
+  if (!ubicacion) return <div className="pantalla" style={{ textAlign: 'center', paddingTop: 60 }}><div style={{ fontSize: 48 }}>📍</div><p className="muted">Buscando tu ubicación…</p></div>
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ padding: '8px 12px', display: 'flex', gap: 8, alignItems: 'center' }}>
-        <span className="muted">Radio</span>
-        <div className="selector-radio" style={{ flex: 1 }}>
+      <div className="barra-mapa">
+        <div className="selector-radio" role="group" aria-label="Radio">
           {RADIOS_KM.map((r) => (
             <button key={r} className={r === radioKm ? 'activo' : ''} onClick={() => setRadioKm(r)}>{r < 1 ? `${r * 1000} m` : `${r} km`}</button>
           ))}
         </div>
+        {(ubicacionDemo || nPend > 0 || negocios.length > 0) && (
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            {negocios.length > 0 && <span className="chip verde">🏪 {negocios.length} negocios · {pubs.length} publicaciones</span>}
+            {ubicacionDemo && <span className="chip">📍 Ubicación demo: Surquillo</span>}
+            {nPend > 0 && <span className="chip pendiente">{nPend} publicación(es) pendiente(s) de subir</span>}
+          </div>
+        )}
       </div>
-      {ubicacionDemo && <div className="chip" style={{ margin: '0 12px 6px' }}>📍 Ubicación demo: Surquillo</div>}
-      {nPend > 0 && <div className="chip pendiente" style={{ margin: '0 12px 6px' }}>{nPend} publicación(es) pendiente(s) de subir</div>}
       <div style={{ flex: 1, position: 'relative' }}>
-        <MapContainer center={[ubicacion.lat, ubicacion.lng]} zoom={15} className="mapa" zoomControl={false}>
+        <MapContainer center={[ubicacion.lat, ubicacion.lng]} zoom={ZOOM_RADIO[radioKm] || 16} className="mapa" zoomControl={false}>
           <TileLayer attribution='&copy; OpenStreetMap' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          <Centrar centro={ubicacion} />
-          <Circle center={[ubicacion.lat, ubicacion.lng]} radius={radioKm * 1000} pathOptions={{ color: '#1f6f8b', fillOpacity: 0.05 }} />
-          <Marker position={[ubicacion.lat, ubicacion.lng]} icon={ICONOS.YO}><Popup>Tú ({usuario?.nombre})</Popup></Marker>
+          <Centrar centro={ubicacion} zoom={ZOOM_RADIO[radioKm] || 16} />
+          <Circle center={[ubicacion.lat, ubicacion.lng]} radius={radioKm * 1000} pathOptions={{ color: '#1f6f8b', weight: 2, dashArray: '6 6', fillOpacity: 0.04 }} />
+          <Marker position={[ubicacion.lat, ubicacion.lng]} icon={ICONO_YO}><Popup>Tú ({usuario?.nombre})</Popup></Marker>
           {negocios.map((n) => (
-            <Marker key={n.id} position={[n.geo.lat, n.geo.lng]} icon={ICONOS.NEGOCIO}>
+            <Marker key={n.id} position={[n.geo.lat, n.geo.lng]} icon={iconoNegocio(n.rubro)}>
               <Popup>
-                <b>{n.nombre}</b><br />{n.rubro}<br />
-                <span className="recomendado">⭐ Recomendado por {n.nRecomendaciones || 0} vecinos de tu zona</span><br />
-                {n.resumenIA && <i>"{n.resumenIA}"</i>}<br />
-                <span className="muted">{(n.distanciaKm * 1000).toFixed(0)} m</span><br />
-                {n.whatsapp && <a href={waLink(n.whatsapp, `Hola, te vi en Ayni como ${n.rubro}. ¿Estás disponible?`)} target="_blank" rel="noreferrer">💬 WhatsApp</a>}
+                <div className="pop-titulo">{emojiRubro(n.rubro)} {n.nombre}</div>
+                <div className="muted">{n.rubro} · a {(n.distanciaKm * 1000).toFixed(0)} m{n.horario ? ` · ${n.horario}` : ''}</div>
+                <div className="recomendado" style={{ marginTop: 6 }}>⭐ Recomendado por {n.nRecomendaciones || 0} vecinos de tu zona</div>
+                {n.resumenIA && <div style={{ fontStyle: 'italic', marginTop: 4 }}>"{n.resumenIA}"</div>}
+                {n.whatsapp && <a className="pop-wa" href={waLink(n.whatsapp, `Hola, te vi en Ayni como ${n.rubro}. ¿Estás disponible?`)} target="_blank" rel="noreferrer">💬 WhatsApp</a>}
               </Popup>
             </Marker>
           ))}
           {agruparPorCelda(pubs).map(({ k, items }) => (
-            <Marker key={k} position={[items[0].geo.lat, items[0].geo.lng]} icon={iconoGrupo(EMOJI_TIPO[items[0].tipo] || '🛠️', items.length)}>
+            <Marker key={k} position={[items[0].geo.lat, items[0].geo.lng]} icon={iconoGrupo(items[0].tipo, items.length)}>
               <Popup>
-                {items.length > 1 && <b>{items.length} publicaciones en esta zona</b>}
+                {items.length > 1 && <div className="pop-titulo">{items.length} publicaciones en esta zona</div>}
                 <div style={{ maxHeight: 240, overflowY: 'auto' }}>
                   {items.map((p, i) => (
-                    <div key={p.id} style={{ padding: '6px 0', borderTop: i ? '1px solid #eee' : 'none' }}>
-                      <span className="chip">{p.tipo}</span> <span className="chip">{p.categoria}</span><br />
-                      {p.texto}<br />
+                    <div key={p.id} style={{ padding: '6px 0', borderTop: i ? '1px solid var(--linea)' : 'none' }}>
+                      <span className="chip">{EMOJI_TIPO[p.tipo]} {p.tipo}</span> <span className="chip verde">{p.categoria}</span>
+                      <div style={{ margin: "4px 0 2px", fontWeight: 600 }}>{p.texto}</div>
                       <span className="muted">{p.autorId === usuario?.id ? 'Tú' : p.autorNombre} · {(p.distanciaKm * 1000).toFixed(0)} m</span>
                       {p.autorWhatsapp && p.autorId !== usuario?.id && (
-                        <><br /><a href={waLink(p.autorWhatsapp, (MSJ_PUB[p.tipo] || MSJ_PUB.OFREZCO)(p))} target="_blank" rel="noreferrer">💬 WhatsApp</a></>
+                        <div><a className="pop-wa" href={waLink(p.autorWhatsapp, (MSJ_PUB[p.tipo] || MSJ_PUB.OFREZCO)(p))} target="_blank" rel="noreferrer">💬 WhatsApp</a></div>
                       )}
                     </div>
                   ))}

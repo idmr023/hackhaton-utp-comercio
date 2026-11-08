@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useEstado } from '../lib/estado'
 import { listar, crearSeguro } from '../lib/db'
 import { saldoPuntos, msFecha } from '../lib/puntos'
+import { emojiRubro } from '../lib/rubros'
 
 const DIA = 864e5
 const conEspacio = (c) => `${c.slice(0, 3)} ${c.slice(3)}`
@@ -55,33 +56,39 @@ export default function Puntos() {
 
   return (
     <div className="pantalla">
-      <div className="tarjeta" style={{ textAlign: 'center' }}>
-        <div className="muted">Tus puntos Ayni</div>
-        <div style={{ fontSize: 48, fontWeight: 800 }}>{saldo ?? '…'}</div>
-        <div className="muted">Ayuda confirmada +10 · Recomendación +2 · Minka +20</div>
+      <div className="hero-puntos">
+        <div style={{ fontWeight: 700, opacity: 0.9 }}>Tus puntos Ayni</div>
+        <div className="numero">{saldo ?? '…'}</div>
+        <div style={{ display: 'flex', gap: 6, justifyContent: 'center', flexWrap: 'wrap', marginTop: 8 }}>
+          <span className="chip">Ayuda confirmada +10</span><span className="chip">Recomendación +2</span><span className="chip">Minka +20</span>
+        </div>
       </div>
 
       {misCanjes.length > 0 && (
-        <div className="tarjeta" style={{ border: '2px solid var(--verde)', background: 'var(--verde-claro)' }}>
-          <h3>Tus códigos de canje</h3>
+        <div className="tarjeta tarjeta-match">
+          <h3>🎟️ Tus códigos de canje</h3>
           {misCanjes.map((c) => (
-            <div key={c.id} style={{ marginTop: 6 }}>
-              <b style={{ fontSize: 22, letterSpacing: 2 }}>{conEspacio(c.codigo6)}</b>
+            <div key={c.id} style={{ marginTop: 8 }}>
+              <div className="codigo-canje">{conEspacio(c.codigo6)}</div>
               <div className="muted">{c.titulo} · {c.negocioNombre} · vence el {venceEl(c.fecha)}</div>
             </div>
           ))}
         </div>
       )}
 
-      <h3>Canjea en negocios de tu barrio</h3>
+      <div className="titulo-seccion">Canjea en negocios de tu barrio</div>
       {recompensas.length === 0 && <div className="muted">Aún no hay recompensas en tu barrio.</div>}
       {recompensas.map((r) => {
         const quedan = Math.max(0, r.stock - (usados[r.id] || 0))
         return (
-          <div key={r.id} className="tarjeta">
-            <h3>{r.titulo}</h3>
-            <div className="muted">{r.negocioNombre} · {r.costoPuntos} puntos · quedan {quedan}</div>
-            <button className="btn" style={{ marginTop: 8 }} disabled={enviando || quedan === 0} onClick={() => canjear(r)}>
+          <div key={r.id} className="tarjeta recompensa">
+            <div className="recompensa-icono">{emojiRubro(r.negocioNombre)}</div>
+            <div className="recompensa-info">
+              <h3 style={{ margin: 0 }}>{r.titulo}</h3>
+              <div className="muted">{r.negocioNombre}</div>
+              <div style={{ marginTop: 4 }}><span className="costo">{r.costoPuntos} puntos</span> <span className="muted">· quedan {quedan}</span></div>
+            </div>
+            <button className="btn chico" disabled={enviando || quedan === 0} onClick={() => canjear(r)}>
               {quedan === 0 ? 'Agotado' : 'Canjear'}
             </button>
           </div>

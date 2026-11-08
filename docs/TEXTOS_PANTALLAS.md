@@ -36,9 +36,9 @@ Enlace secundario en las 3: **Saltar**.
 - Estado en perfil: chip **Validado en RENIEC** / chip amarillo **Pendiente de verificación**
 
 ## 3. Barra superior
-- Modo barrio: **🤝 Ayni** · Modo emergencia: **🆘 MODO MINKA**
+- Marca a la izquierda: logo 🤝 + **Ayni** / *tu barrio se ayuda* · en emergencia: logo 🆘 + **Modo Minka** / *emergencia en tu zona* (se recorta con … si no hay espacio)
 - Conexión: `En línea` · amarillo: `Sin internet · se guarda local`
-- Botón derecha: **Emergencia** (en barrio) / **Salir** (en Minka)
+- Botón derecha (blanco, letra roja): **🆘 Emergencia** (en barrio) / **Salir** (en Minka)
 
 ## 4. Mapa (Modo Barrio)
 - Etiqueta radio: `Radio` + botones `500 m · 1 km · 2 km · 5 km`

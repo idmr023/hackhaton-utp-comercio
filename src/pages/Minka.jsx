@@ -248,7 +248,7 @@ export default function Minka() {
           ? `Hola ${m.otro.nombre}, soy ${yo} de Ayni. Necesito ${min(m.miTipo)} y estás ${dist}. ¿Puedes ayudar?`
           : `Hola ${m.otro.nombre}, soy ${yo} de Ayni. Vi que necesitas ${min(m.otro.tipo)} y estoy ${dist}. ¿Te ayudo?`
         return (
-          <div key={m.key} className="tarjeta" style={{ border: '2px solid var(--verde)', background: 'var(--verde-claro)' }}>
+          <div key={m.key} className="tarjeta tarjeta-match">
             <b>🤝 {EMOJI[m.otro.tipo]} {texto}</b>
             {m.otro.whatsapp
               ? <a className="btn puedo" style={{ marginTop: 10, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
@@ -269,7 +269,7 @@ export default function Minka() {
             {m.rol === 'ofreci' && (conf
               ? <div style={{ marginTop: 10 }}>✔ {conf.recibeNombre} confirmó tu ayuda: +{conf.puntos || 0} puntos Ayni</div>
               : <div style={{ marginTop: 10 }}>Cuando ayudes, dale este código para confirmar:{' '}
-                  <b style={{ fontSize: 24, letterSpacing: 4 }}>{codigo4(m.key)}</b></div>)}
+                  <div className="codigo-ayuda">{codigo4(m.key)}</div></div>)}
           </div>
         )
       })}
