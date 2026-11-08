@@ -31,9 +31,9 @@ export const ICONO_MINKA = {
 export const svg = (Icono, props = {}) =>
   renderToStaticMarkup(<Icono size={18} strokeWidth={2.25} aria-hidden="true" {...props} />)
 
-/** Marca Ayni: logo del equipo (tres vecinos tomados de la mano formando un corazon, en terracota, teal y verde, con un aro maiz).
- *  Es una imagen (public/logo-ayni.png, generada desde public/icon.svg con scripts/iconos.mjs) sobre un circulo claro,
- *  para que la figura verde se lea tambien en la barra verde profundo y en Minka. */
+/** Marca Ayni: logo del equipo (dom 8 nov 15:30: casa verde con sonrisa sobre fondo maiz).
+ *  Es una imagen cuadrada (public/logo-ayni.png, generada desde public/icon.svg con scripts/iconos.mjs) recortada en circulo;
+ *  el fondo maiz de la imagen se lee bien en la barra verde profundo y en la roja de Minka. */
 export function Logo({ size = 36, fondo = 'var(--marfil)', className }) {
   return (
     <span className={'logo-app' + (className ? ' ' + className : '')} style={{ width: size, height: size, background: fondo }} aria-hidden="true">

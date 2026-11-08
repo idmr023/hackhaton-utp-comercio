@@ -33,6 +33,8 @@ export default defineConfig({
       workbox: {
         // La app completa queda en cache para abrir sin internet
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        // icon.svg es solo la fuente del logo (~1,2 MB): la app usa los PNG, no hace falta descargarlo al instalar
+        globIgnores: ['icon.svg'],
         navigateFallback: '/index.html',
         runtimeCaching: [
           {

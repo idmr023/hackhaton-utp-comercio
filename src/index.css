@@ -83,7 +83,7 @@ button { cursor: pointer; }
 @keyframes tejer { from { background-position: -76px 0; } to { background-position: 0 0; } }
 .marca { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .logo-app { display: inline-grid; place-items: center; flex: none; border-radius: 50%; overflow: hidden; }
-.logo-app img { width: 108%; height: 108%; max-width: none; object-fit: contain; display: block; } /* el PNG ya viene recortado por iconos.mjs; un poco mas grande que el circulo */
+.logo-app img { width: 100%; height: 100%; max-width: none; object-fit: cover; display: block; } /* PNG cuadrado (fondo maiz) de iconos.mjs; el circulo lo recorta */
 .marca-texto { min-width: 0; }
 .marca-nombre, .marca-lema { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .marca-nombre { font-family: var(--titular); font-weight: 800; font-size: calc(26px * var(--escala)); line-height: .95; letter-spacing: .4px; }

@@ -221,7 +221,7 @@ CELULAR DEL VECINO (app web instalable / PWA: React + Vite)
   | Tinta | `#26332C` | texto |
 
 - **Faja:** franjas repetidas de verde profundo, maíz, marfil, terracota, maíz, marfil.
-- **Logo (del equipo, dom 8 nov):** tres vecinos tomados de la mano formando un corazón (terracota, teal y verde) dentro de un aro maíz con hojas. Fuente: `public/icon.svg`; en la app va como imagen (`public/logo-ayni.png`, componente `Logo`) sobre un círculo marfil.
+- **Logo (del equipo, dom 8 nov 15:30):** una casa verde con una sonrisa (dos ojos y una sonrisa dentro de la casa) sobre fondo maíz: el barrio que sonríe porque se ayuda. Fuente: `public/icon.svg`; en la app va como imagen (`public/logo-ayni.png`, componente `Logo`) recortada en círculo, y es el ícono de la app instalada (cuadrado maíz).
 - **Tipografías** (gratis en Google Fonts):
   - **Big Shoulders Display** (extra negrita) para títulos y números.
   - **Atkinson Hyperlegible** para el texto.
@@ -233,7 +233,7 @@ Cada slide tiene **un solo mensaje**. Las capturas se sacan desde el celular, co
 
 | # | Título sugerido | Qué va (máx. 3 puntos) | Visual | Dato que se queda |
 |---|---|---|---|---|
-| 1 | **Ayni: tu barrio se ayuda** | Nombre y lema · nombre del equipo · Hackathon UTP – El Comercio 2026 | Logo del equipo (vecinos en corazón, aro maíz) sobre verde profundo + faja abajo | Ayni = hoy por ti, mañana por mí |
+| 1 | **Ayni: tu barrio se ayuda** | Nombre y lema · nombre del equipo · Hackathon UTP – El Comercio 2026 | Logo del equipo (casa verde con sonrisa sobre maíz) sobre verde profundo + faja abajo | Ayni = hoy por ti, mañana por mí |
 | 2 | **El problema** | No sabemos en quién confiar para un gasfitero o una bodega cerca · los emprendimientos del barrio no se hacen ver · en un sismo nadie sabe quién necesita qué | Foto o ilustración simple del barrio (sin texto encima) | La ayuda existe, pero no se encuentra |
 | 3 | **Nuestra respuesta: una app, dos modos** | **Modo Barrio** para el día a día · **Modo Minka** para emergencias · funciona en el celular, sin descargar de una tienda | Dos capturas lado a lado: mapa (verde) y Minka (rojo) | Barrio + Minka |
 | 4 | **Cumplimos todo el reto** | Lista con check de lo que pedía el reto (tabla de la sección 2) | Checklist en dos columnas | 10 de 10 pedidos cubiertos |

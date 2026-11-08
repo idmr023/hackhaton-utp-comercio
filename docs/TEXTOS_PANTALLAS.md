@@ -45,7 +45,7 @@ Enlace secundario en las 3: **Saltar**.
 - Estado en Ajustes: chip **Validado en RENIEC** / chip amarillo **Pendiente de verificación**
 
 ## 3. Barra superior
-- Marca a la izquierda: logo (dos flechas en círculo) + **Ayni** / *tu barrio se ayuda* · en emergencia: logo en blanco y rojo + **Modo Minka** / *emergencia en tu zona* (se recorta con … si no hay espacio)
+- Marca a la izquierda: logo (casa verde con sonrisa en un círculo maíz) + **Ayni** / *tu barrio se ayuda* · en emergencia: el mismo logo + **Modo Minka** / *emergencia en tu zona* (se recorta con … si no hay espacio)
 - Conexión: con internet solo un punto maíz (el texto `En línea` queda para lector de pantalla) · sin internet: píldora amarilla con ícono en dos líneas `Sin internet,` / `se guarda local`
 - Botón derecha (blanco, letra roja, ícono de sirena): **Emergencia** (en barrio) / **Salir** (en Minka, ícono de salida). Es el **interruptor del Modo Minka**, no una sección. Sin internet en un celular angosto queda solo el ícono.
 - **Avatar** (círculo maíz con iniciales, a la derecha del todo): abre **Ajustes** (aria: *Ajustes y perfil*).
