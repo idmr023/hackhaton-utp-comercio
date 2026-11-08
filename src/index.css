@@ -629,3 +629,41 @@ html.daltonico.alto-contraste { --verde: #123f78; --verde-prof: #0b2a52; --teal:
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ---- Asistente "¿Cómo uso Ayni?" (boton flotante abajo a la izquierda + chat) ---- */
+.btn-ayuda {
+  position: fixed; left: 16px; bottom: 92px; z-index: 1500; width: 52px; height: 52px; border-radius: 50%; border: 0;
+  background: var(--verde-prof); color: #fff; display: grid; place-items: center; box-shadow: var(--flota); transition: transform .08s ease;
+}
+.btn-ayuda svg { width: 28px; height: 28px; }
+.btn-ayuda:active { transform: scale(.95); }
+.app.minka .btn-ayuda { bottom: 18px; background: var(--rojo-osc); }
+.asistente {
+  position: fixed; left: 16px; right: 16px; bottom: 154px; z-index: 1500; max-height: min(62vh, 560px); display: flex; flex-direction: column;
+  background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--r-m); box-shadow: var(--flota); overflow: hidden; animation: aparecer-arriba .18s ease;
+}
+.app.minka .asistente { bottom: 80px; }
+@keyframes aparecer-arriba { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.asistente-cab { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--borde); }
+.asistente-cab .cerrar { width: 36px; height: 36px; border: 0; border-radius: 50%; background: var(--marfil); color: var(--gris); display: grid; place-items: center; flex: none; }
+.asistente-mensajes { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; background: var(--marfil); }
+.msj { max-width: 88%; padding: 10px 12px; border-radius: var(--r-m); font-size: calc(15px * var(--escala)); line-height: 1.4; white-space: pre-wrap; }
+.msj.ayni { align-self: flex-start; background: var(--superficie); border: 1px solid var(--borde); border-bottom-left-radius: 6px; }
+.msj.usuario { align-self: flex-end; background: var(--verde); color: #fff; border-bottom-right-radius: 6px; }
+.msj.pensando { color: var(--gris); font-style: italic; }
+.asistente-sugerencias { display: flex; flex-wrap: wrap; gap: 6px; }
+.asistente-sugerencias .chip { cursor: pointer; border: 1px solid var(--verde); background: var(--superficie); color: var(--verde-prof); min-height: 36px; }
+.asistente-form { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--borde); }
+.asistente-form input { flex: 1; min-width: 0; min-height: 44px; }
+.asistente-form .btn { width: 48px; min-width: 48px; padding: 0; flex: none; }
+@media (min-width: 900px) {
+  .btn-ayuda { left: auto; right: 24px; bottom: 96px; }
+  .app.minka .btn-ayuda { right: 24px; bottom: 24px; }
+  .asistente { left: auto; right: 24px; bottom: 160px; width: 400px; max-height: min(70vh, 600px); }
+  .app.minka .asistente { bottom: 88px; }
+}
+.msj .btn { display: flex; width: max-content; max-width: 100%; }
+/* En Minka no esta el boton Publicar: la ayuda va a la derecha y el contenido deja sitio abajo */
+.app.minka .btn-ayuda { left: auto; right: 16px; }
+.app.minka .asistente { left: 16px; right: 16px; }
+.app.minka .contenido { padding-bottom: 84px; }

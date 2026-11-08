@@ -19,6 +19,9 @@ export async function verificarDni(dni, nombre, key) {
       method: 'POST', headers: { 'x-api-key': key }, body: form, signal: AbortSignal.timeout(10000),
     })
     const j = await r.json()
+    // 403 con la clave live y sin saldo: "database validation is disabled until your organization's first top-up"
+    // (comprobado dom 8 nov). Con la sk_test_ no pasa, pero esa aprueba cualquier DNI. Respaldo: pendiente.
+    if (!r.ok) { console.warn(`Didit HTTP ${r.status}:`, j.detail || JSON.stringify(j).slice(0, 200)); return { coincide: null, fuente: 'error', detalle: j.detail || `HTTP ${r.status}` } }
     // Didit v3 responde { database_validation: { status: Approved|Declined, match_type: full_match|partial_match|no_match } }
     const v = j.database_validation || j
     const coincide = v.match_type === 'full_match' || v.match_type === 'partial_match' ? true

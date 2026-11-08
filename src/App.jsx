@@ -16,6 +16,7 @@ import Puntos from './pages/Puntos'
 import Publicacion from './pages/Publicacion'
 import Vecino from './pages/Vecino'
 import Negocio from './pages/Negocio'
+import Asistente from './Asistente'
 
 const iniciales = (nombre = '') => nombre.trim().split(/\s+/).slice(0, 2).map((p) => p[0]?.toUpperCase()).join('')
 const cls = ({ isActive }) => (isActive ? 'activo' : '')
@@ -113,6 +114,7 @@ function Rutas() {
         </Routes>
       </main>
       {!minka && <Nav className="nav nav-abajo" />}
+      <Asistente />
     </div>
   )
 }

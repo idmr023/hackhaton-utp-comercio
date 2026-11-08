@@ -60,6 +60,9 @@ const PANTALLAS = [
   ['publicacion_ver_mapa', '/publicacion/pub_05', () => estado(true, true), "(async () => { [...document.querySelectorAll('button')].find((b) => b.textContent.includes('Ver en el mapa'))?.click(); await new Promise((r) => setTimeout(r, 1500)) })()"],
   // Vecinos → pestana Negocios (estrellas de ejemplo + reales)
   ['vecinos_negocios', '/vecinos', () => estado(true, true), "[...document.querySelectorAll('.segmentos button')].find((b) => b.textContent.includes('Negocios'))?.click()"],
+  // Asistente de ayuda: abierto con una respuesta (del respaldo local si Gemini no responde a tiempo)
+  ['ayuda', '/', () => estado(true, true), "(async () => { document.querySelector('.btn-ayuda')?.click(); await new Promise((r) => setTimeout(r, 400)); document.querySelector('.asistente-sugerencias .chip')?.click(); await new Promise((r) => setTimeout(r, 6000)) })()"],
+  ['pc_ayuda', '/', () => estado(true, true), "(async () => { document.querySelector('.btn-ayuda')?.click(); await new Promise((r) => setTimeout(r, 400)); document.querySelectorAll('.asistente-sugerencias .chip')[2]?.click(); await new Promise((r) => setTimeout(r, 6000)) })()", 1280],
   ['publicar', '/publicar', () => estado(true, true)],
   ['puntos', '/puntos', () => estado(true, true)],
   ['vecinos', '/vecinos', () => estado(true, true)],

@@ -207,6 +207,11 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 
 > P3 valida estas frases con un hablante antes del domingo (hay variantes por región). Si hay duda, se dejan solo Ayni, Minka y Sulpayki.
 
+## 10b. Asistente de ayuda "¿Cómo uso Ayni?" (dom 8 nov 17:00)
+- Botón redondo flotante con signo de pregunta, abajo a la izquierda (en Minka y en PC, abajo a la derecha). Lector de pantalla: *Ayuda: ¿cómo uso Ayni?*
+- Panel de chat: título **¿Cómo uso Ayni?** · *Pregunta y te digo dónde tocar* · primer mensaje *Hola, {nombre}. Soy la ayuda de Ayni. Pregúntame cómo hacer algo en la app.* · sugerencias: *¿Cómo publico algo?* · *¿Cómo gano puntos?* · *¿Cómo pido ayuda en una emergencia?* · *¿Cómo registro mi negocio?* · campo *Escribe tu pregunta* + botón Enviar · mientras responde: *Pensando…*
+- Las respuestas las escribe Gemini a partir de la guía de la app (`src/lib/guia.js`: qué hace cada pantalla y cómo se llega; no puede inventar funciones) en máx. 70 palabras, y traen un botón **Ir a {pantalla}** (Mapa, Vecinos, Puntos, Publicar, Mi negocio, Modo Minka, Ajustes) que lleva ahí. Sin internet o si Gemini falla (8 s): respuesta del respaldo local por palabras clave (publicar, negocio, emergencia, puntos, estrellas, WhatsApp, celular/PIN, filtros, mapa, accesibilidad, perfil, sin internet, comentar, quitar, salir) o la respuesta general con las 3 pestañas. En quechua responde primero en quechua y luego en español.
+
 ## 11. Mensajes de error generales
 - Sin internet al cargar: *Estás sin internet. Te mostramos lo último que vimos de tu barrio.*
 - Falla rara: *Algo salió mal. Intenta de nuevo.* (nunca mostrar el error técnico)

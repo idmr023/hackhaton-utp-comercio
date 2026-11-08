@@ -10,7 +10,8 @@ app.use(express.json())
 
 const DIDIT_KEY = process.env.DIDIT_API_KEY
 
-app.get('/api/salud', (_, res) => res.json({ ok: true, didit: Boolean(DIDIT_KEY) }))
+// diditModo: 'prueba' (sk_test_: aprueba cualquier DNI) | 'produccion' (consulta RENIEC de verdad) | null
+app.get('/api/salud', (_, res) => res.json({ ok: true, didit: Boolean(DIDIT_KEY), diditModo: DIDIT_KEY ? (DIDIT_KEY.startsWith('sk_test_') ? 'prueba' : 'produccion') : null }))
 
 // POST /api/verificar-dni  { dni, nombre }  ->  { coincide: true|false|null, fuente }
 app.post('/api/verificar-dni', async (req, res) => {

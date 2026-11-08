@@ -151,6 +151,11 @@ export const QU = {
   'Tu cuenta aún no tiene PIN. Sal y toca "Crear cuenta" con tu celular y DNI para crear uno.': 'Cuentaykiqa manaraq PIN-niyuqchu. Lluqsiy, "Crear cuenta" nisqata llapiy celularniykiwan DNI-ykiwan.',
   'El PIN no coincide.': 'PIN-qa manam tupanchu.', 'Ese celular ya es de otra cuenta.': 'Chay celularqa huk cuentapañam.',
   'Celular actualizado. Desde ahora entras con {cel}.': 'Celular musuqchasqañam. Kunanmanta {cel}-wan yaykunki.',
+  // Asistente de ayuda
+  'Ayuda: ¿cómo uso Ayni?': 'Yanapay: ¿imaynatam Ayni-ta llamk\'achini?', 'Asistente de Ayni': 'Ayni yanapaq', '¿Cómo uso Ayni?': '¿Imaynatam Ayni-ta llamk\'achini?',
+  'Pregunta y te digo dónde tocar': 'Tapukuy, maypi llapinaykita willasqayki', 'Cerrar': 'Wichq\'ay', 'Hola, {nombre}. Soy la ayuda de Ayni. Pregúntame cómo hacer algo en la app.': 'Allinllachu, {nombre}. Ayni yanapaqmi kani. Imaynatam imatapas ruwanki chayta tapuway.',
+  '¿Cómo publico algo?': '¿Imaynatam imatapas willakuni?', '¿Cómo gano puntos?': '¿Imaynatam puntokunata tarini?', '¿Cómo pido ayuda en una emergencia?': '¿Imaynatam hatun llakipi yanapayta mañakuni?', '¿Cómo registro mi negocio?': '¿Imaynatam qhatuyta qillqachini?',
+  'Ir a {pantalla}': '{pantalla}-man riy', 'Pensando…': 'Yuyaychkani…', 'Escribe tu pregunta': 'Tapukuyniykita qillqay', 'Tu pregunta': 'Tapukuyniyki', 'Enviar': 'Apachiy',
   'Nada coincide con «{q}» a {r} de ti.': 'Manam imapas «{q}» nisqawan tupanchu {r} qayllaykipi.', 'Nada con esos filtros a {r} de ti.': 'Manam imapas chay akllaykunawan kanchu {r} qayllaykipi.',
   // Registro: entrar con PIN
   'Entra a tu barrio': 'Llaqtaykiman yaykuy', 'Entrar': 'Yaykuy', 'Crear cuenta': 'Cuentata kichay', 'Entrando…': 'Yaykuchkani…', 'PIN': 'PIN',

@@ -38,6 +38,17 @@ Costo: S/ 0 (plan Hobby). Firebase sigue igual, no cambia nada de datos.
    - Abrir `https://<tu-url>/?demo=1` en el celular, registrarse con el mismo celular y DNI (entra a la cuenta existente) y **Agregar a pantalla de inicio**. Desinstalar la versión del túnel para no confundirse.
    - Probar un registro nuevo para ver "Validado en RENIEC" (eso confirma que Didit responde desde Vercel).
 
+## Validar DNI de verdad: clave de producción de Didit
+Con la clave `sk_test_` Didit **no consulta RENIEC**: responde `full_match` para cualquier DNI y nombre (comprobado dom 8 nov con 99999999 y 12345678). El código ya está listo para la clave de producción: solo marca "Validado en RENIEC" con `full_match`/`partial_match` y rechaza la cuenta con `no_match` ("El DNI no coincide con RENIEC").
+1. En la consola de Didit (la cuenta donde se sacó la clave de prueba) obtener la **clave de producción** (no empieza con `sk_test_`). Según el blog de Didit, cada cuenta trae 500 verificaciones gratis al mes; luego ~0,17–0,20 USD por consulta concluyente.
+2. Vercel → proyecto → **Settings → Environment Variables** → `DIDIT_API_KEY` → Edit → pegar la clave nueva → Save. Para la PC, cambiarla también en `.env` (no tocar `entregables dia 1/`).
+3. Publicar: `npx vercel --prod --yes` (las variables solo se aplican en un despliegue nuevo; además limpia la caché de DNI de la función).
+4. Comprobar: `https://ayni-xpertimpact.vercel.app/api/salud` debe decir `"diditModo":"produccion"` (con la de prueba dice `"prueba"`).
+5. Probar con un DNI inventado (debe salir `"coincide":false`), en PowerShell:
+   `Invoke-RestMethod -Method Post -Uri https://ayni-xpertimpact.vercel.app/api/verificar-dni -ContentType 'application/json' -Body '{"dni":"12345678","nombre":"Nadie Existe"}'`
+   y con el DNI real de alguien del equipo (con su permiso) y su nombre (debe salir `true`).
+6. Las cuentas creadas con DNI inventados mientras estaba la clave de prueba (p. ej. "Pepe Gonzales", 99999999) siguen marcadas "Validado en RENIEC": borrarlas a mano en la consola de Firebase (`usuarios/{id}` y `accesos/{id}`).
+
 ## Qué cambia en la rutina del equipo
 - **Ya no hace falta** el túnel ni `npm run server` para la demo. Solo internet en el celular.
 - Para seguir desarrollando en la PC todo sigue igual (`npm run dev`, `npm run server`, túnel si quieren probar en el celular algo antes de subirlo).
