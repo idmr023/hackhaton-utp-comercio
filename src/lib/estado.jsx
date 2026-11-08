@@ -1,5 +1,6 @@
 // Estado global simple: usuario, modo (barrio | minka), conexion, ubicacion, radio.
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { traducir } from './i18n'
 import { ubicacionActual, celdaAprox, RADIO_DEFAULT_KM, RADIO_MINKA_KM, ubicacionDemoActiva, setUbicacionDemoActiva } from './geo'
 import { activarAutoSync } from './offlineQueue'
 import { inicializarDemoLocal } from './db'
@@ -25,7 +26,12 @@ export function EstadoProvider({ children }) {
     try { localStorage.setItem('ayni_prefs', JSON.stringify(prefs)) } catch { /* sin storage */ }
     document.documentElement.classList.toggle('letra-grande', !!prefs.letraGrande)
     document.documentElement.classList.toggle('alto-contraste', !!prefs.altoContraste)
+    document.documentElement.classList.toggle('daltonico', !!prefs.daltonico)
+    document.documentElement.lang = prefs.idioma === 'qu' ? 'qu' : 'es'
   }, [prefs])
+  // Idioma: 'es' | 'mixto' (espanol con frases en quechua) | 'qu' (todo en quechua). La pref vieja `quechua` = mixto.
+  const idioma = prefs.idioma || (prefs.quechua ? 'mixto' : 'es')
+  const t = useCallback((texto, vars) => traducir(idioma, texto, vars), [idioma])
 
   // Activa/apaga la ubicacion fija de Surquillo y vuelve a ubicar
   const setUbicacionDemo = (activa) => {
@@ -47,7 +53,7 @@ export function EstadoProvider({ children }) {
 
   const value = {
     usuario, setUsuario, modo, setModo, online, ubicacion, radioKm, setRadioKm, aviso, setAviso,
-    ubicacionDemo, setUbicacionDemo, prefs, setPref,
+    ubicacionDemo, setUbicacionDemo, prefs, setPref, idioma, t,
     // Ubicacion aproximada (celda ~300 m): es la que se guarda en cualquier documento.
     geoAprox: ubicacion ? celdaAprox(ubicacion) : null,
   }
@@ -55,3 +61,5 @@ export function EstadoProvider({ children }) {
 }
 
 export const useEstado = () => useContext(Ctx)
+/** Funcion de traduccion de la UI: t('Texto en español') o t('{n} cosas', { n }). */
+export const useT = () => useContext(Ctx).t

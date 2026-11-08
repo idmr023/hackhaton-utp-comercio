@@ -17,7 +17,7 @@ export default function Vecino() {
   const { id } = useParams()
   const nav = useNavigate()
   const loc = useLocation()
-  const { usuario, setAviso } = useEstado()
+  const { usuario, setAviso, t } = useEstado()
   const [u, setU] = useState(null)
   const [pubs, setPubs] = useState([])
   const [resenas, setResenas] = useState({ lista: [], n: 0, promedio: 0 })
@@ -48,7 +48,7 @@ export default function Vecino() {
   const fotos = pubs.filter((p) => p.fotoBase64)
 
   async function recomendar() {
-    if (!estrellas) return setAviso('Elige de 1 a 5 estrellas.')
+    if (!estrellas) return setAviso(t('Elige de 1 a 5 estrellas.'))
     setEnviando(true)
     try {
       await crearSeguro('recomendaciones', {
@@ -61,19 +61,19 @@ export default function Vecino() {
           puntos: PUNTOS.RECOMENDACION, motivo: null,
         }, `recpts_${usuario.id}_${id}`)
       }
-      setAviso(yaHabia ? 'Recomendación actualizada.' : `Gracias. ${nombre1(nombre)} recibió +${PUNTOS.RECOMENDACION} puntos Ayni por tu recomendación.`)
+      setAviso(yaHabia ? t('Recomendación actualizada.') : t('Gracias. {nombre} recibió +{p} puntos Ayni por tu recomendación.', { nombre: nombre1(nombre), p: PUNTOS.RECOMENDACION }))
       await cargar()
-    } catch (e) { console.error('Recomendar fallo', e); setAviso('No se pudo guardar. Intenta de nuevo.') }
+    } catch (e) { console.error('Recomendar fallo', e); setAviso(t('No se pudo guardar. Intenta de nuevo.')) }
     finally { setEnviando(false) }
   }
 
-  if (!cargado) return <div className="cargando" role="status"><p>Cargando perfil…</p></div>
+  if (!cargado) return <div className="cargando" role="status"><p>{t('Cargando perfil…')}</p></div>
 
   return (
     <div className="pantalla detalle">
       <div className="cabecera">
-        <button className="btn-atras" aria-label="Atrás" onClick={() => nav(-1)}><ArrowLeft size={22} aria-hidden="true" /></button>
-        <h2>{esYo ? 'Tu perfil público' : 'Perfil de vecino'}</h2>
+        <button className="btn-atras" aria-label={t('Atrás')} onClick={() => nav(-1)}><ArrowLeft size={22} aria-hidden="true" /></button>
+        <h2>{esYo ? t('Tu perfil público') : t('Perfil de vecino')}</h2>
       </div>
 
       <div className="tarjeta perfil-cab">
@@ -82,34 +82,34 @@ export default function Vecino() {
           <div style={{ minWidth: 0 }}>
             <h2>{nombre}</h2>
             <div className="chips" style={{ marginTop: 6 }}>
-              {u?.verificacion === 'reniec' && <span className="chip"><BadgeCheck aria-hidden="true" />Validado en RENIEC</span>}
-              {u?.verificado && <span className="chip teal"><ShieldCheck aria-hidden="true" />Vecino verificado</span>}
-              {!u && <span className="chip neutro">Vecino de la demo</span>}
+              {u?.verificacion === 'reniec' && <span className="chip"><BadgeCheck aria-hidden="true" />{t('Validado en RENIEC')}</span>}
+              {u?.verificado && <span className="chip teal"><ShieldCheck aria-hidden="true" />{t('Vecino verificado')}</span>}
+              {!u && <span className="chip neutro">{t('Vecino de la demo')}</span>}
             </div>
-            <div style={{ marginTop: 8 }}><Estrellas valor={resenas.promedio} n={resenas.n} /></div>
+            <div style={{ marginTop: 8 }}><Estrellas valor={resenas.promedio} n={resenas.n} t={t} /></div>
           </div>
         </div>
         <div className="stats">
-          <div className="stat"><b>{pubs.length}</b><span>{pubs.length === 1 ? 'publicación' : 'publicaciones'}</span></div>
-          <div className="stat"><b>{resenas.n}</b><span>{resenas.n === 1 ? 'recomendación' : 'recomendaciones'}</span></div>
-          <div className="stat"><b>{saldo ?? '–'}</b><span>puntos Ayni</span></div>
+          <div className="stat"><b>{pubs.length}</b><span>{t(pubs.length === 1 ? 'publicación' : 'publicaciones')}</span></div>
+          <div className="stat"><b>{resenas.n}</b><span>{t(resenas.n === 1 ? 'recomendación' : 'recomendaciones')}</span></div>
+          <div className="stat"><b>{saldo ?? '–'}</b><span>{t('puntos Ayni')}</span></div>
         </div>
         {u?.whatsappVisible && u?.telefono && !esYo && (
-          <a className="btn whatsapp" href={waLink(u.telefono, `Hola ${nombre1(nombre)}, te vi en Ayni. ¿Podemos coordinar?`)} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" />WhatsApp</a>
+          <a className="btn whatsapp" href={waLink(u.telefono, t('Hola {nombre}, te vi en Ayni. ¿Podemos coordinar?', { nombre: nombre1(nombre) }))} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" />WhatsApp</a>
         )}
       </div>
 
       {fotos.length > 0 && (
         <section className="tarjeta">
-          <h3>Fotos</h3>
+          <h3>{t('Fotos')}</h3>
           <div className="galeria">
             {fotos.map((p) => <img key={p.id} src={p.fotoBase64} alt={p.texto} onClick={() => nav(`/publicacion/${p.id}`, { state: { pub: p } })} />)}
           </div>
         </section>
       )}
 
-      <h2 className="titulo-seccion">Lo que ofrece y pide</h2>
-      {pubs.length === 0 && <div className="muted">Aún no tiene publicaciones.</div>}
+      <h2 className="titulo-seccion">{t('Lo que ofrece y pide')}</h2>
+      {pubs.length === 0 && <div className="muted">{t('Aún no tiene publicaciones.')}</div>}
       {pubs.length > 0 && (
         <div className="tarjeta lista">
           {pubs.map((p) => {
@@ -119,7 +119,7 @@ export default function Vecino() {
                 <span className={`ficha chica ${CLASE_TIPO[p.tipo] || ''}`}><Icono aria-hidden="true" /></span>
                 <span className="opcion-texto">
                   <span className="opcion-titulo" style={{ fontSize: 'calc(17px * var(--escala))' }}>{p.texto}</span>
-                  <span className="opcion-sub">{NOMBRE_TIPO[p.tipo] || p.tipo}, {p.categoria}, {haceCuanto(p.fecha)}</span>
+                  <span className="opcion-sub">{t(NOMBRE_TIPO[p.tipo] || p.tipo)}, {p.categoria}, {haceCuanto(p.fecha, t)}</span>
                 </span>
                 <ChevronRight className="opcion-flecha" aria-hidden="true" />
               </button>
@@ -128,22 +128,22 @@ export default function Vecino() {
         </div>
       )}
 
-      <h2 className="titulo-seccion">Recomendaciones de vecinos</h2>
+      <h2 className="titulo-seccion">{t('Recomendaciones de vecinos')}</h2>
       {!esYo && (
         <div className="tarjeta">
-          <h3>{yaHabia ? 'Tu recomendación' : `¿Conoces a ${nombre1(nombre)}? Recomiéndalo`}</h3>
-          <div className="selector-estrellas" role="radiogroup" aria-label="Estrellas">
+          <h3>{yaHabia ? t('Tu recomendación') : t('¿Conoces a {nombre}? Recomiéndalo', { nombre: nombre1(nombre) })}</h3>
+          <div className="selector-estrellas" role="radiogroup" aria-label={t('Estrellas')}>
             {[1, 2, 3, 4, 5].map((i) => (
-              <button key={i} type="button" role="radio" aria-checked={estrellas === i} aria-label={`${i} ${i === 1 ? 'estrella' : 'estrellas'}`}
+              <button key={i} type="button" role="radio" aria-checked={estrellas === i} aria-label={t(i === 1 ? '{n} estrella' : '{n} estrellas', { n: i })}
                 className={i <= estrellas ? 'llena' : ''} onClick={() => setEstrellas(i)}><Star size={30} aria-hidden="true" /></button>
             ))}
           </div>
-          <textarea rows={2} placeholder="Cuenta cómo te fue (opcional)" value={texto} maxLength={300} onChange={(e) => setTexto(e.target.value)} style={{ marginTop: 8 }} />
-          <button className="btn" style={{ marginTop: 10 }} disabled={enviando || !estrellas} onClick={recomendar}>{yaHabia ? 'Actualizar recomendación' : 'Recomendar'}</button>
-          {!yaHabia && <p className="muted" style={{ marginTop: 8 }}>Tu recomendación le da +{PUNTOS.RECOMENDACION} puntos Ayni, una sola vez.</p>}
+          <textarea rows={2} placeholder={t('Cuenta cómo te fue (opcional)')} value={texto} maxLength={300} onChange={(e) => setTexto(e.target.value)} style={{ marginTop: 8 }} />
+          <button className="btn" style={{ marginTop: 10 }} disabled={enviando || !estrellas} onClick={recomendar}>{yaHabia ? t('Actualizar recomendación') : t('Recomendar')}</button>
+          {!yaHabia && <p className="muted" style={{ marginTop: 8 }}>{t('Tu recomendación le da +{p} puntos Ayni, una sola vez.', { p: PUNTOS.RECOMENDACION })}</p>}
         </div>
       )}
-      {resenas.n === 0 && <div className="muted">Aún nadie lo recomendó.</div>}
+      {resenas.n === 0 && <div className="muted">{t('Aún nadie lo recomendó.')}</div>}
       {resenas.n > 0 && (
         <div className="tarjeta lista">
           {resenas.lista.map((r) => (
@@ -151,9 +151,9 @@ export default function Vecino() {
               <Avatar nombre={r.deNombre} size={36} />
               <div style={{ minWidth: 0, flex: 1 }}>
                 <div className="fila" style={{ gap: 8, flexWrap: 'wrap' }}>
-                  <b>{r.deId === usuario?.id ? 'Tú' : r.deNombre}</b>
-                  <Estrellas valor={r.estrellas || 0} n={1} size={14} texto={false} />
-                  <span className="muted">{haceCuanto(r.fecha)}</span>
+                  <b>{r.deId === usuario?.id ? t('Tú') : r.deNombre}</b>
+                  <Estrellas valor={r.estrellas || 0} n={1} size={14} texto={false} t={t} />
+                  <span className="muted">{haceCuanto(r.fecha, t)}</span>
                 </div>
                 {r.texto && <p>{r.texto}</p>}
               </div>

@@ -10,11 +10,13 @@ import { ICONO_TIPO } from '../lib/iconos'
 import { waLink, msjPublicacion, NOMBRE_TIPO, CLASE_TIPO, msFecha, haceCuanto, metros, claveCelda } from '../lib/contacto'
 import { Avatar, Estrellas, cargarResenas } from '../lib/social'
 
+const Atras = ({ t, onClick }) => <button className="btn-atras" aria-label={t('Atrás')} onClick={onClick}><ArrowLeft size={22} aria-hidden="true" /></button>
+
 export default function Publicacion() {
   const { id } = useParams()
   const nav = useNavigate()
   const loc = useLocation()
-  const { usuario, ubicacion, setAviso } = useEstado()
+  const { usuario, ubicacion, setAviso, t } = useEstado()
   const [pub, setPub] = useState(loc.state?.pub || null)
   const [estado, setEstado] = useState(pub ? 'ok' : 'cargando') // 'cargando' | 'ok' | 'nohay'
   const [autor, setAutor] = useState(null)
@@ -45,25 +47,25 @@ export default function Publicacion() {
   }, [id]) // eslint-disable-line
 
   async function comentar() {
-    const t = texto.trim()
-    if (!t || enviando) return
+    const tx = texto.trim()
+    if (!tx || enviando) return
     setEnviando(true)
-    const docu = { publicacionId: id, autorId: usuario.id, autorNombre: usuario.nombre, texto: t }
+    const docu = { publicacionId: id, autorId: usuario.id, autorNombre: usuario.nombre, texto: tx }
     try {
       const { id: cid, sinSenal } = await crearSeguro('comentarios', docu)
       setComentarios((l) => [...l, { id: cid, ...docu, fecha: null }])
       setTexto('')
-      setAviso(sinSenal ? 'Sin señal: tu comentario se guardó y se enviará solo.' : 'Comentario publicado')
-    } catch (e) { console.error('Comentar fallo', e); setAviso('No se pudo comentar. Intenta de nuevo.') }
+      setAviso(sinSenal ? t('Sin señal: tu comentario se guardó y se enviará solo.') : t('Comentario publicado'))
+    } catch (e) { console.error('Comentar fallo', e); setAviso(t('No se pudo comentar. Intenta de nuevo.')) }
     finally { setEnviando(false) }
   }
 
-  if (estado === 'cargando') return <div className="cargando" role="status"><p>Cargando publicación…</p></div>
+  if (estado === 'cargando') return <div className="cargando" role="status"><p>{t('Cargando publicación…')}</p></div>
   if (estado === 'nohay') return (
     <div className="pantalla detalle">
-      <div className="cabecera"><button className="btn-atras" aria-label="Atrás" onClick={() => nav(-1)}><ArrowLeft size={22} aria-hidden="true" /></button><h2>Publicación</h2></div>
-      <div className="tarjeta"><p>Esta publicación ya no está disponible.</p></div>
-      <button className="btn secundario" onClick={() => nav('/vecinos')}>Volver a Vecinos</button>
+      <div className="cabecera"><Atras t={t} onClick={() => nav(-1)} /><h2>{t('Publicación')}</h2></div>
+      <div className="tarjeta"><p>{t('Esta publicación ya no está disponible.')}</p></div>
+      <button className="btn secundario" onClick={() => nav('/vecinos')}>{t('Volver a Vecinos')}</button>
     </div>
   )
 
@@ -75,47 +77,47 @@ export default function Publicacion() {
   return (
     <div className="pantalla detalle">
       <div className="cabecera">
-        <button className="btn-atras" aria-label="Atrás" onClick={() => nav(-1)}><ArrowLeft size={22} aria-hidden="true" /></button>
+        <Atras t={t} onClick={() => nav(-1)} />
         <span className={`ficha chica ${CLASE_TIPO[pub.tipo] || ''}`}><Icono aria-hidden="true" /></span>
-        <h2>{NOMBRE_TIPO[pub.tipo] || pub.tipo}</h2>
+        <h2>{t(NOMBRE_TIPO[pub.tipo] || pub.tipo)}</h2>
       </div>
 
       <article className="tarjeta">
         <Link to={`/vecino/${pub.autorId}`} state={{ nombre: pub.autorNombre }} className="autor">
           <Avatar nombre={pub.autorNombre} size={48} />
           <div style={{ minWidth: 0 }}>
-            <b>{mia ? `${pub.autorNombre} (tú)` : pub.autorNombre}</b>
+            <b>{mia ? t('{nombre} (tú)', { nombre: pub.autorNombre }) : pub.autorNombre}</b>
             {autor?.verificacion === 'reniec' && <span className="chip" style={{ marginLeft: 8 }}><BadgeCheck aria-hidden="true" />RENIEC</span>}
-            <div className="muted">{haceCuanto(pub.fecha)}{dist != null && `, a ${metros(dist)} de ti`}</div>
-            {resenas && <Estrellas valor={resenas.promedio} n={resenas.n} size={15} />}
+            <div className="muted">{haceCuanto(pub.fecha, t)}{dist != null && `, ${t('a {m} de ti', { m: metros(dist) })}`}</div>
+            {resenas && <Estrellas valor={resenas.promedio} n={resenas.n} size={15} t={t} />}
           </div>
           <ChevronRight className="opcion-flecha" aria-hidden="true" />
         </Link>
-        <div className="chips"><span className={`chip ${CLASE_TIPO[pub.tipo] || ''}`}>{NOMBRE_TIPO[pub.tipo] || pub.tipo}</span><span className="chip neutro">{pub.categoria}</span></div>
+        <div className="chips"><span className={`chip ${CLASE_TIPO[pub.tipo] || ''}`}>{t(NOMBRE_TIPO[pub.tipo] || pub.tipo)}</span><span className="chip neutro">{pub.categoria}</span></div>
         <p className="detalle-texto">{pub.texto}</p>
-        {pub.fotoBase64 && <img className="detalle-foto" src={pub.fotoBase64} alt="Foto de la publicación" />}
+        {pub.fotoBase64 && <img className="detalle-foto" src={pub.fotoBase64} alt={t('Foto de la publicación')} />}
         <div className="btn-fila">
           {pub.autorWhatsapp && !mia && <a className="btn whatsapp" href={waLink(pub.autorWhatsapp, msjPublicacion(pub))} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" />WhatsApp</a>}
-          <button className="btn secundario" onClick={verMapa}><Map aria-hidden="true" />Ver en el mapa</button>
+          <button className="btn secundario" onClick={verMapa}><Map aria-hidden="true" />{t('Ver en el mapa')}</button>
         </div>
       </article>
 
       <section className="tarjeta" aria-labelledby="t-comentarios">
-        <h3 id="t-comentarios" className="fila-icono"><MessageSquare size={20} style={{ color: 'var(--verde)' }} aria-hidden="true" />Comentarios ({comentarios.length})</h3>
-        {comentarios.length === 0 && <p className="muted">Nadie ha comentado todavía. Sé el primero.</p>}
+        <h3 id="t-comentarios" className="fila-icono"><MessageSquare size={20} style={{ color: 'var(--verde)' }} aria-hidden="true" />{t('Comentarios ({n})', { n: comentarios.length })}</h3>
+        {comentarios.length === 0 && <p className="muted">{t('Nadie ha comentado todavía. Sé el primero.')}</p>}
         {comentarios.map((c) => (
           <div key={c.id} className="comentario">
             <Avatar nombre={c.autorNombre} size={36} />
             <div style={{ minWidth: 0, flex: 1 }}>
-              <b>{c.autorId === usuario?.id ? 'Tú' : c.autorNombre}</b> <span className="muted">{haceCuanto(c.fecha)}</span>
+              <b>{c.autorId === usuario?.id ? t('Tú') : c.autorNombre}</b> <span className="muted">{haceCuanto(c.fecha, t)}</span>
               <p>{c.texto}</p>
             </div>
           </div>
         ))}
         <div className="comentar">
-          <input aria-label="Escribe un comentario" placeholder="Escribe un comentario" value={texto} maxLength={300}
+          <input aria-label={t('Escribe un comentario')} placeholder={t('Escribe un comentario')} value={texto} maxLength={300}
             onChange={(e) => setTexto(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && comentar()} />
-          <button className="btn chico" disabled={!texto.trim() || enviando} onClick={comentar}><Send size={18} aria-hidden="true" />Comentar</button>
+          <button className="btn chico" disabled={!texto.trim() || enviando} onClick={comentar}><Send size={18} aria-hidden="true" />{t('Comentar')}</button>
         </div>
       </section>
     </div>

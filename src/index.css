@@ -526,6 +526,26 @@ html.alto-contraste .avatar-btn { border-color: #000; }
 html.alto-contraste .selector-radio { border: 2px solid #000; }
 html.alto-contraste .opcion { border-top-width: 2px; }
 
+/* Modo para daltonicos: azul en vez de verde, naranja/bermellon en vez de rojo, magenta en vez de terracota.
+   Los iconos y textos ya son la segunda senal; esto evita que verde y rojo se confundan (protanopia/deuteranopia). */
+html.daltonico {
+  --verde: #1F5FA8; --verde-prof: #163F6E; --verde-suave: #E3ECF7; --whatsapp: #1F5FA8;
+  --teal: #5B4FB5; --teal-osc: #463B91; --teal-suave: #ECEAF7;
+  --rojo: #C4420D; --rojo-osc: #9A3309; --rojo-suave: #FBE9DF;
+  --terracota: #A0357A; --terracota-osc: #7A2A5E; --terracota-suave: #F7E4F0;
+}
+html.daltonico.alto-contraste { --verde: #123f78; --verde-prof: #0b2a52; --teal: #3a2f8a; --rojo: #8f2f08; --terracota: #6e1f52; }
+
+/* Selector de idioma (Ajustes): tres opciones apiladas */
+.selector-idioma { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.selector-idioma button {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; min-height: 52px; padding: 10px 14px;
+  border-radius: var(--r-s); border: 1.5px solid var(--borde-fuerte); background: var(--superficie); font-weight: 700; transition: background-color .15s ease, border-color .15s ease;
+}
+.selector-idioma button .muted { font-weight: 400; }
+.selector-idioma button:hover { border-color: var(--verde); }
+.selector-idioma button.activo { background: var(--verde-suave); border-color: var(--verde); color: var(--verde-prof); }
+
 /* Subtitulo en quechua bajo un texto en espanol */
 .quechua { display: block; font-family: var(--fuente); font-size: calc(15px * var(--escala)); font-weight: 400; font-style: italic; text-transform: none; letter-spacing: 0; opacity: .95; }
 

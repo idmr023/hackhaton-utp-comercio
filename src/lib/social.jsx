@@ -4,6 +4,7 @@
 import { Star } from 'lucide-react'
 import { listar } from './db'
 import { msFecha } from './contacto'
+import { traducir } from './i18n'
 
 export const iniciales = (nombre = '') => nombre.trim().split(/\s+/).slice(0, 2).map((p) => p[0]?.toUpperCase()).join('') || '?'
 
@@ -12,13 +13,13 @@ export function Avatar({ nombre, size = 44, className = '' }) {
 }
 
 /** 5 estrellas (las llenas segun el promedio redondeado) + "4.8 (12)" o "Sin recomendaciones". */
-export function Estrellas({ valor = 0, n = 0, size = 18, texto = true }) {
+export function Estrellas({ valor = 0, n = 0, size = 18, texto = true, t = (s, v) => traducir('es', s, v) }) {
   const llenas = Math.round(valor)
-  const etiqueta = n ? `${valor.toFixed(1)} de 5, ${n} ${n === 1 ? 'recomendación' : 'recomendaciones'}` : 'Sin recomendaciones aún'
+  const etiqueta = n ? t(n === 1 ? '{v} de 5, {n} recomendación' : '{v} de 5, {n} recomendaciones', { v: valor.toFixed(1), n }) : t('Sin recomendaciones aún')
   return (
     <span className="estrellas" role="img" aria-label={etiqueta}>
       {[1, 2, 3, 4, 5].map((i) => <Star key={i} size={size} className={i <= llenas ? 'llena' : ''} aria-hidden="true" />)}
-      {texto && <span className="estrellas-texto">{n ? `${valor.toFixed(1)} (${n})` : 'Sin recomendaciones'}</span>}
+      {texto && <span className="estrellas-texto">{n ? `${valor.toFixed(1)} (${n})` : t('Sin recomendaciones')}</span>}
     </span>
   )
 }

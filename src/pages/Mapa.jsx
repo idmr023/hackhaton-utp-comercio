@@ -71,7 +71,7 @@ const WhatsApp = ({ num, msj }) => (
 )
 
 export default function Mapa({ pubs, negocios, nPend, cargado, foco }) {
-  const { ubicacion, radioKm, setRadioKm, usuario, ubicacionDemo } = useEstado()
+  const { ubicacion, radioKm, setRadioKm, usuario, ubicacionDemo, t } = useEstado()
   const nav = useNavigate()
   const refs = useRef({}) // marcadores por clave, para abrir el popup desde la lista
 
@@ -83,7 +83,7 @@ export default function Mapa({ pubs, negocios, nPend, cargado, foco }) {
         <Enfocar foco={foco} refs={refs} />
         <Ajustar />
         <Circle center={[ubicacion.lat, ubicacion.lng]} radius={radioKm * 1000} pathOptions={{ color: '#2F7C78', weight: 2, dashArray: '6 6', fillOpacity: 0.05 }} />
-        <Marker position={[ubicacion.lat, ubicacion.lng]} icon={ICONO_YO}><Popup>Tú ({usuario?.nombre})</Popup></Marker>
+        <Marker position={[ubicacion.lat, ubicacion.lng]} icon={ICONO_YO}><Popup>{t('Tú ({nombre})', { nombre: usuario?.nombre })}</Popup></Marker>
         {negocios.map((n) => {
           const Icono = iconoRubro(n.rubro)
           return (
@@ -96,9 +96,9 @@ export default function Mapa({ pubs, negocios, nPend, cargado, foco }) {
                     <div className="muted">{n.rubro}</div>
                   </div>
                 </div>
-                <div className="fila-icono muted"><LocateFixed size={16} aria-hidden="true" />A {metros(n.distanciaKm)} de ti</div>
-                {n.horario && <div className="fila-icono muted"><Clock3 size={16} aria-hidden="true" />Atiende {n.horario}</div>}
-                <div className="pop-recomendado"><Star size={18} aria-hidden="true" />Recomendado por {n.nRecomendaciones || 0} vecinos de tu zona</div>
+                <div className="fila-icono muted"><LocateFixed size={16} aria-hidden="true" />{t('A {m} de ti', { m: metros(n.distanciaKm) })}</div>
+                {n.horario && <div className="fila-icono muted"><Clock3 size={16} aria-hidden="true" />{t('Atiende {h}', { h: n.horario })}</div>}
+                <div className="pop-recomendado"><Star size={18} aria-hidden="true" />{t('Recomendado por {n} vecinos de tu zona', { n: n.nRecomendaciones || 0 })}</div>
                 {n.resumenIA && <div className="pop-resumen">“{n.resumenIA}”</div>}
                 {n.whatsapp && <WhatsApp num={n.whatsapp} msj={msjNegocio(n)} />}
               </Popup>
@@ -108,19 +108,19 @@ export default function Mapa({ pubs, negocios, nPend, cargado, foco }) {
         {agruparPorCelda(pubs).map(({ k, items }) => (
           <Marker key={k} position={[items[0].geo.lat, items[0].geo.lng]} icon={iconoGrupo(items[0].tipo, items.length)} ref={(m) => { refs.current[k] = m }}>
             <Popup>
-              {items.length > 1 && <div className="pop-titulo" style={{ marginBottom: 8 }}>{items.length} publicaciones en esta zona</div>}
+              {items.length > 1 && <div className="pop-titulo" style={{ marginBottom: 8 }}>{t('{n} publicaciones en esta zona', { n: items.length })}</div>}
               <div className="pop-lista">
                 {items.map((p) => {
                   const Icono = ICONO_TIPO[p.tipo] || ICONO_TIPO.OFREZCO
                   return (
                     <div key={p.id} className="pop-item">
                       <div className="chips">
-                        <span className={`chip ${CLASE_TIPO[p.tipo] || ''}`}><Icono aria-hidden="true" />{NOMBRE_TIPO[p.tipo] || p.tipo}</span>
+                        <span className={`chip ${CLASE_TIPO[p.tipo] || ''}`}><Icono aria-hidden="true" />{t(NOMBRE_TIPO[p.tipo] || p.tipo)}</span>
                         <span className="chip neutro">{p.categoria}</span>
                       </div>
                       {p.fotoBase64 && <img className="pop-foto" src={p.fotoBase64} alt="" />}
                       <div className="texto">{p.texto}</div>
-                      <span className="muted">{p.autorId === usuario?.id ? 'Tú' : p.autorNombre}, a {metros(p.distanciaKm)}</span>
+                      <span className="muted">{p.autorId === usuario?.id ? t('Tú') : p.autorNombre}, {t('a {m}', { m: metros(p.distanciaKm) })}</span>
                       {p.autorWhatsapp && p.autorId !== usuario?.id && (
                         <div><WhatsApp num={p.autorWhatsapp} msj={msjPublicacion(p)} /></div>
                       )}
@@ -134,27 +134,27 @@ export default function Mapa({ pubs, negocios, nPend, cargado, foco }) {
       </MapContainer>
 
       <div className="mapa-controles">
-        <div className="selector-radio" role="group" aria-label="Radio del barrio">
+        <div className="selector-radio" role="group" aria-label={t('Radio del barrio')}>
           {RADIOS_KM.map((r) => (
             <button key={r} className={r === radioKm ? 'activo' : ''} aria-pressed={r === radioKm} onClick={() => setRadioKm(r)}>{textoRadio(r)}</button>
           ))}
         </div>
         <div className="chips">
-          {negocios.length > 0 && <span className="chip"><Store aria-hidden="true" />{negocios.length} negocios</span>}
-          {pubs.length > 0 && <span className="chip teal"><Megaphone aria-hidden="true" />{pubs.length} publicaciones</span>}
-          {nPend > 0 && <span className="chip pendiente"><CloudUpload aria-hidden="true" />{nPend} pendiente{nPend > 1 ? 's' : ''} de subir</span>}
-          {ubicacionDemo && <span className="chip neutro"><MapPin aria-hidden="true" />Ubicación demo: Surquillo</span>}
+          {negocios.length > 0 && <span className="chip"><Store aria-hidden="true" />{t('{n} negocios', { n: negocios.length })}</span>}
+          {pubs.length > 0 && <span className="chip teal"><Megaphone aria-hidden="true" />{t(pubs.length === 1 ? '{n} publicación' : '{n} publicaciones', { n: pubs.length })}</span>}
+          {nPend > 0 && <span className="chip pendiente"><CloudUpload aria-hidden="true" />{t(nPend > 1 ? '{n} pendientes de subir' : '{n} pendiente de subir', { n: nPend })}</span>}
+          {ubicacionDemo && <span className="chip neutro"><MapPin aria-hidden="true" />{t('Ubicación demo: Surquillo')}</span>}
         </div>
       </div>
 
       {cargado && pubs.length === 0 && (
         <div className="mapa-vacio" role="status">
           <Megaphone size={22} aria-hidden="true" />
-          <span>Aún no hay publicaciones a {textoRadio(radioKm)} de ti. Sé el primero: toca Publicar.</span>
+          <span>{t('Aún no hay publicaciones a {r} de ti. Sé el primero: toca Publicar.', { r: textoRadio(radioKm) })}</span>
         </div>
       )}
 
-      <button className="fab" onClick={() => nav('/publicar')}><Plus aria-hidden="true" />Publicar</button>
+      <button className="fab" onClick={() => nav('/publicar')}><Plus aria-hidden="true" />{t('Publicar')}</button>
     </div>
   )
 }

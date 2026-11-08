@@ -9,7 +9,7 @@ import { sha256 } from '../lib/hash'
 import { Logo } from '../lib/iconos'
 
 export default function Registro() {
-  const { setUsuario, geoAprox, setAviso } = useEstado()
+  const { setUsuario, geoAprox, setAviso, t } = useEstado()
   const [nombre, setNombre] = useState('')
   const [telefono, setTelefono] = useState('')
   const [dni, setDni] = useState('')
@@ -29,7 +29,7 @@ export default function Registro() {
         const [existente] = await conTiempo(listar('usuarios', { telefono, dniHash }, 1), 5000)
         if (existente) {
           setUsuario(existente)
-          setAviso(`¡Hola de nuevo, ${existente.nombre.split(' ')[0]}! Entraste a tu cuenta`)
+          setAviso(t('¡Hola de nuevo, {nombre}! Entraste a tu cuenta', { nombre: existente.nombre.split(' ')[0] }))
           return
         }
       } catch { /* sin senal: sigue el registro normal */ }
@@ -43,7 +43,7 @@ export default function Registro() {
         })
         const j = await r.json()
         if (j.coincide === true) verificacion = 'reniec'
-        if (j.coincide === false) { setError('El DNI no coincide con RENIEC. Revísalo.'); return }
+        if (j.coincide === false) { setError(t('El DNI no coincide con RENIEC. Revísalo.')); return }
       } catch {
         // servidor apagado o sin internet -> respaldo: pendiente de verificacion
       }
@@ -57,7 +57,7 @@ export default function Registro() {
       setUsuario(u)
     } catch (e) {
       console.error('Registro fallo', e)
-      setError('No pudimos crear tu cuenta. Intenta de nuevo.')
+      setError(t('No pudimos crear tu cuenta. Intenta de nuevo.'))
     } finally {
       setCargando(false)
     }
@@ -68,38 +68,38 @@ export default function Registro() {
       <div className="portada-cabecera">
         <div className="marca">
           <Logo size={40} />
-          <div className="marca-texto"><div className="marca-nombre">Ayni</div><div className="marca-lema">tu barrio se ayuda</div></div>
+          <div className="marca-texto"><div className="marca-nombre">Ayni</div><div className="marca-lema">{t('tu barrio se ayuda')}</div></div>
         </div>
-        <h1>Crea tu cuenta de vecino</h1>
-        <p>Con tu celular y tu DNI entras a tu barrio. Lo que necesitas está a 10 cuadras.</p>
+        <h1>{t('Crea tu cuenta de vecino')}</h1>
+        <p>{t('Con tu celular y tu DNI entras a tu barrio. Lo que necesitas está a 10 cuadras.')}</p>
       </div>
       <div className="portada-cuerpo">
         <form className="tarjeta" onSubmit={(e) => { e.preventDefault(); if (valido && !cargando) registrar() }}>
           <div className="campo">
-            <label htmlFor="reg-nombre">Tu nombre</label>
-            <input id="reg-nombre" autoComplete="name" placeholder="Ej: Rosa Quispe" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+            <label htmlFor="reg-nombre">{t('Tu nombre')}</label>
+            <input id="reg-nombre" autoComplete="name" placeholder={t('Ej: Rosa Quispe')} value={nombre} onChange={(e) => setNombre(e.target.value)} />
           </div>
           <div className="campo">
-            <label htmlFor="reg-celular">Celular</label>
-            <input id="reg-celular" placeholder="9 dígitos" inputMode="numeric" autoComplete="tel-national" maxLength={9} value={telefono} onChange={(e) => setTelefono(e.target.value.replace(/\D/g, ''))} />
+            <label htmlFor="reg-celular">{t('Celular')}</label>
+            <input id="reg-celular" placeholder={t('9 dígitos')} inputMode="numeric" autoComplete="tel-national" maxLength={9} value={telefono} onChange={(e) => setTelefono(e.target.value.replace(/\D/g, ''))} />
           </div>
           <div className="campo">
-            <label htmlFor="reg-dni">DNI</label>
-            <input id="reg-dni" placeholder="8 dígitos" inputMode="numeric" maxLength={8} value={dni} onChange={(e) => setDni(e.target.value.replace(/\D/g, ''))} />
+            <label htmlFor="reg-dni">{t('DNI')}</label>
+            <input id="reg-dni" placeholder={t('8 dígitos')} inputMode="numeric" maxLength={8} value={dni} onChange={(e) => setDni(e.target.value.replace(/\D/g, ''))} />
           </div>
           <label className="check">
             <input type="checkbox" checked={consiente} onChange={(e) => setConsiente(e.target.checked)} />
-            <span>Autorizo validar mi DNI en RENIEC. Ayni guarda solo una huella (hash), nunca mi número de DNI.</span>
+            <span>{t('Autorizo validar mi DNI en RENIEC. Ayni guarda solo una huella (hash), nunca mi número de DNI.')}</span>
           </label>
           <label className="check">
             <input type="checkbox" checked={whatsappVisible} onChange={(e) => setWhatsappVisible(e.target.checked)} />
-            <span>Mostrar mi WhatsApp a los vecinos que quieran contactarme</span>
+            <span>{t('Mostrar mi WhatsApp a los vecinos que quieran contactarme')}</span>
           </label>
           {error && <div className="error" role="alert"><CircleAlert size={20} aria-hidden="true" />{error}</div>}
-          <button type="submit" className="btn" disabled={!valido || cargando}>{cargando ? 'Verificando…' : 'Entrar a mi barrio'}</button>
+          <button type="submit" className="btn" disabled={!valido || cargando}>{cargando ? t('Verificando…') : t('Entrar a mi barrio')}</button>
         </form>
-        <p className="muted">¿Ya tienes cuenta? Escribe el mismo celular y DNI y entras directo.</p>
-        <p className="nota"><Lock aria-hidden="true" /><span>Tu ubicación se guarda aproximada (~300 m). Nadie ve tu casa exacta.</span></p>
+        <p className="muted">{t('¿Ya tienes cuenta? Escribe el mismo celular y DNI y entras directo.')}</p>
+        <p className="nota"><Lock aria-hidden="true" /><span>{t('Tu ubicación se guarda aproximada (~300 m). Nadie ve tu casa exacta.')}</span></p>
       </div>
     </div>
   )

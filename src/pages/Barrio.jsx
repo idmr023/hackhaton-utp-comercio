@@ -10,7 +10,7 @@ import Mapa from './Mapa'
 import Vecinos from './Vecinos'
 
 export default function Barrio({ vista }) {
-  const { ubicacion, radioKm } = useEstado()
+  const { ubicacion, radioKm, t } = useEstado()
   const nav = useNavigate()
   const [pubs, setPubs] = useState([])
   const [negocios, setNegocios] = useState([])
@@ -31,7 +31,7 @@ export default function Barrio({ vista }) {
   if (!ubicacion) return (
     <div className="cargando" role="status">
       <div className="ficha grande teal"><MapPin aria-hidden="true" /></div>
-      <p>Buscando tu ubicación…</p>
+      <p>{t('Buscando tu ubicación…')}</p>
     </div>
   )
 

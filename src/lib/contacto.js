@@ -1,4 +1,6 @@
 // Textos y enlaces compartidos entre el mapa y la lista de vecinos (docs/TEXTOS_PANTALLAS.md §4, §4b y §9).
+import { traducir } from './i18n'
+const es = (s, v) => traducir('es', s, v)
 export const waLink = (num, msj) => `https://wa.me/51${num}?text=${encodeURIComponent(msj)}`
 const corto = (t, n = 40) => (t.length > n ? t.slice(0, n).trim() + '…' : t)
 const nombre1 = (n) => (n || '').split(' ')[0]
@@ -15,14 +17,14 @@ export const CLASE_TIPO = { OFREZCO: '', NECESITO: 'terracota', RECOMIENDO: 'mai
 
 // Fecha de Firestore (Timestamp), numero o null (recien creada, aun sin confirmar del servidor)
 export const msFecha = (f) => (f == null ? Date.now() : f.seconds ? f.seconds * 1000 : Number(f) || 0)
-export function haceCuanto(f) {
+export function haceCuanto(f, t = es) {
   const min = Math.round((Date.now() - msFecha(f)) / 60000)
-  if (min < 1) return 'ahora'
-  if (min < 60) return `hace ${min} min`
+  if (min < 1) return t('ahora')
+  if (min < 60) return t('hace {n} min', { n: min })
   const h = Math.round(min / 60)
-  if (h < 24) return `hace ${h} h`
+  if (h < 24) return t('hace {n} h', { n: h })
   const d = Math.round(h / 24)
-  return d === 1 ? 'ayer' : `hace ${d} días`
+  return d === 1 ? t('ayer') : t('hace {n} días', { n: d })
 }
 export const metros = (km) => `${Math.round(km * 1000)} m`
 export const textoRadio = (r) => (r < 1 ? `${r * 1000} m` : `${r} km`)

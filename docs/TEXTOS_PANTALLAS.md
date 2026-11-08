@@ -162,10 +162,15 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 - Minka (quien ofrece): *Hola {nombre}, soy {yo} de Ayni. Vi que necesitas {tipo} y estoy a {distancia}. ¿Te ayudo?*
 - Aviso bajo el botón (una vez): *Queda en un lugar público. Ayni no interviene en pagos.*
 
-## 10. Accesibilidad y quechua
-- Ajustes → tarjeta **Accesibilidad e idioma** con 3 interruptores, cada uno con ícono y una línea de ayuda: **Letra grande** (*Toda la letra un 25 % más grande*) · **Alto contraste** (*Colores oscuros y bordes marcados*) · **Frases en quechua** (*Subtítulos en Minka y saludos*). Se recuerdan en el celular.
+## 10. Accesibilidad e idioma
+- Ajustes → tarjeta **Accesibilidad e idioma** con 3 interruptores (ícono + línea de ayuda): **Letra grande** (*Toda la letra un 25 % más grande*) · **Alto contraste** (*Colores oscuros y bordes marcados*) · **Modo para daltónicos** (*Azul y naranja en vez de verde y rojo*: el verde de Ayni pasa a azul, el rojo de Minka a bermellón, el teal de "Estoy bien" a índigo y la terracota de "Necesito" a magenta; los íconos ya son la segunda señal).
+- Tarjeta **Idioma** con 3 opciones apiladas: **Español** · **Español con frases en quechua** (*Minka: Allinllachu? Yanapaway!*) · **Quechua (Runasimi)** (*Llapan runasimipi*). Debajo, si no es español: *Las traducciones al quechua son del equipo y faltan validar con un hablante.* Se recuerdan en el celular.
+- **Quechua completo:** toda la interfaz se traduce con el diccionario de `src/lib/i18n.js` (barra, pestañas, Mapa, Vecinos, detalle, perfil, Publicar, Minka, Puntos, Ajustes, Registro, Tutorial y los avisos). Lo que escriben los vecinos (publicaciones, comentarios, avisos del boletín, categorías de la IA) queda como está. En Minka los 3 botones van en quechua con el español como subtítulo (*Allinllam kani / Estoy bien*, *Yanapaway / Necesito ayuda*, *Yanapasqayki / Puedo ayudar*). Ejemplos: Vecinos → *Wasimasikuna*, Puntos → *Puntukuna*, Emergencia → *Hatun llaki*, Salir → *Lluqsiy*, Publicar → *Willay*, Ofrezco / Necesito / Recomiendo → *Quni / Munani / Allinmi nini*, Negocios → *Qhatukuna*, Comentar → *Rimay*, Ajustes → *Allichaykuna*, AGUA / MEDICINA / COMIDA → *UNU / HAMPI / MIKHUNA*.
+
+### 10a. Frases en quechua (modo "Español con frases en quechua")
+- Con este modo el español se mantiene y se agregan frases en quechua (antes era el interruptor "Frases en quechua"; la preferencia vieja se migra sola).
 - Con quechua activado (subtítulo en cursiva bajo el español): botones de Minka *Allinllachu?* / *Yanapaway!* / *Yanapasqayki* · agradecimientos de Minka empiezan *Sulpayki, gracias…* · en Ajustes bajo el nombre *Wasimasi (vecino/a)*
-- Idioma: **Español / Quechua** (en la demo, 5 frases; el resto queda en español)
+- Idioma completo en quechua: ver arriba (§10). Este modo mixto solo agrega estas frases:
 
 | Español | Quechua (Cusco-Collao) | Dónde |
 |---|---|---|

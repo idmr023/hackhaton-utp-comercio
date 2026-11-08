@@ -17,23 +17,24 @@ const cls = ({ isActive }) => (isActive ? 'activo' : '')
 
 // Las 3 secciones del Modo Barrio. En celular va abajo; en PC, dentro de la barra superior.
 function Nav({ className }) {
+  const { t } = useEstado()
   return (
-    <nav className={className} aria-label="Secciones">
-      <NavLink to="/" className={cls} end><Map aria-hidden="true" />Mapa</NavLink>
-      <NavLink to="/vecinos" className={cls}><Users aria-hidden="true" />Vecinos</NavLink>
-      <NavLink to="/puntos" className={cls}><Coins aria-hidden="true" />Puntos</NavLink>
+    <nav className={className} aria-label={t('Secciones')}>
+      <NavLink to="/" className={cls} end><Map aria-hidden="true" />{t('Mapa')}</NavLink>
+      <NavLink to="/vecinos" className={cls}><Users aria-hidden="true" />{t('Vecinos')}</NavLink>
+      <NavLink to="/puntos" className={cls}><Coins aria-hidden="true" />{t('Puntos')}</NavLink>
     </nav>
   )
 }
 
 function Barra() {
-  const { modo, setModo, online, aviso, usuario } = useEstado()
+  const { modo, setModo, online, aviso, usuario, t } = useEstado()
   const nav = useNavigate()
   const minka = modo === 'minka'
   // Emergencia es el interruptor del Modo Minka: cambia toda la app, no es una seccion mas
   const cambiarModo = () => {
     if (minka) {
-      if (!window.confirm('¿Terminó la emergencia en tu zona?\n\nAceptar = Sí, volver al barrio. Cancelar = Seguir en Minka')) return
+      if (!window.confirm(t('¿Terminó la emergencia en tu zona?\n\nAceptar = Sí, volver al barrio. Cancelar = Seguir en Minka'))) return
       setModo('barrio'); nav('/')
     } else { setModo('minka'); nav('/minka') }
   }
@@ -43,20 +44,20 @@ function Barra() {
         <div className="marca">
           <Logo size={38} fondo={minka ? '#fff' : 'var(--maiz)'} trazo={minka ? 'var(--rojo)' : 'var(--verde-prof)'} />
           <div className="marca-texto">
-            <div className="marca-nombre">{minka ? 'Modo Minka' : 'Ayni'}</div>
-            <div className="marca-lema">{minka ? 'emergencia en tu zona' : 'tu barrio se ayuda'}</div>
+            <div className="marca-nombre">{minka ? t('Modo Minka') : 'Ayni'}</div>
+            <div className="marca-lema">{minka ? t('emergencia en tu zona') : t('tu barrio se ayuda')}</div>
           </div>
         </div>
         {!minka && <Nav className="nav-arriba" />}
         <div className="barra-acciones">
           {online
-            ? <span className="estado en-linea" role="status"><span className="solo-lector">En línea</span></span>
-            : <span className="estado offline" role="status"><WifiOff size={16} aria-hidden="true" /><span>Sin internet,<br />se guarda local</span></span>}
-          <button className="btn-modo" onClick={cambiarModo} aria-label={minka ? 'Salir de Minka' : 'Emergencia: entrar a Modo Minka'}>
+            ? <span className="estado en-linea" role="status"><span className="solo-lector">{t('En línea')}</span></span>
+            : <span className="estado offline" role="status"><WifiOff size={16} aria-hidden="true" /><span>{t('Sin internet,')}<br />{t('se guarda local')}</span></span>}
+          <button className="btn-modo" onClick={cambiarModo} aria-label={minka ? t('Salir de Minka') : t('Emergencia: entrar a Modo Minka')}>
             {minka ? <LogOut size={18} aria-hidden="true" /> : <Siren size={18} aria-hidden="true" />}
-            <span className="btn-modo-texto">{minka ? 'Salir' : 'Emergencia'}</span>
+            <span className="btn-modo-texto">{minka ? t('Salir') : t('Emergencia')}</span>
           </button>
-          <NavLink to="/ajustes" className={({ isActive }) => 'avatar-btn' + (isActive ? ' activo' : '')} aria-label="Ajustes y perfil" title="Ajustes y perfil">
+          <NavLink to="/ajustes" className={({ isActive }) => 'avatar-btn' + (isActive ? ' activo' : '')} aria-label={t('Ajustes y perfil')} title={t('Ajustes y perfil')}>
             {iniciales(usuario?.nombre) || '?'}
           </NavLink>
         </div>

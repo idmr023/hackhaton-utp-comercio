@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { Map, Plus, Siren } from 'lucide-react'
 import { Logo } from '../lib/iconos'
+import { useEstado } from '../lib/estado'
 
 const PASOS = [
   { Icono: Map, color: '', titulo: 'Tu barrio en un mapa', texto: 'Mira negocios, oficios y vecinos a menos de 1 km. Cada uno dice cuántos vecinos de tu zona lo recomiendan.' },
@@ -10,6 +11,7 @@ const PASOS = [
 ]
 
 export default function Tutorial() {
+  const { t } = useEstado()
   const [i, setI] = useState(0)
   const p = PASOS[i]
   const terminar = () => { localStorage.setItem('ayni_tutorial', '1'); window.location.href = '/' }
@@ -21,15 +23,15 @@ export default function Tutorial() {
         <div className="faja" aria-hidden="true" />
       </div>
       <div className={`tutorial-ilustracion ficha ${p.color}`} aria-hidden="true"><p.Icono strokeWidth={1.75} /></div>
-      <h1>{p.titulo}</h1>
-      <p>{p.texto}</p>
-      <div className="puntos-paso" role="img" aria-label={`Paso ${i + 1} de ${PASOS.length}`}>
+      <h1>{t(p.titulo)}</h1>
+      <p>{t(p.texto)}</p>
+      <div className="puntos-paso" role="img" aria-label={t('Paso {n} de {t}', { n: i + 1, t: PASOS.length })}>
         {PASOS.map((_, k) => <i key={k} className={k === i ? 'activo' : ''} />)}
       </div>
       {i < PASOS.length - 1
-        ? <button className="btn" onClick={() => setI(i + 1)}>Siguiente</button>
-        : <button className="btn" onClick={terminar}>Empezar</button>}
-      <button className="btn secundario" onClick={terminar}>Saltar</button>
+        ? <button className="btn" onClick={() => setI(i + 1)}>{t('Siguiente')}</button>
+        : <button className="btn" onClick={terminar}>{t('Empezar')}</button>}
+      <button className="btn secundario" onClick={terminar}>{t('Saltar')}</button>
     </div>
   )
 }

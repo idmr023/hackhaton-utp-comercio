@@ -30,14 +30,14 @@ function comprimirFoto(file) {
 }
 
 // Los 3 toques como barra de progreso (el toque 1 fue el boton Publicar del mapa)
-const Pasos = ({ actual }) => (
-  <div className="pasos" aria-label={`Paso ${actual} de 3`}>
+const Pasos = ({ actual, t }) => (
+  <div className="pasos" aria-label={t('Paso {n} de 3', { n: actual })}>
     {[1, 2, 3].map((n) => <i key={n} className={n < actual ? 'hecho' : n === actual ? 'actual' : ''} />)}
   </div>
 )
 
 export default function Publicar() {
-  const { usuario, geoAprox, online, setAviso } = useEstado()
+  const { usuario, geoAprox, online, setAviso, t } = useEstado()
   const [tipo, setTipo] = useState(null)
   const [texto, setTexto] = useState('')
   const [foto, setFoto] = useState('')
@@ -49,9 +49,9 @@ export default function Publicar() {
   // Nota de voz -> texto con el reconocimiento del navegador (Chrome Android lo tiene)
   function dictar() {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition
-    if (!SR) return setAviso('Tu navegador no tiene dictado por voz; escribe el texto')
+    if (!SR) return setAviso(t('Tu navegador no tiene dictado por voz; escribe el texto'))
     const r = new SR(); r.lang = 'es-PE'; r.interimResults = false
-    r.onresult = (e) => setTexto((t) => (t + ' ' + e.results[0][0].transcript).trim())
+    r.onresult = (e) => setTexto((tx) => (tx + ' ' + e.results[0][0].transcript).trim())
     r.onend = () => setGrabando(false)
     rec.current = r; setGrabando(true); r.start()
   }
@@ -68,16 +68,16 @@ export default function Publicar() {
     const id = nuevoId('publicaciones') // mismo id en cualquier reintento: nunca se duplica
     try {
       if (online) {
-        try { await conTiempo(crear('publicaciones', docu, id), 6000); setAviso('Publicado en tu barrio') }
+        try { await conTiempo(crear('publicaciones', docu, id), 6000); setAviso(t('Publicado en tu barrio')) }
         catch (e) {
           if (e.message !== 'timeout') throw e
           // Senal debil: Firestore ya la tiene en su cola local y la sube sola (no encolar = no duplicar)
-          setAviso('Señal débil: guardado, se subirá solo')
+          setAviso(t('Señal débil: guardado, se subirá solo'))
         }
-      } else { await encolar('publicaciones', docu, id); setAviso('Sin internet: guardado, se subirá solo') }
+      } else { await encolar('publicaciones', docu, id); setAviso(t('Sin internet: guardado, se subirá solo')) }
       nav('/')
     } catch (e) {
-      await encolar('publicaciones', docu, id); setAviso('Guardado en cola, se subirá luego')
+      await encolar('publicaciones', docu, id); setAviso(t('Guardado en cola, se subirá luego'))
       nav('/')
     } finally { setEnviando(false) }
   }
@@ -85,53 +85,53 @@ export default function Publicar() {
   // TOQUE 2: elegir tipo
   if (!tipo) return (
     <div className="pantalla">
-      <Pasos actual={2} />
-      <h2>¿Qué quieres publicar?</h2>
-      <p className="muted">Tus vecinos de hasta 1 km lo verán en el mapa.</p>
+      <Pasos actual={2} t={t} />
+      <h2>{t('¿Qué quieres publicar?')}</h2>
+      <p className="muted">{t('Tus vecinos de hasta 1 km lo verán en el mapa.')}</p>
       <div className="tarjeta lista">
-        {TIPOS.map((t) => {
-          const Icono = ICONO_TIPO[t.id]
+        {TIPOS.map((x) => {
+          const Icono = ICONO_TIPO[x.id]
           return (
-            <button key={t.id} className="opcion" onClick={() => setTipo(t.id)}>
-              <span className={`ficha ${t.color}`}><Icono aria-hidden="true" /></span>
-              <span className="opcion-texto"><span className="opcion-titulo">{t.titulo}</span><span className="opcion-sub">{t.sub}</span></span>
+            <button key={x.id} className="opcion" onClick={() => setTipo(x.id)}>
+              <span className={`ficha ${x.color}`}><Icono aria-hidden="true" /></span>
+              <span className="opcion-texto"><span className="opcion-titulo">{t(x.titulo)}</span><span className="opcion-sub">{t(x.sub)}</span></span>
               <ChevronRight className="opcion-flecha" aria-hidden="true" />
             </button>
           )
         })}
       </div>
-      <button className="btn secundario" onClick={() => nav(-1)}>Cancelar</button>
+      <button className="btn secundario" onClick={() => nav(-1)}>{t('Cancelar')}</button>
     </div>
   )
 
   // TOQUE 3: contenido + Publicar
-  const t = TIPOS.find((x) => x.id === tipo)
+  const x = TIPOS.find((y) => y.id === tipo)
   const Icono = ICONO_TIPO[tipo]
   return (
     <div className="pantalla">
-      <Pasos actual={3} />
+      <Pasos actual={3} t={t} />
       <div className="cabecera">
-        <button className="btn-atras" aria-label="Atrás" onClick={() => setTipo(null)}><ArrowLeft size={22} aria-hidden="true" /></button>
-        <span className={`ficha ${t.color}`}><Icono aria-hidden="true" /></span>
-        <div><h2>{t.titulo}</h2><div className="muted">{t.sub}</div></div>
+        <button className="btn-atras" aria-label={t('Atrás')} onClick={() => setTipo(null)}><ArrowLeft size={22} aria-hidden="true" /></button>
+        <span className={`ficha ${x.color}`}><Icono aria-hidden="true" /></span>
+        <div><h2>{t(x.titulo)}</h2><div className="muted">{t(x.sub)}</div></div>
       </div>
       <div className="campo">
-        <label htmlFor="texto-pub">¿Qué quieres decir?</label>
-        <textarea id="texto-pub" rows={4} placeholder={t.ejemplo} value={texto} onChange={(e) => setTexto(e.target.value)} autoFocus />
+        <label htmlFor="texto-pub">{t('¿Qué quieres decir?')}</label>
+        <textarea id="texto-pub" rows={4} placeholder={t(x.ejemplo)} value={texto} onChange={(e) => setTexto(e.target.value)} autoFocus />
       </div>
       <div className="btn-fila">
-        <button className="btn secundario" onClick={dictar} disabled={grabando}><Mic aria-hidden="true" />{grabando ? 'Escuchando…' : 'Hablar'}</button>
-        <label className="btn secundario"><Camera aria-hidden="true" />Foto
+        <button className="btn secundario" onClick={dictar} disabled={grabando}><Mic aria-hidden="true" />{grabando ? t('Escuchando…') : t('Hablar')}</button>
+        <label className="btn secundario"><Camera aria-hidden="true" />{t('Foto')}
           <input type="file" accept="image/*" capture="environment" style={{ display: 'none' }}
             onChange={async (e) => e.target.files[0] && setFoto(await comprimirFoto(e.target.files[0]))} />
         </label>
       </div>
-      {foto && <img src={foto} alt="Foto que acompaña tu publicación" className="foto-previa" />}
+      {foto && <img src={foto} alt={t('Foto que acompaña tu publicación')} className="foto-previa" />}
       <p className="nota">
         {online ? <MapPin aria-hidden="true" /> : <WifiOff aria-hidden="true" />}
-        <span>Se publica con tu ubicación aproximada.{!online && ' Estás sin internet: se guardará y subirá solo.'}</span>
+        <span>{t('Se publica con tu ubicación aproximada.')}{!online && t(' Estás sin internet: se guardará y subirá solo.')}</span>
       </p>
-      <button className="btn" disabled={!texto.trim() || enviando} onClick={publicar}>{enviando ? 'Publicando…' : 'Publicar'}</button>
+      <button className="btn" disabled={!texto.trim() || enviando} onClick={publicar}>{enviando ? t('Publicando…') : t('Publicar')}</button>
     </div>
   )
 }

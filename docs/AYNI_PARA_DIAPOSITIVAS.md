@@ -84,7 +84,7 @@ Los ganadores de ediciones anteriores usaron nombres en quechua y al jurado le g
   - Todo queda registrado como un **libro de movimientos que no se puede editar**.
 
 ### 3.5 Accesibilidad e inclusión
-- En **Ajustes** (avatar de la barra), tres interruptores:
+- En **Ajustes** (avatar de la barra): **toda la interfaz en quechua** (Runasimi) o español con frases en quechua, **modo para daltónicos** (azul y naranja en vez de verde y rojo, en toda la app) y estos interruptores:
   - **Letra grande** (toda la app +25 %)
   - **Alto contraste**
   - **Frases en quechua**: *Allinllachu?* / *Yanapaway!* (¡ayúdame!) / *Yanapasqayki* (te ayudo) en los botones de Minka; *Sulpayki* (gracias); *Wasimasi* (vecino/a)
