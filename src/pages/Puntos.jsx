@@ -56,7 +56,9 @@ export default function Puntos() {
   }
 
   return (
-    <div className="pantalla">
+    <div className="pantalla ancha">
+     <div className="columnas-2">
+     <div>
       <div className="hero-puntos">
         <div>
           <div className="etiqueta">Tus puntos Ayni</div>
@@ -82,7 +84,9 @@ export default function Puntos() {
           ))}
         </div>
       )}
+     </div>
 
+     <div>
       <h2 className="titulo-seccion">Canjea en negocios de tu barrio</h2>
       {recompensas.length === 0 && <div className="muted">Aún no hay recompensas en tu barrio.</div>}
       {recompensas.length > 0 && <div className="tarjeta lista">
@@ -104,6 +108,8 @@ export default function Puntos() {
           )
         })}
       </div>}
+     </div>
+     </div>
     </div>
   )
 }

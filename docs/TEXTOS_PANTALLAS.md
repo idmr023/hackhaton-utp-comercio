@@ -34,12 +34,14 @@ Enlace secundario en las 3: **Saltar**.
   - Celular inválido: *El celular debe tener 9 dígitos y empezar con 9.*
   - Ya existe: *Ya hay una cuenta con ese DNI. ¿Es tuya? Entra con tu celular.*
   - Sin internet / Didit caído (no es error, es aviso): *No pudimos validar tu DNI ahora. Puedes entrar; lo validamos cuando vuelva la señal.*
-- Estado en perfil: chip **Validado en RENIEC** / chip amarillo **Pendiente de verificación**
+- Estado en Ajustes: chip **Validado en RENIEC** / chip amarillo **Pendiente de verificación**
 
 ## 3. Barra superior
 - Marca a la izquierda: logo (dos flechas en círculo) + **Ayni** / *tu barrio se ayuda* · en emergencia: logo en blanco y rojo + **Modo Minka** / *emergencia en tu zona* (se recorta con … si no hay espacio)
 - Conexión: con internet solo un punto maíz (el texto `En línea` queda para lector de pantalla) · sin internet: píldora amarilla con ícono en dos líneas `Sin internet,` / `se guarda local`
-- Botón derecha (blanco, letra roja, ícono de sirena): **Emergencia** (en barrio) / **Salir** (en Minka, ícono de salida). Sin internet en un celular angosto queda solo el ícono.
+- Botón derecha (blanco, letra roja, ícono de sirena): **Emergencia** (en barrio) / **Salir** (en Minka, ícono de salida). Es el **interruptor del Modo Minka**, no una sección. Sin internet en un celular angosto queda solo el ícono.
+- **Avatar** (círculo maíz con iniciales, a la derecha del todo): abre **Ajustes** (aria: *Ajustes y perfil*).
+- Secciones (3 pestañas): **Mapa · Vecinos · Puntos**. En celular van abajo; en PC van dentro de la barra, al centro. En Minka la navegación se oculta: quedan solo **Salir** y el avatar.
 
 ## 4. Mapa (Modo Barrio)
 - Etiqueta radio: `Radio` + botones `500 m · 1 km · 2 km · 5 km`
@@ -56,6 +58,14 @@ Enlace secundario en las 3: **Saltar**.
   - Botones: **WhatsApp** (ícono de mensaje) · **Recomendar** (solo vecinos verificados; si no: *Necesitas 2 avales de vecinos para recomendar*)
 - Popup de publicación: chips `Necesito` (terracota) `Oficios` · texto · `Lucía P., a 200 m`
 - Botón flotante maíz: **Publicar** (con el signo +)
+
+## 4b. Vecinos (lista de publicaciones y negocios)
+- Título: **Vecinos cerca de ti** · subtítulo: *A 1 km de tu casa, 11 publicaciones* (o *…, 15 negocios*) · botón **Publicar**
+- Filtros (píldoras): `Todo · Ofrezco · Necesito · Recomiendo · Negocios`
+- Cada publicación (la más reciente arriba): chips `Ofrezco` `Oficios` · hace cuánto: `ahora` / `hace 4 min` / `hace 4 h` / `ayer` / `hace 3 días` · texto · **foto** si la subió · `Eduardo Brito, a 151 m` (o `Tú`) · botón **WhatsApp** (si no es tuya y el autor lo mostró)
+- Cada negocio (filtro Negocios, los más recomendados arriba): nombre, rubro, *Recomendado por 12 vecinos de tu zona*, resumen entre comillas, `A 350 m` y horario, botón **WhatsApp**
+- Vacío: *Aún no hay publicaciones a 1 km de ti. Sé el primero: toca Publicar.* · con filtro Negocios: *Aún no hay negocios recomendados a 1 km de ti.*
+- Tocar un item lleva al Mapa, lo centra y abre su popup (en celular y en PC). En PC la lista es un feed centrado de tarjetas; el Mapa ocupa toda la pantalla.
 
 ## 5. Publicar (3 toques)
 **Toque 2 – elegir tipo.** Arriba, barra de 3 pasos (1 hecho, 2 actual). Título: **¿Qué quieres publicar?** · *Tus vecinos de hasta 1 km lo verán en el mapa.*
@@ -98,6 +108,9 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 - Tarjeta cerca: título **Cerca de ti (3 km)** · etiquetas `3 necesidades abiertas` (roja) y `5 recursos disponibles` (verde)
 - Boletín: título **Boletín Minka** (ícono de periódico) · vacío: *Sin avisos por ahora.*
 - Parte de zona (arriba del boletín): **Resumen de tu zona, 7:05 p. m.:** {texto} · debajo: `Resumido con IA a partir de los reportes vecinales` (con chispas) (Gemini, máx. 35 palabras, sin inventar) o `Resumen automático de los reportes vecinales` (respaldo local: *4 pedidos de ayuda abiertos (2 de agua, 1 de medicina, 1 de albergue), 2 urgentes. 4 vecinos ofrecen ayuda (botiquín, agua, enfermera/o, vehículo). 2 ayudas ya coordinadas.*) · vacío: *Sin pedidos de ayuda abiertos.*
+- Tarjeta **Tus pedidos y ayudas** (solo si tienes algo sin vecino): *Aún sin vecino. Puedes cancelarlos cuando quieras.* · fila `Pediste agua` / `¡Ahora!, hace 10 min` + botón **Cancelar** · fila `Ofreces botiquín` / `Disponible hace 1 h` + botón **Retirar**
+- En la tarjeta verde de match, abajo: sin confirmar → **Cancelar pedido** / **Retirar ayuda** (confirmación del navegador: *¿Cancelar tu pedido de agua?* / *¿Retirar tu ayuda de botiquín?*; el otro vecino vuelve a quedar disponible/abierto) · ya confirmada → **Quitar de la lista** (solo deja de verse; los puntos ya entregados no cambian)
+- Avisos: *Pedido cancelado.* · *Ayuda retirada.* · *Quitado de tu lista.*
 - Salir de Minka (confirmación del navegador): *¿Terminó la emergencia en tu zona?* → Aceptar = **Sí, volver al barrio.** Cancelar = **Seguir en Minka**
 
 ## 7. Puntos Ayni
@@ -113,7 +126,8 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 - Agotado: botón `Agotado` · *Se agotó esta recompensa. Prueba otra.* · error: *No se pudo canjear. Intenta de nuevo.* · vacío: *Aún no hay recompensas en tu barrio.*
 - Tarjeta verde **Tus códigos de canje** (ícono de ticket) (últimos 3): **482 913** · `1 pan francés gratis con tu compra, en Panadería La Espiga de Oro` · `Vence el 14 nov`
 
-## 8. Perfil
+## 8. Ajustes (se abre desde el avatar de la barra; `/perfil` redirige aquí)
+- Título: **Ajustes** · tarjeta de tu cuenta (avatar, nombre, chip de verificación, celular, avales, puntos) · secciones **Accesibilidad e idioma** y **Ubicación y cuenta**. En PC, cuenta a la izquierda y secciones a la derecha.
 - Chips: **Validado en RENIEC** (con check) / **Pendiente de verificación** · `Avales: 1 de 2` · `, vecino verificado`
 - WhatsApp: `(WhatsApp visible)` / `(WhatsApp oculto)` · interruptor: *Mostrar mi WhatsApp*
 - Botón en perfil de otro vecino: **Lo conozco (avalar)** · éxito: *Avalaste a Lucía. Le falta 1 aval más.*
@@ -132,8 +146,8 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 - Aviso bajo el botón (una vez): *Queda en un lugar público. Ayni no interviene en pagos.*
 
 ## 10. Accesibilidad y quechua
-- Perfil → tarjeta **Accesibilidad e idioma** con 3 interruptores, cada uno con ícono y una línea de ayuda: **Letra grande** (*Toda la letra un 25 % más grande*) · **Alto contraste** (*Colores oscuros y bordes marcados*) · **Frases en quechua** (*Subtítulos en Minka y saludos*). Se recuerdan en el celular.
-- Con quechua activado (subtítulo en cursiva bajo el español): botones de Minka *Allinllachu?* / *Yanapaway!* / *Yanapasqayki* · agradecimientos de Minka empiezan *Sulpayki, gracias…* · en Perfil bajo el nombre *Wasimasi (vecino/a)*
+- Ajustes → tarjeta **Accesibilidad e idioma** con 3 interruptores, cada uno con ícono y una línea de ayuda: **Letra grande** (*Toda la letra un 25 % más grande*) · **Alto contraste** (*Colores oscuros y bordes marcados*) · **Frases en quechua** (*Subtítulos en Minka y saludos*). Se recuerdan en el celular.
+- Con quechua activado (subtítulo en cursiva bajo el español): botones de Minka *Allinllachu?* / *Yanapaway!* / *Yanapasqayki* · agradecimientos de Minka empiezan *Sulpayki, gracias…* · en Ajustes bajo el nombre *Wasimasi (vecino/a)*
 - Idioma: **Español / Quechua** (en la demo, 5 frases; el resto queda en español)
 
 | Español | Quechua (Cusco-Collao) | Dónde |

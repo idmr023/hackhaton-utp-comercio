@@ -1,19 +1,34 @@
 import { BrowserRouter, Routes, Route, NavLink, Navigate, useNavigate } from 'react-router-dom'
-import { Map, Siren, Coins, UserRound, WifiOff, LogOut } from 'lucide-react'
+import { Map, Users, Coins, Siren, WifiOff, LogOut } from 'lucide-react'
 import { EstadoProvider, useEstado } from './lib/estado'
 import { Logo } from './lib/iconos'
-import Mapa from './pages/Mapa'
+import Barrio from './pages/Barrio'
 import Publicar from './pages/Publicar'
 import Minka from './pages/Minka'
-import Perfil from './pages/Perfil'
+import Ajustes from './pages/Ajustes'
 import Registro from './pages/Registro'
 import Tutorial from './pages/Tutorial'
 import Puntos from './pages/Puntos'
 
+const iniciales = (nombre = '') => nombre.trim().split(/\s+/).slice(0, 2).map((p) => p[0]?.toUpperCase()).join('')
+const cls = ({ isActive }) => (isActive ? 'activo' : '')
+
+// Las 3 secciones del Modo Barrio. En celular va abajo; en PC, dentro de la barra superior.
+function Nav({ className }) {
+  return (
+    <nav className={className} aria-label="Secciones">
+      <NavLink to="/" className={cls} end><Map aria-hidden="true" />Mapa</NavLink>
+      <NavLink to="/vecinos" className={cls}><Users aria-hidden="true" />Vecinos</NavLink>
+      <NavLink to="/puntos" className={cls}><Coins aria-hidden="true" />Puntos</NavLink>
+    </nav>
+  )
+}
+
 function Barra() {
-  const { modo, setModo, online, aviso } = useEstado()
+  const { modo, setModo, online, aviso, usuario } = useEstado()
   const nav = useNavigate()
   const minka = modo === 'minka'
+  // Emergencia es el interruptor del Modo Minka: cambia toda la app, no es una seccion mas
   const cambiarModo = () => {
     if (minka) {
       if (!window.confirm('¿Terminó la emergencia en tu zona?\n\nAceptar = Sí, volver al barrio. Cancelar = Seguir en Minka')) return
@@ -30,6 +45,7 @@ function Barra() {
             <div className="marca-lema">{minka ? 'emergencia en tu zona' : 'tu barrio se ayuda'}</div>
           </div>
         </div>
+        {!minka && <Nav className="nav-arriba" />}
         <div className="barra-acciones">
           {online
             ? <span className="estado en-linea" role="status"><span className="solo-lector">En línea</span></span>
@@ -38,22 +54,13 @@ function Barra() {
             {minka ? <LogOut size={18} aria-hidden="true" /> : <Siren size={18} aria-hidden="true" />}
             <span className="btn-modo-texto">{minka ? 'Salir' : 'Emergencia'}</span>
           </button>
+          <NavLink to="/ajustes" className={({ isActive }) => 'avatar-btn' + (isActive ? ' activo' : '')} aria-label="Ajustes y perfil" title="Ajustes y perfil">
+            {iniciales(usuario?.nombre) || '?'}
+          </NavLink>
         </div>
       </header>
       {aviso && <div className="toast" role="status">{aviso}</div>}
     </>
-  )
-}
-
-function Nav() {
-  const cls = ({ isActive }) => (isActive ? 'activo' : '')
-  return (
-    <nav className="nav" aria-label="Secciones">
-      <NavLink to="/" className={cls} end><Map aria-hidden="true" />Mapa</NavLink>
-      <NavLink to="/minka" className={cls}><Siren aria-hidden="true" />Minka</NavLink>
-      <NavLink to="/puntos" className={cls}><Coins aria-hidden="true" />Puntos</NavLink>
-      <NavLink to="/perfil" className={cls}><UserRound aria-hidden="true" />Perfil</NavLink>
-    </nav>
   )
 }
 
@@ -62,20 +69,23 @@ function Rutas() {
   const vioTutorial = localStorage.getItem('ayni_tutorial') === '1'
   if (!vioTutorial) return <Routes><Route path="*" element={<Tutorial />} /></Routes>
   if (!usuario) return <Routes><Route path="*" element={<Registro />} /></Routes>
+  const minka = modo === 'minka'
   return (
-    <div className={'app' + (modo === 'minka' ? ' minka' : '')}>
+    <div className={'app' + (minka ? ' minka' : '')}>
       <Barra />
       <main className="contenido">
         <Routes>
-          <Route path="/" element={modo === 'minka' ? <Navigate to="/minka" /> : <Mapa />} />
+          <Route path="/" element={minka ? <Navigate to="/minka" /> : <Barrio vista="mapa" />} />
+          <Route path="/vecinos" element={minka ? <Navigate to="/minka" /> : <Barrio vista="lista" />} />
           <Route path="/publicar" element={<Publicar />} />
           <Route path="/minka" element={<Minka />} />
           <Route path="/puntos" element={<Puntos />} />
-          <Route path="/perfil" element={<Perfil />} />
+          <Route path="/ajustes" element={<Ajustes />} />
+          <Route path="/perfil" element={<Navigate to="/ajustes" />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>
-      <Nav />
+      {!minka && <Nav className="nav nav-abajo" />}
     </div>
   )
 }

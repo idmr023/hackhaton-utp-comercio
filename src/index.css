@@ -103,9 +103,20 @@ button { cursor: pointer; }
   .barra-superior.sin-internet .btn-modo { width: 44px; padding: 0; justify-content: center; }
 }
 
-/* ---- Navegacion ---- */
+/* Avatar de la barra: abre Ajustes (perfil, accesibilidad, sesion) */
+.avatar-btn {
+  width: 42px; height: 42px; border-radius: 50%; background: var(--maiz); color: var(--verde-prof); flex: none;
+  font-family: var(--titular); font-weight: 800; font-size: calc(18px * var(--escala)); display: grid; place-items: center;
+  text-decoration: none; border: 2px solid rgba(255, 255, 255, .75); transition: transform .08s ease;
+}
+.avatar-btn.activo { box-shadow: 0 0 0 3px #fff; }
+.avatar-btn:active { transform: scale(.95); }
+.app.minka .avatar-btn { background: #fff; color: var(--rojo); }
+
+/* ---- Navegacion: 3 secciones del Modo Barrio. Celular: abajo. PC: dentro de la barra (ver media query) ---- */
+.nav-arriba { display: none; }
 .nav {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
   background: var(--superficie); border-top: 1px solid var(--borde);
 }
 .nav a {
@@ -256,6 +267,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--verde); box-sha
 .pop-item { padding: 8px 0; border-top: 1px solid var(--borde); }
 .pop-item:first-child { border-top: 0; padding-top: 0; }
 .pop-item .texto { margin: 5px 0 2px; font-weight: 600; }
+.pop-foto { display: block; width: 100%; max-height: 160px; object-fit: cover; border-radius: var(--r-s); margin: 6px 0; border: 1px solid var(--borde); }
 .pop-wa {
   display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 0 14px; min-height: 44px; border-radius: 999px;
   background: var(--whatsapp); color: #fff !important; text-decoration: none; font-weight: 700;
@@ -355,7 +367,14 @@ input:focus, textarea:focus { outline: none; border-color: var(--verde); box-sha
 .switch input:focus-visible { outline: 3px solid var(--maiz); outline-offset: 2px; }
 
 /* ---- Minka ---- */
+/* Celular: todo en una columna (las dos columnas de PC se "deshacen" con display: contents y el orden lo dan las tarjetas) */
 .minka-columnas { display: flex; flex-direction: column; gap: 14px; }
+.minka-columnas > * { display: contents; }
+.minka-cerca { order: 5; }
+.minka-boletin { order: 10; }
+.minka-mios .mio { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid var(--borde); }
+.minka-mios .mio-texto { flex: 1; min-width: 0; }
+.acciones-match { display: flex; justify-content: flex-end; margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(47, 107, 79, .25); }
 .minka-botones { display: grid; gap: 12px; }
 .opciones-tipo { display: grid; gap: 10px; }
 .tarjeta-match { border: 1.5px solid var(--verde); background: var(--verde-suave); }
@@ -371,20 +390,76 @@ input:focus, textarea:focus { outline: none; border-color: var(--verde); box-sha
 .aviso-item { display: flex; gap: 8px; align-items: flex-start; padding: 6px 0; }
 .aviso-item svg { color: var(--rojo); width: 18px; height: 18px; margin-top: 3px; }
 
-/* ---- Pantallas anchas (tablet / PC): riel de navegacion a la izquierda, contenido centrado, Minka en dos columnas ---- */
+/* ---- Modo Barrio: lista de vecinos + mapa. Celular: una u otra. PC: lado a lado ---- */
+.barrio { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr); }
+.barrio-lista { overflow: auto; min-height: 0; background: var(--superficie); }
+.barrio-mapa { position: relative; min-height: 0; }
+.vecinos { display: flex; flex-direction: column; min-height: 100%; }
+.vecinos-cabecera {
+  position: sticky; top: 0; z-index: 2; background: var(--superficie); border-bottom: 1px solid var(--borde);
+  padding: 14px 16px 10px; display: flex; flex-direction: column; gap: 10px;
+}
+.vecinos-cabecera h2 { font-size: calc(24px * var(--escala)); }
+.filtros { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.filtros::-webkit-scrollbar { display: none; }
+.filtros button {
+  flex: none; min-height: 38px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--borde-fuerte);
+  background: var(--superficie); color: var(--gris); font-weight: 700; font-size: calc(14px * var(--escala)); white-space: nowrap;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.filtros button:hover { color: var(--verde-prof); border-color: var(--verde); }
+.filtros button.activo { background: var(--verde); border-color: var(--verde); color: #fff; }
+.vecinos-lista { display: flex; flex-direction: column; }
+.pub {
+  display: flex; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--borde); cursor: pointer; width: 100%; text-align: left;
+  transition: background-color .12s ease;
+}
+.pub:hover { background: var(--marfil); }
+.pub:active { background: var(--verde-suave); }
+.pub-cuerpo { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.pub-texto { font-weight: 600; line-height: 1.35; margin: 0; overflow-wrap: anywhere; }
+.pub-foto { width: 100%; max-height: 220px; object-fit: cover; border-radius: var(--r-s); border: 1px solid var(--borde); display: block; }
+.pub-pie { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-top: 2px; }
+.pub-pie .btn.chico { min-height: 40px; padding: 6px 12px; font-size: calc(14px * var(--escala)); }
+.vecinos-vacio { display: flex; gap: 12px; align-items: center; padding: 22px 16px; color: var(--gris); }
+
+/* Dos columnas en PC (Puntos, Ajustes); en celular una sola */
+.columnas-2 { display: flex; flex-direction: column; gap: 14px; }
+.columnas-2 > * { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+
+/* ---- Pantallas anchas (tablet / PC): secciones en la barra, lista + mapa lado a lado, columnas ---- */
 @media (min-width: 900px) {
-  .app { grid-template-columns: 236px minmax(0, 1fr); grid-template-rows: auto 1fr; }
-  .barra-superior { grid-column: 1 / -1; padding-left: 20px; padding-right: 20px; }
-  .nav { grid-row: 2; grid-column: 1; grid-template-columns: 1fr; align-content: start; gap: 4px; padding: 14px 12px; border-top: 0; border-right: 1px solid var(--borde); }
-  .nav a { flex-direction: row; justify-content: flex-start; gap: 12px; min-height: 50px; padding: 10px 14px; font-size: calc(16px * var(--escala)); }
-  .contenido { grid-row: 2; grid-column: 2; }
+  .app { grid-template-rows: auto 1fr; }
+  .barra-superior { padding-left: 20px; padding-right: 20px; gap: 20px; }
+  .nav-abajo { display: none; }
+  .nav-arriba { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(255, 255, 255, .12); margin: 0 auto; }
+  .nav-arriba a {
+    display: flex; align-items: center; gap: 8px; min-height: 42px; padding: 0 18px; border-radius: 999px; color: #fff;
+    text-decoration: none; font-weight: 700; font-size: calc(15px * var(--escala)); transition: background-color .15s ease, color .15s ease;
+  }
+  .nav-arriba a svg { width: 20px; height: 20px; }
+  .nav-arriba a:hover { background: rgba(255, 255, 255, .14); }
+  .nav-arriba a.activo { background: #fff; color: var(--verde-prof); }
   .pantalla { padding: 24px; gap: 16px; }
-  .mapa-controles { left: 20px; right: auto; width: 360px; top: 20px; }
+  .pantalla.ancha { max-width: 1120px; }
+  /* Vecinos en PC: un feed centrado de tarjetas */
+  .barrio-lista { background: var(--marfil); }
+  .vecinos { max-width: 800px; margin: 0 auto; padding: 24px 24px 48px; gap: 14px; }
+  .vecinos-cabecera { position: static; background: transparent; border: 0; padding: 0 0 4px; }
+  .vecinos-cabecera h2 { font-size: calc(30px * var(--escala)); }
+  .vecinos-lista { gap: 12px; }
+  .pub { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--r-l); padding: 16px 18px; }
+  .pub:hover { background: #fff; border-color: var(--borde-fuerte); }
+  .vecinos-vacio { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--r-l); }
+  .mapa-controles { left: 20px; right: auto; width: 380px; top: 20px; }
   .fab { right: 28px; bottom: 28px; }
-  .mapa-vacio { left: 20px; right: auto; width: 360px; bottom: 28px; }
-  .minka-columnas { flex-direction: row; align-items: flex-start; }
-  .minka-columnas > * { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
-  .pantalla.ancha { max-width: 1040px; }
+  .mapa-vacio { left: 20px; right: auto; width: 380px; bottom: 28px; }
+  .columnas-2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 20px; align-items: start; }
+  /* Minka en PC: botones y boletin a la izquierda, mapa grande a la derecha */
+  .minka-columnas { display: grid; grid-template-columns: minmax(360px, 460px) minmax(0, 1fr); gap: 18px; align-items: start; }
+  .minka-columnas > * { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .minka-cerca, .minka-boletin { order: 0; }
+  .mapa-mini { height: 520px; }
   .toast { bottom: 32px; }
   .portada { flex-direction: row; }
   .portada-cabecera { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 48px; }
@@ -409,6 +484,10 @@ html.alto-contraste input, html.alto-contraste textarea { border: 2px solid #000
 html.alto-contraste .nav { border-top-width: 2px; }
 html.alto-contraste .nav a { color: #000; }
 html.alto-contraste .nav a.activo { box-shadow: inset 0 0 0 2px #000; }
+html.alto-contraste .nav-arriba a.activo { color: #000; }
+html.alto-contraste .pub, html.alto-contraste .vecinos-cabecera { border-color: #000; }
+html.alto-contraste .filtros button { border: 2px solid #000; color: #000; }
+html.alto-contraste .avatar-btn { border-color: #000; }
 html.alto-contraste .selector-radio { border: 2px solid #000; }
 html.alto-contraste .opcion { border-top-width: 2px; }
 

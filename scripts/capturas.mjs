@@ -1,7 +1,7 @@
 // Capturas de la app en tamano celular con Chrome headless + CDP (sin dependencias).
 // Uso (con npm run dev corriendo): node scripts/capturas.mjs capturas [mapa,minka,...]
 // Usa un usuario FALSO solo en localStorage del Chrome headless: no escribe en Firestore.
-// Pantallas: tutorial, registro, mapa, publicar, puntos, perfil, minka, minka_acc, perfil_acc, offline, minka_abajo
+// Pantallas: tutorial, registro, mapa, vecinos, publicar, puntos, ajustes, minka, minka_acc, ajustes_acc, offline, minka_abajo, pc_*
 import { spawn } from 'node:child_process'
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { resolve } from 'node:path'
@@ -52,17 +52,21 @@ const PANTALLAS = [
   ['mapa', '/', () => estado(true, true)],
   ['publicar', '/publicar', () => estado(true, true)],
   ['puntos', '/puntos', () => estado(true, true)],
-  ['perfil', '/perfil', () => estado(true, true)],
+  ['vecinos', '/vecinos', () => estado(true, true)],
+  ['ajustes', '/ajustes', () => estado(true, true)],
   ['minka', '/minka', () => estado(true, true, 'minka')],
   ['minka_acc', '/minka', () => estado(true, true, 'minka', "localStorage.setItem('ayni_prefs', JSON.stringify({ letraGrande: true, altoContraste: true, quechua: true }))")],
-  ['perfil_acc', '/perfil', () => estado(true, true, 'barrio', "localStorage.setItem('ayni_prefs', JSON.stringify({ letraGrande: true, altoContraste: true, quechua: true }))")],
+  ['ajustes_acc', '/ajustes', () => estado(true, true, 'barrio', "localStorage.setItem('ayni_prefs', JSON.stringify({ letraGrande: true, altoContraste: true, quechua: true }))")],
   ['offline', '/', () => estado(true, true), "window.dispatchEvent(new Event('offline'))"],
   ['minka_abajo', '/minka', () => estado(true, true, 'minka'), 'window.scrollTo(0, 99999); document.querySelector(".contenido")?.scrollTo(0, 99999)'],
   // Pantalla ancha (PC / tablet): riel de navegacion a la izquierda, contenido centrado
   ['pc_mapa', '/', () => estado(true, true), '', 1280],
+  ['pc_vecinos', '/vecinos', () => estado(true, true), '', 1280],
   ['pc_minka', '/minka', () => estado(true, true, 'minka'), '', 1280],
   ['pc_puntos', '/puntos', () => estado(true, true), '', 1280],
   ['pc_registro', '/', () => estado(true, false), '', 1280],
+  ['pc_ajustes', '/ajustes', () => estado(true, true), '', 1280],
+  ['pc_publicar', '/publicar', () => estado(true, true), '', 1280],
 ]
 let anchoActual = 390
 for (const [nombre, ruta, prep, despues, ancho = 390] of PANTALLAS) {

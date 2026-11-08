@@ -42,6 +42,7 @@ Los ganadores de ediciones anteriores usaron nombres en quechua y al jurado le g
 
 ### 3.2 Modo Barrio
 - **Mapa** con tu posición (punto azul) y los negocios con el **ícono de su rubro**: panadería (croissant), farmacia (pastilla), gasfitero, veterinaria, pollería…
+- **Lista Vecinos** (pestaña al lado del mapa): lo que publican los vecinos cerca, lo más reciente arriba, con foto, filtro Ofrezco / Necesito / Recomiendo / Negocios y WhatsApp. En PC la lista y el mapa se ven lado a lado, como en una web de alquileres.
 - **Ficha del negocio:** recomendaciones, resumen, distancia, horario y **botón de WhatsApp**.
 - **Publicar en 3 toques:** Ofrezco / Necesito / Recomiendo, con foto o **dictado por voz**.
   - La **IA (Gemini)** clasifica sola cada publicación en Oficios, Alimentos, Salud, Hogar, Transporte, Educación, Mascotas u Otro.
@@ -82,7 +83,7 @@ Los ganadores de ediciones anteriores usaron nombres en quechua y al jurado le g
   - Todo queda registrado como un **libro de movimientos que no se puede editar**.
 
 ### 3.5 Accesibilidad e inclusión
-- En **Perfil**, tres interruptores:
+- En **Ajustes** (avatar de la barra), tres interruptores:
   - **Letra grande** (toda la app +25 %)
   - **Alto contraste**
   - **Frases en quechua**: *Allinllachu?* / *Yanapaway!* (¡ayúdame!) / *Yanapasqayki* (te ayudo) en los botones de Minka; *Sulpayki* (gracias); *Wasimasi* (vecino/a)
@@ -139,7 +140,7 @@ CELULAR DEL VECINO (app web instalable / PWA: React + Vite)
 | **D. Negocio + WhatsApp** | Tocar el pin de la panadería → *"Recomendado por 24 vecinos"* → WhatsApp con mensaje listo |
 | **E. Minka con 2 celulares** | Emergencia → celular A pide comida (¡Ahora!) → celular B ofrece comida → "¡Match!" en los dos → WhatsApp → código de 4 dígitos → +20 puntos |
 | **F. Canje** | Puntos → Canjear "1 pan francés gratis" → código de 6 dígitos → saldo baja |
-| **G. Inclusión** | Perfil → letra grande, alto contraste, quechua → Minka con las frases en quechua |
+| **G. Inclusión** | Ajustes → letra grande, alto contraste, quechua → Minka con las frases en quechua |
 
 **Capturas para las slides:**
 - Lo mejor es sacarlas **desde el celular**, con el link del túnel y `?demo=1`, que fija la ubicación en Surquillo.
@@ -229,7 +230,7 @@ Cada slide tiene **un solo mensaje**. Las capturas se sacan desde el celular, co
 | 2 | **El problema** | No sabemos en quién confiar para un gasfitero o una bodega cerca · los emprendimientos del barrio no se hacen ver · en un sismo nadie sabe quién necesita qué | Foto o ilustración simple del barrio (sin texto encima) | La ayuda existe, pero no se encuentra |
 | 3 | **Nuestra respuesta: una app, dos modos** | **Modo Barrio** para el día a día · **Modo Minka** para emergencias · funciona en el celular, sin descargar de una tienda | Dos capturas lado a lado: mapa (verde) y Minka (rojo) | Barrio + Minka |
 | 4 | **Cumplimos todo el reto** | Lista con check de lo que pedía el reto (tabla de la sección 2) | Checklist en dos columnas | 10 de 10 pedidos cubiertos |
-| 5 | **Vecinos de verdad** | Registro con celular + DNI validado en **RENIEC** · se guarda solo una huella del DNI · ubicación aproximada (~300 m), nunca tu casa | Capturas: registro + perfil con "Validado en RENIEC" | Identidad real, privacidad cuidada |
+| 5 | **Vecinos de verdad** | Registro con celular + DNI validado en **RENIEC** · se guarda solo una huella del DNI · ubicación aproximada (~300 m), nunca tu casa | Capturas: registro + Ajustes con "Validado en RENIEC" | Identidad real, privacidad cuidada |
 | 6 | **Tu barrio en un mapa** | Negocios a menos de 1 km con su ícono · *"Recomendado por 24 vecinos de tu zona"* + resumen · WhatsApp con mensaje listo | Captura del mapa + ficha de Panadería La Espiga de Oro | Recomendaciones de vecinos, no de desconocidos |
 | 7 | **Publicar en 3 toques** | + → Ofrezco / Necesito / Recomiendo → escribir, foto o voz · la IA (Gemini) la clasifica sola · aparece en el mapa de los vecinos | Tres capturas en fila: +, tipo, publicar | 3 toques |
 | 8 | **Funciona sin internet** | Modo avión → publicas igual → *"Sin internet: guardado, se subirá solo"* · al volver la señal se sube una sola vez | Captura con el aviso amarillo "Sin internet" | Sin señal también funciona |
