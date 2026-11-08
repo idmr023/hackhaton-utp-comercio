@@ -9,6 +9,8 @@ import Ajustes from './pages/Ajustes'
 import Registro from './pages/Registro'
 import Tutorial from './pages/Tutorial'
 import Puntos from './pages/Puntos'
+import Publicacion from './pages/Publicacion'
+import Vecino from './pages/Vecino'
 
 const iniciales = (nombre = '') => nombre.trim().split(/\s+/).slice(0, 2).map((p) => p[0]?.toUpperCase()).join('')
 const cls = ({ isActive }) => (isActive ? 'activo' : '')
@@ -78,6 +80,8 @@ function Rutas() {
           <Route path="/" element={minka ? <Navigate to="/minka" /> : <Barrio vista="mapa" />} />
           <Route path="/vecinos" element={minka ? <Navigate to="/minka" /> : <Barrio vista="lista" />} />
           <Route path="/publicar" element={<Publicar />} />
+          <Route path="/publicacion/:id" element={<Publicacion />} />
+          <Route path="/vecino/:id" element={<Vecino />} />
           <Route path="/minka" element={<Minka />} />
           <Route path="/puntos" element={<Puntos />} />
           <Route path="/ajustes" element={<Ajustes />} />

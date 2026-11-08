@@ -65,7 +65,24 @@ Enlace secundario en las 3: **Saltar**.
 - Cada publicación (la más reciente arriba): chips `Ofrezco` `Oficios` · hace cuánto: `ahora` / `hace 4 min` / `hace 4 h` / `ayer` / `hace 3 días` · texto · **foto** si la subió · `Eduardo Brito, a 151 m` (o `Tú`) · botón **WhatsApp** (si no es tuya y el autor lo mostró)
 - Cada negocio (filtro Negocios, los más recomendados arriba): nombre, rubro, *Recomendado por 12 vecinos de tu zona*, resumen entre comillas, `A 350 m` y horario, botón **WhatsApp**
 - Vacío: *Aún no hay publicaciones a 1 km de ti. Sé el primero: toca Publicar.* · con filtro Negocios: *Aún no hay negocios recomendados a 1 km de ti.*
-- Tocar un item lleva al Mapa, lo centra y abre su popup (en celular y en PC). En PC la lista es un feed centrado de tarjetas; el Mapa ocupa toda la pantalla.
+- Cada item muestra el avatar (iniciales) y el nombre del autor (tocarlos abre su perfil), y abajo los botones **Mapa** (centra y abre el popup en el Mapa), **Comentar** y **WhatsApp**. Tocar el resto del item abre el **detalle de la publicación**. En PC la lista es un feed centrado de tarjetas; el Mapa ocupa toda la pantalla.
+
+## 4c. Detalle de publicación (`/publicacion/{id}`)
+- Cabecera: flecha Atrás + ficha del tipo + título **Ofrezco** / **Necesito** / **Recomiendo**
+- Autor (tocar abre su perfil): avatar, nombre (`Carlos M.`, o `Carlos M. (tú)`), chip `RENIEC` si está validado, `hace 6 h, a 151 m de ti`, estrellas con `4.8 (12)` o *Sin recomendaciones*
+- Chips `Ofrezco` `Oficios` · texto grande · foto grande si la subió
+- Botones: **WhatsApp** (si no es tuya y el autor lo mostró) · **Ver en el mapa**
+- **Comentarios (n)** · vacío: *Nadie ha comentado todavía. Sé el primero.* · cada comentario: avatar, nombre (`Tú` si es tuyo), `hace 5 min`, texto · campo `Escribe un comentario` (máx. 300) + botón **Comentar**
+- Avisos: *Comentario publicado* · *Sin señal: tu comentario se guardó y se enviará solo.* · *No se pudo comentar. Intenta de nuevo.*
+- No existe: *Esta publicación ya no está disponible.* + botón **Volver a Vecinos**
+
+## 4d. Perfil de vecino (`/vecino/{id}`)
+- Título: **Perfil de vecino** (o **Tu perfil público** si eres tú)
+- Tarjeta: avatar grande, nombre, chips **Validado en RENIEC** / **Vecino verificado** / `Vecino de la demo` (si no tiene cuenta en `usuarios`), estrellas `4.8 (12)` · tres cifras: `3 publicaciones` · `12 recomendaciones` · `40 puntos Ayni` · botón **WhatsApp** si lo mostró
+- **Fotos**: galería con las fotos de sus publicaciones (tocar abre la publicación)
+- **Lo que ofrece y pide**: sus publicaciones (`Ofrezco, Oficios, hace 6 h`) · vacío: *Aún no tiene publicaciones.*
+- **Recomendaciones de vecinos**: tarjeta **¿Conoces a Carlos? Recomiéndalo** (o **Tu recomendación** si ya lo hiciste) con 5 estrellas para tocar, campo `Cuenta cómo te fue (opcional)` y botón **Recomendar** / **Actualizar recomendación** · nota: *Tu recomendación le da +2 puntos Ayni, una sola vez.* · lista: avatar, nombre, estrellas, `hace 2 días`, texto · vacío: *Aún nadie lo recomendó.*
+- Avisos: *Elige de 1 a 5 estrellas.* · *Gracias. Carlos recibió +2 puntos Ayni por tu recomendación.* · *Recomendación actualizada.* · *No se pudo guardar. Intenta de nuevo.*
 
 ## 5. Publicar (3 toques)
 **Toque 2 – elegir tipo.** Arriba, barra de 3 pasos (1 hecho, 2 actual). Título: **¿Qué quieres publicar?** · *Tus vecinos de hasta 1 km lo verán en el mapa.*

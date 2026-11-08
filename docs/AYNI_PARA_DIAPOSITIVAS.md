@@ -42,7 +42,8 @@ Los ganadores de ediciones anteriores usaron nombres en quechua y al jurado le g
 
 ### 3.2 Modo Barrio
 - **Mapa** con tu posición (punto azul) y los negocios con el **ícono de su rubro**: panadería (croissant), farmacia (pastilla), gasfitero, veterinaria, pollería…
-- **Lista Vecinos** (pestaña al lado del mapa): lo que publican los vecinos cerca, lo más reciente arriba, con foto, filtro Ofrezco / Necesito / Recomiendo / Negocios y WhatsApp. En PC la lista y el mapa se ven lado a lado, como en una web de alquileres.
+- **Lista Vecinos** (pestaña al lado del mapa): lo que publican los vecinos cerca, lo más reciente arriba, con foto, filtro Ofrezco / Necesito / Recomiendo / Negocios y WhatsApp. En PC es un feed centrado.
+- **Cada publicación tiene su página** con comentarios de los vecinos, y cada vecino un **perfil público**: validación RENIEC, estrellas y recomendaciones de otros vecinos, puntos Ayni, galería con las fotos de sus publicaciones y lo que ofrece o pide. Recomendar a un vecino le da +2 puntos (una vez por persona).
 - **Ficha del negocio:** recomendaciones, resumen, distancia, horario y **botón de WhatsApp**.
 - **Publicar en 3 toques:** Ofrezco / Necesito / Recomiendo, con foto o **dictado por voz**.
   - La **IA (Gemini)** clasifica sola cada publicación en Oficios, Alimentos, Salud, Hogar, Transporte, Educación, Mascotas u Otro.

@@ -54,6 +54,8 @@ const PANTALLAS = [
   ['puntos', '/puntos', () => estado(true, true)],
   ['vecinos', '/vecinos', () => estado(true, true)],
   ['ajustes', '/ajustes', () => estado(true, true)],
+  ['publicacion', '/publicacion/pub_01', () => estado(true, true)],
+  ['vecino', '/vecino/vec_03', () => estado(true, true)],
   ['minka', '/minka', () => estado(true, true, 'minka')],
   ['minka_acc', '/minka', () => estado(true, true, 'minka', "localStorage.setItem('ayni_prefs', JSON.stringify({ letraGrande: true, altoContraste: true, quechua: true }))")],
   ['ajustes_acc', '/ajustes', () => estado(true, true, 'barrio', "localStorage.setItem('ayni_prefs', JSON.stringify({ letraGrande: true, altoContraste: true, quechua: true }))")],
@@ -62,6 +64,8 @@ const PANTALLAS = [
   // Pantalla ancha (PC / tablet): riel de navegacion a la izquierda, contenido centrado
   ['pc_mapa', '/', () => estado(true, true), '', 1280],
   ['pc_vecinos', '/vecinos', () => estado(true, true), '', 1280],
+  ['pc_publicacion', '/publicacion/pub_01', () => estado(true, true), '', 1280],
+  ['pc_vecino', '/vecino/vec_03', () => estado(true, true), '', 1280],
   ['pc_minka', '/minka', () => estado(true, true, 'minka'), '', 1280],
   ['pc_puntos', '/puntos', () => estado(true, true), '', 1280],
   ['pc_registro', '/', () => estado(true, false), '', 1280],

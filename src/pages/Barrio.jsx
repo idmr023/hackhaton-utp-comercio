@@ -1,7 +1,7 @@
 // Modo Barrio: carga publicaciones y negocios cercanos una sola vez y los reparte entre sus dos secciones,
 // Mapa ("/") y Vecinos ("/vecinos"). Tocar algo en la lista lleva al mapa, lo centra y abre su popup.
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
 import { useEstado } from '../lib/estado'
 import { listarCerca } from '../lib/db'
@@ -17,6 +17,9 @@ export default function Barrio({ vista }) {
   const [nPend, setNPend] = useState(0)
   const [cargado, setCargado] = useState(false)
   const [foco, setFoco] = useState(null) // { k, lat, lng, n }: lo elegido en la lista, para centrarlo en el mapa
+  const loc = useLocation()
+  // "Ver en el mapa" desde el detalle de una publicacion llega como state de la navegacion
+  useEffect(() => { if (loc.state?.foco) setFoco({ ...loc.state.foco, n: Date.now() }) }, [loc.state])
 
   useEffect(() => {
     if (!ubicacion) return
