@@ -35,7 +35,7 @@ export default function Vecino() {
       cargarResenas(id).catch(() => ({ lista: [], n: 0, promedio: 0 })),
       saldoPuntos(id).catch(() => null),
     ])
-    setU(usr); setPubs(ps.sort((a, b) => msFecha(b.fecha) - msFecha(a.fecha))); setResenas(rs); setSaldo(s)
+    setU(usr); setPubs(ps.filter((p) => p.estado !== 'retirada').sort((a, b) => msFecha(b.fecha) - msFecha(a.fecha))); setResenas(rs); setSaldo(s)
     const mia = rs.lista.find((r) => r.deId === usuario?.id)
     if (mia) { setEstrellas(mia.estrellas || 0); setTexto(mia.texto || '') }
     setCargado(true)
@@ -78,7 +78,7 @@ export default function Vecino() {
 
       <div className="tarjeta perfil-cab">
         <div className="fila">
-          <Avatar nombre={nombre} size={72} />
+          <Avatar nombre={nombre} usuarioId={id} size={72} />
           <div style={{ minWidth: 0 }}>
             <h2>{nombre}</h2>
             <div className="chips" style={{ marginTop: 6 }}>
@@ -148,7 +148,7 @@ export default function Vecino() {
         <div className="tarjeta lista">
           {resenas.lista.map((r) => (
             <div key={r.id} className="comentario" style={{ borderTop: 0 }}>
-              <Avatar nombre={r.deNombre} size={36} />
+              <Avatar nombre={r.deNombre} usuarioId={r.deId} size={36} />
               <div style={{ minWidth: 0, flex: 1 }}>
                 <div className="fila" style={{ gap: 8, flexWrap: 'wrap' }}>
                   <b>{r.deId === usuario?.id ? t('Tú') : r.deNombre}</b>

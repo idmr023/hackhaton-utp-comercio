@@ -6,6 +6,7 @@ import { MapPin } from 'lucide-react'
 import { useEstado } from '../lib/estado'
 import { listarCerca } from '../lib/db'
 import { pendientes } from '../lib/offlineQueue'
+import { cargarResenasNegocios, negocioVisible } from '../lib/negocios'
 import Mapa from './Mapa'
 import Vecinos from './Vecinos'
 
@@ -16,6 +17,7 @@ export default function Barrio({ vista }) {
   const [negocios, setNegocios] = useState([])
   const [nPend, setNPend] = useState(0)
   const [cargado, setCargado] = useState(false)
+  const [resenasNeg, setResenasNeg] = useState({}) // estrellas reales por negocio (una consulta)
   const [foco, setFoco] = useState(null) // { k, lat, lng, n }: lo elegido en la lista, para centrarlo en el mapa
   const loc = useLocation()
   // "Ver en el mapa" desde el detalle de una publicacion llega como state de la navegacion
@@ -23,9 +25,11 @@ export default function Barrio({ vista }) {
 
   useEffect(() => {
     if (!ubicacion) return
-    listarCerca('publicaciones', ubicacion, radioKm).then(setPubs).catch(console.error).finally(() => setCargado(true))
-    listarCerca('negocios_oficios', ubicacion, radioKm).then(setNegocios).catch(console.error)
+    // Las publicaciones que su autor quito (estado "retirada") no se muestran
+    listarCerca('publicaciones', ubicacion, radioKm).then((l) => setPubs(l.filter((p) => p.estado !== 'retirada'))).catch(console.error).finally(() => setCargado(true))
+    listarCerca('negocios_oficios', ubicacion, radioKm).then((l) => setNegocios(l.filter(negocioVisible))).catch(console.error)
     pendientes().then((l) => setNPend(l.length))
+    cargarResenasNegocios().then(setResenasNeg).catch(() => {})
   }, [ubicacion, radioKm])
 
   if (!ubicacion) return (
@@ -37,7 +41,7 @@ export default function Barrio({ vista }) {
 
   // Ambas rutas renderizan este mismo componente, asi que el foco sobrevive al cambio de pestana
   const elegir = (f) => { setFoco({ ...f, n: Date.now() }); nav('/') }
-  const datos = { pubs, negocios, nPend, cargado }
+  const datos = { pubs, negocios, nPend, cargado, resenasNeg }
   return (
     <div className={`barrio vista-${vista}`}>
       {vista === 'lista'

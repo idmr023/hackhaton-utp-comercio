@@ -38,11 +38,13 @@ Los ganadores de ediciones anteriores usaron nombres en quechua y al jurado le g
 - **Privacidad:** la app guarda solo una "huella" del DNI (un hash), **nunca el número**. Pide consentimiento antes de validar.
 - Si ya tienes cuenta, escribes el mismo celular y DNI y **entras directo**, sin duplicar cuentas.
 - Si el servicio de RENIEC no responde, la cuenta queda *"Pendiente de verificación"* y **la app sigue funcionando**.
-- **No hay login por SMS:** el equipo lo descartó por tiempo y riesgo en vivo. Celular + DNI validado ya cubre la identidad.
+- **No hay login por SMS:** el equipo lo descartó por tiempo y riesgo en vivo. Celular + DNI validado al crear la cuenta, y celular + PIN para entrar después (la huella del PIN se guarda con el DNI de sal). En producción iría Firebase Auth.
 
 ### 3.2 Modo Barrio
 - **Mapa** con tu posición (punto azul) y los negocios con el **ícono de su rubro**: panadería (croissant), farmacia (pastilla), gasfitero, veterinaria, pollería…
 - **Lista Vecinos** (pestaña al lado del mapa): lo que publican los vecinos cerca, lo más reciente arriba, con foto, filtro Ofrezco / Necesito / Recomiendo / Negocios y WhatsApp. En PC es un feed centrado.
+- **Negocios por categoría** (Comida, Salud, Hogar y oficios, Belleza, Tiendas), cada uno con su **página**: estrellas y opiniones de los vecinos (opinar da +2 puntos), comentarios, horario y WhatsApp. Cualquier vecino **registra su negocio u oficio** desde Publicar → Mi negocio, con foto, y aparece en el mapa.
+- **Entrar con celular + PIN** (4 a 6 números) elegido al crear la cuenta; el DNI validado en RENIEC sirve para recuperar el PIN.
 - **Cada publicación tiene su página** con comentarios de los vecinos, y cada vecino un **perfil público**: validación RENIEC, estrellas y recomendaciones de otros vecinos, puntos Ayni, galería con las fotos de sus publicaciones y lo que ofrece o pide. Recomendar a un vecino le da +2 puntos (una vez por persona).
 - **Ficha del negocio:** recomendaciones, resumen, distancia, horario y **botón de WhatsApp**.
 - **Publicar en 3 toques:** Ofrezco / Necesito / Recomiendo, con foto o **dictado por voz**.
@@ -219,7 +221,7 @@ CELULAR DEL VECINO (app web instalable / PWA: React + Vite)
   | Tinta | `#26332C` | texto |
 
 - **Faja:** franjas repetidas de verde profundo, maíz, marfil, terracota, maíz, marfil.
-- **Logo:** dos flechas que se persiguen en círculo (ida y vuelta = reciprocidad), en verde profundo sobre un círculo maíz. Está en `public/icon.svg` y como componente `Logo` en la app.
+- **Logo (del equipo, dom 8 nov):** tres vecinos tomados de la mano formando un corazón (terracota, teal y verde) dentro de un aro maíz con hojas. Fuente: `public/icon.svg`; en la app va como imagen (`public/logo-ayni.png`, componente `Logo`) sobre un círculo marfil.
 - **Tipografías** (gratis en Google Fonts):
   - **Big Shoulders Display** (extra negrita) para títulos y números.
   - **Atkinson Hyperlegible** para el texto.
@@ -231,7 +233,7 @@ Cada slide tiene **un solo mensaje**. Las capturas se sacan desde el celular, co
 
 | # | Título sugerido | Qué va (máx. 3 puntos) | Visual | Dato que se queda |
 |---|---|---|---|---|
-| 1 | **Ayni: tu barrio se ayuda** | Nombre y lema · nombre del equipo · Hackathon UTP – El Comercio 2026 | Logo (flechas en círculo maíz) sobre verde profundo + faja abajo | Ayni = hoy por ti, mañana por mí |
+| 1 | **Ayni: tu barrio se ayuda** | Nombre y lema · nombre del equipo · Hackathon UTP – El Comercio 2026 | Logo del equipo (vecinos en corazón, aro maíz) sobre verde profundo + faja abajo | Ayni = hoy por ti, mañana por mí |
 | 2 | **El problema** | No sabemos en quién confiar para un gasfitero o una bodega cerca · los emprendimientos del barrio no se hacen ver · en un sismo nadie sabe quién necesita qué | Foto o ilustración simple del barrio (sin texto encima) | La ayuda existe, pero no se encuentra |
 | 3 | **Nuestra respuesta: una app, dos modos** | **Modo Barrio** para el día a día · **Modo Minka** para emergencias · funciona en el celular, sin descargar de una tienda | Dos capturas lado a lado: mapa (verde) y Minka (rojo) | Barrio + Minka |
 | 4 | **Cumplimos todo el reto** | Lista con check de lo que pedía el reto (tabla de la sección 2) | Checklist en dos columnas | 10 de 10 pedidos cubiertos |

@@ -19,8 +19,16 @@
 | 3 | Modo Minka en emergencias | Si hay un sismo o incendio, la app cambia a 3 botones: Estoy bien, Necesito ayuda, Puedo ayudar. Los vecinos se coordinan solos. | Empezar |
 Enlace secundario en las 3: **Saltar**.
 
-## 2. Registro
-- Portada (verde profundo, faja arriba): marca **Ayni** / *tu barrio se ayuda* · título **Crea tu cuenta de vecino** · subtítulo *Con tu celular y tu DNI entras a tu barrio. Lo que necesitas está a 10 cuadras.*
+## 2. Entrar / Crear cuenta
+- Dos pestañas arriba de la tarjeta: **Entrar** (ícono entrar) y **Crear cuenta** (ícono persona+). Si el celular ya entró antes en este dispositivo se abre en Entrar con el celular puesto; si no, en Crear cuenta. Título de la portada: **Entra a tu barrio** / **Crea tu cuenta de vecino**.
+- **Entrar**: campos **Celular** y **PIN** *(4 a 6 números, para entrar después)* con botón de ojo para ver/ocultar · botón **Entrar** (cargando: *Entrando…*) · botón secundario **¿Olvidaste tu PIN? Crea uno nuevo con tu DNI** (pasa a Crear cuenta)
+  - Errores: *No hay ninguna cuenta con ese celular. Crea una.* · *El PIN no coincide. Si lo olvidaste, crea uno nuevo con tu DNI en "Crear cuenta".* · *Esta cuenta aún no tiene PIN. Toca "Crear cuenta", escribe tu mismo celular y DNI y elige tu PIN.* · *No pudimos entrar. Revisa tu internet e intenta de nuevo.*
+  - Aviso al entrar: *¡Hola de nuevo, {nombre}!*
+- **Crear cuenta**: lo de abajo más el campo **PIN**. Si el celular + DNI ya tienen cuenta, la recupera y guarda el PIN nuevo (así se recupera un PIN olvidado): aviso *¡Hola de nuevo, {nombre}! Tu PIN quedó guardado.* · nota bajo el botón: *¿Ya tienes cuenta? Con el mismo celular y DNI la recuperas y eliges un PIN nuevo.*
+- Seguridad (para el jurado): el PIN se guarda como huella con el DNI de sal, en la colección `accesos`; con las reglas abiertas de la demo un atacante podría leer las huellas, la protección real llega con Firebase Auth (mejora futura).
+
+### 2a. Campos de Crear cuenta
+- Portada (verde profundo, faja arriba): marca **Ayni** / *tu barrio se ayuda* · título **Crea tu cuenta de vecino** · subtítulo *Con tu celular y tu DNI entras a tu barrio. Lo que necesitas está a unas cuadras.*
 - Título: **Crea tu cuenta de vecino**
 - Campos con etiqueta visible y ejemplo: **Tu nombre** (`Ej: Rosa Quispe`) · **Celular** (`9 dígitos`) · **DNI** (`8 dígitos`)
 - Casilla 1: *Autorizo validar mi DNI en RENIEC. Ayni guarda solo una huella (hash), nunca mi número de DNI.*
@@ -45,6 +53,7 @@ Enlace secundario en las 3: **Saltar**.
 
 ## 4. Mapa (Modo Barrio)
 - Etiqueta radio: `Radio` + botones `500 m · 1 km · 2 km · 5 km`
+- Debajo, **buscador** (`Buscar negocio o publicación`, busca sin tildes en nombre, rubro, descripción, texto, categoría y autor) con botón de filtros (ícono de controles). El botón abre el **panel Filtrar** (tarjeta vertical, con X para cerrar): segmentos `Todo · Negocios · Publicaciones` (volver a tocar el activo regresa a Todo) · **Categorías de negocio**: solo las que tienen negocios en el radio, con la cantidad a la derecha (`Comida · Salud · Hogar y oficios · Belleza · Tiendas`; si no hay: *Ningún negocio a 1 km de ti.*) · `Con opiniones` con su cantidad (negocios con estrellas de vecinos) · **Borrar filtros**. Con **Publicaciones** elegido, el panel lista las publicaciones (*Publicaciones, de la más cercana a la más lejana*) agrupadas por zona como los pines del mapa: cabecera *A 150 m de ti* con la cantidad si son varias, y debajo cada publicación (ícono del tipo, texto, *autor · tipo*); tocar una centra el mapa, abre su popup desplazado hasta esa publicación y la resalta unos segundos (en celular además cierra el panel). En PC el panel Filtrar está abierto desde el inicio (sin X; el botón de filtros lo pliega). Vacío: *Ninguna publicación a 1 km de ti.* Todo es interruptor: tocar de nuevo lo quita. Elegir una categoría o "Con opiniones" oculta las publicaciones (son filtros de negocios). Con el panel cerrado y algún filtro activo aparece el chip rojo **Borrar filtros** junto a los contadores. Vacío con filtro: *Nada coincide con «pollería» a 1 km de ti.* / *Nada con esos filtros a 1 km de ti.*
 - Cargando: *Buscando tu ubicación…*
 - Sin permiso de ubicación: *Sin tu ubicación no podemos mostrar tu barrio. Actívala en el candado de la barra del navegador.*
 - Chip pendientes: `2 publicaciones pendientes de subir`
@@ -59,11 +68,13 @@ Enlace secundario en las 3: **Saltar**.
 - Popup de publicación: chips `Necesito` (terracota) `Oficios` · texto · `Lucía P., a 200 m`
 - Botón flotante maíz: **Publicar** (con el signo +)
 
-## 4b. Vecinos (lista de publicaciones y negocios)
-- Título: **Vecinos cerca de ti** · subtítulo: *A 1 km de tu casa, 11 publicaciones* (o *…, 15 negocios*) · botón **Publicar**
-- Filtros (píldoras): `Todo · Ofrezco · Necesito · Recomiendo · Negocios`
+## 4b. Vecinos (dos pestañas: Vecinos y Negocios)
+- Título: **Vecinos cerca de ti** o **Negocios cerca de ti** · subtítulo: *A 1 km de tu casa, 11 publicaciones* (o *…, 15 negocios*) · botón **Publicar**
+- Pestañas (segmentos): **Vecinos** (ícono personas) · **Negocios** (ícono tienda)
+- En Vecinos, filtros (píldoras): `Todo · Ofrezco · Necesito · Recomiendo` (lo de persona a persona)
+- En Negocios, categorías: `Todo · Comida · Salud · Hogar y oficios · Belleza · Tiendas` (se deducen del rubro) · vacío: *Aún no hay negocios de esta categoría a 1 km de ti.*
 - Cada publicación (la más reciente arriba): chips `Ofrezco` `Oficios` · hace cuánto: `ahora` / `hace 4 min` / `hace 4 h` / `ayer` / `hace 3 días` · texto · **foto** si la subió · `Eduardo Brito, a 151 m` (o `Tú`) · botón **WhatsApp** (si no es tuya y el autor lo mostró)
-- Cada negocio (filtro Negocios, los más recomendados arriba): nombre, rubro, *Recomendado por 12 vecinos de tu zona*, resumen entre comillas, `A 350 m` y horario, botón **WhatsApp**
+- Cada negocio (los más recomendados arriba): nombre, rubro, estrellas reales `4.5 (3)` o *Sin estrellas aún*, *12 vecinos lo recomiendan* (los de la semilla más las recomendaciones reales), foto si la puso el dueño, descripción o resumen entre comillas, `A 350 m` y horario, botones **Mapa** · **Opinar** · **WhatsApp**. Tocar el item abre la página del negocio (§4e).
 - Vacío: *Aún no hay publicaciones a 1 km de ti. Sé el primero: toca Publicar.* · con filtro Negocios: *Aún no hay negocios recomendados a 1 km de ti.*
 - Cada item muestra el avatar (iniciales) y el nombre del autor (tocarlos abre su perfil), y abajo los botones **Mapa** (centra y abre el popup en el Mapa), **Comentar** y **WhatsApp**. Tocar el resto del item abre el **detalle de la publicación**. En PC la lista es un feed centrado de tarjetas; el Mapa ocupa toda la pantalla.
 
@@ -75,6 +86,13 @@ Enlace secundario en las 3: **Saltar**.
 - **Comentarios (n)** · vacío: *Nadie ha comentado todavía. Sé el primero.* · cada comentario: avatar, nombre (`Tú` si es tuyo), `hace 5 min`, texto · campo `Escribe un comentario` (máx. 300) + botón **Comentar**
 - Avisos: *Comentario publicado* · *Sin señal: tu comentario se guardó y se enviará solo.* · *No se pudo comentar. Intenta de nuevo.*
 - No existe: *Esta publicación ya no está disponible.* + botón **Volver a Vecinos**
+- Si la publicación es tuya, abajo: botón **Quitar publicación** (confirmación: *¿Quitar tu publicación? Dejará de verse en el barrio.* → aviso *Publicación quitada.*). No se borra: pasa a estado "retirada" y desaparece del mapa, de Vecinos y de tu perfil; si alguien abre el enlace ve *Esta publicación ya no está disponible.*
+
+## 4e. Página de negocio (`/negocio/{id}`)
+- Título: **Negocio del barrio** · ficha con ícono del rubro, nombre, chips `Tu negocio` (si es mío) · rubro · categoría, estrellas (*Sin estrellas aún*), *Recomendado por 18 vecinos de tu zona*, foto, descripción o resumen, `A 134 m de ti`, `Atiende 7am-12am` · botones **WhatsApp** · **Ver en el mapa** · si es mío: **Editar mi negocio** y **Quitar del mapa**
+- **Opiniones de vecinos**: tarjeta **¿Conoces este negocio? Recomiéndalo** (o **Tu recomendación**) con 5 estrellas, `Cuenta cómo te fue (opcional)`, botón **Recomendar** / **Actualizar recomendación** · nota: *Recomendar te da +2 puntos Ayni, una sola vez por negocio.* (el dueño no puede recomendar su propio negocio) · lista de opiniones con estrellas · vacío: *Aún nadie opinó sobre este negocio.* · aviso: *Gracias. Ganaste +2 puntos Ayni por recomendar a {negocio}.*
+- **Comentarios (n)**: igual que en una publicación.
+- No existe: *Este negocio ya no está disponible.* + **Volver a Vecinos**
 
 ## 4d. Perfil de vecino (`/vecino/{id}`)
 - Título: **Perfil de vecino** (o **Tu perfil público** si eres tú)
@@ -91,7 +109,12 @@ Enlace secundario en las 3: **Saltar**.
 | **Ofrezco** (mano que ofrece, verde) | un servicio o producto |
 | **Necesito** (megáfono, terracota) | ayuda o algo del barrio |
 | **Recomiendo** (estrella, maíz) | un negocio u oficio |
+| **Mi negocio** (tienda, teal) | pon tu negocio u oficio en el mapa (o *editar o registrar otro* si ya tiene) |
 Secundario: **Cancelar**
+
+**Mis negocios (toque 3, si ya tengo alguno).** Título **Mis negocios** · *Toca uno para editarlo o registra otro* · lista de mis negocios (logo o tienda, nombre, rubro, *· Quitado del mapa* si está oculto) · botón **Registrar otro negocio**. Se puede tener varios negocios por cuenta.
+**Formulario del negocio (toque 3).** Título **Nuevo negocio** / **Editar negocio** · subtítulo *Aparecerá en el mapa y en Negocios* / *Edita los datos y guarda* · campos: **Nombre del negocio u oficio** (`Ej: Bodega Don Lucho`) · **Rubro** (lista: Abarrotes / Bodega, Panadería / Pastelería, Restaurante / Menú, Pollería, Frutas y Verduras, Salud / Farmacia, Veterinaria / Mascotas, Ferretería, Gasfitería / Electricidad, Técnico / Reparaciones, Costura / Enmiendas, Lavandería, Mecánica / Llantas, Reparación de Calzado, Peluquería / Barbería, Bazar / Regalos, Otro → **¿Cuál?**) · **Horario** (`Ej: 8am-8pm, lunes a sábado`) · **WhatsApp del negocio** (viene con el del vecino) · **¿Qué ofreces? (corto)** (máx. 160) · **Logo del negocio** / **Cambiar logo** (cuadrado; nota: *Cuadrado. Se ve en el mapa y en la lista en vez del ícono del rubro.*) · botón **Foto del local** / **Cambiar foto del local** · **Ubicación del local**: mapa con un pin arrastrable (*Arrastra el pin o toca el mapa hasta el punto exacto. Los negocios se muestran con su ubicación real.*) + botón **Usar mi ubicación actual**; a diferencia de las publicaciones, el negocio se guarda con su ubicación **exacta** (es un lugar público) · botones **Quitar logo** y **Quitar foto del local** cuando las hay · botón **Poner mi negocio en el mapa** / **Guardar cambios** (cargando: *Guardando…*) · si ya está en el mapa, botón rojo **Quitar mi negocio del mapa** (confirmación: *¿Quitar tu negocio del mapa? Podrás volver a ponerlo cuando quieras.* → aviso *Negocio quitado del mapa.*; no se borra: estado "retirado", desaparece de mapa y lista, y volver a guardar lo reactiva; su página muestra el chip `Quitado del mapa` al dueño) · avisos: *Tu negocio ya está en el mapa del barrio.* · *Negocio actualizado.* · *Sin señal: tu negocio se guardó y se subirá solo.* Un negocio por cuenta.
+Dos botones rojos al final (si ya tengo negocio): **Quitar mi negocio del mapa** (solo si está visible; estado `retirado`, los datos se guardan y el botón principal pasa a *Poner mi negocio en el mapa*) y **Eliminar mi negocio** (estado `eliminado`, datos y fotos en blanco; no se puede deshacer; *Registrar mi negocio* empieza de cero). Nota: *Quitar del mapa lo oculta y guarda tus datos para volver a ponerlo. Eliminar lo borra para siempre.* Confirmación: *¿Eliminar tu negocio por completo? Se borran sus datos y fotos y no volverá a aparecer. No se puede deshacer.* Aviso: *Negocio eliminado.* En Ajustes el negocio quitado se muestra con el chip **Quitado del mapa** y los mismos botones (**Quitar del mapa** / **Eliminar mi negocio**); en la página del negocio el dueño tiene **Editar mi negocio** · **Quitar del mapa** · **Eliminar**.
 
 **Toque 3 – contenido.** Flecha Atrás + ficha del tipo. Etiqueta del campo: **¿Qué quieres decir?** Placeholder según tipo:
 - Ofrezco: *Ej: Arreglo lavadoras a domicilio, S/ 30 la visita*
@@ -99,7 +122,7 @@ Secundario: **Cancelar**
 - Recomiendo: *Ej: La bodega de Doña Rosa fía y abre temprano*
 Botones: **Hablar** (micrófono; escuchando: *Escuchando…*) · **Foto** (cámara) · **Publicar** (cargando: *Publicando…*)
 Nota (ícono de ubicación): *Se publica con tu ubicación aproximada.* Si está offline, se agrega: *Estás sin internet: se guardará y subirá solo.*
-Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto.*
+Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto.* Si el navegador tiene la API pero falla (en PC solo Chrome y Edge dictan; Opera, Brave y Firefox no): *El dictado no funciona en este navegador; en PC usa Chrome o Edge, o escribe el texto.* Otros avisos: *Permite el micrófono en el navegador para dictar* · *No se escuchó nada; intenta otra vez cerca del micrófono* · *No se encontró micrófono*.
 
 **Avisos (toast, 4 s):**
 - Online: *Publicado en tu barrio*
@@ -144,7 +167,7 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 - Tarjeta verde **Tus códigos de canje** (ícono de ticket) (últimos 3): **482 913** · `1 pan francés gratis con tu compra, en Panadería La Espiga de Oro` · `Vence el 14 nov`
 
 ## 8. Ajustes (se abre desde el avatar de la barra; `/perfil` redirige aquí)
-- Título: **Ajustes** · tarjeta de tu cuenta (avatar, nombre, chip de verificación, celular, avales, puntos) · secciones **Accesibilidad e idioma** y **Ubicación y cuenta**. En PC, cuenta a la izquierda y secciones a la derecha.
+- Título: **Ajustes** · tarjeta de tu cuenta (avatar con foto o iniciales, nombre, chip de verificación; botones **Poner foto de perfil** / **Cambiar foto** y **Quitar foto**, avisos *Foto actualizada.* / *Foto quitada.*; la foto se recorta cuadrada y se ve en la barra, en Vecinos, comentarios y perfiles; celular, avales, puntos) · sección **Mi negocio** (*¿Tienes un negocio u oficio? Ponlo en el mapa para que tus vecinos lo encuentren.* + botón **Registrar mi negocio**; si ya tiene: un bloque por negocio con nombre o logo, rubro, chip *Quitado del mapa* si corresponde y botones **Editar**, **Ver página**, **Quitar del mapa**, **Eliminar**; abajo **Registrar otro negocio**) · secciones **Accesibilidad e idioma** y **Ubicación y cuenta**. En PC, cuenta y negocio a la izquierda y secciones a la derecha.
 - Chips: **Validado en RENIEC** (con check) / **Pendiente de verificación** · `Avales: 1 de 2` · `, vecino verificado`
 - WhatsApp: `(WhatsApp visible)` / `(WhatsApp oculto)` · interruptor: *Mostrar mi WhatsApp*
 - Botón en perfil de otro vecino: **Lo conozco (avalar)** · éxito: *Avalaste a Lucía. Le falta 1 aval más.*
@@ -191,5 +214,5 @@ Sin dictado disponible: *Tu navegador no tiene dictado por voz; escribe el texto
 
 ## 12. Nombre y lema (para slides y tienda)
 - **Ayni – tu barrio se ayuda**
-- Lema corto: *Lo que necesitas está a 10 cuadras.*
+- Lema corto: *Lo que necesitas está a unas cuadras.*
 - Lema emergencia: *Cuando tiembla, el primero que llega es tu vecino.*

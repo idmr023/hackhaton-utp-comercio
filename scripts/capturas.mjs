@@ -8,7 +8,7 @@ import { resolve } from 'node:path'
 
 const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe'
 const BASE = 'http://localhost:5173'
-const PUERTO = 9333
+const PUERTO = Number(process.env.PUERTO_CDP) || 9333 // otro puerto si quedo un Chrome colgado: PUERTO_CDP=9335
 const salida = process.argv[2] || 'capturas'
 const solo = process.argv[3]?.split(',')
 mkdirSync(salida, { recursive: true })
@@ -49,13 +49,18 @@ const estado = (tutorial, usuario, modo = 'barrio', extra = '') => js(`localStor
 const PANTALLAS = [
   ['tutorial', '/', () => estado(false, false)],
   ['registro', '/', () => estado(true, false)],
+  ['entrar', '/', () => estado(true, false, 'barrio', "localStorage.setItem('ayni_ultimo_celular','987654321')")],
   ['mapa', '/', () => estado(true, true)],
+  ['mapa_filtros', '/', () => estado(true, true), "document.querySelector('.buscador button')?.click(); const i=document.querySelector('.buscador input'); const set=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set; set.call(i,'poller'); i.dispatchEvent(new Event('input',{bubbles:true}))"],
   ['publicar', '/publicar', () => estado(true, true)],
   ['puntos', '/puntos', () => estado(true, true)],
   ['vecinos', '/vecinos', () => estado(true, true)],
   ['ajustes', '/ajustes', () => estado(true, true)],
   ['publicacion', '/publicacion/pub_01', () => estado(true, true)],
   ['vecino', '/vecino/vec_03', () => estado(true, true)],
+  ['negocio', '/negocio/neg_01', () => estado(true, true)],
+  ['publicar_negocio', '/publicar?tipo=NEGOCIO', () => estado(true, true)],
+  ['publicar_negocio_abajo', '/publicar?tipo=NEGOCIO', () => estado(true, true), 'document.querySelector(".contenido")?.scrollTo(0, 99999)'],
   ['minka', '/minka', () => estado(true, true, 'minka')],
   ['minka_acc', '/minka', () => estado(true, true, 'minka', "localStorage.setItem('ayni_prefs', JSON.stringify({ letraGrande: true, altoContraste: true, idioma: 'mixto' }))")],
   ['ajustes_acc', '/ajustes', () => estado(true, true, 'barrio', "localStorage.setItem('ayni_prefs', JSON.stringify({ letraGrande: true, altoContraste: true, idioma: 'mixto' }))")],
@@ -67,6 +72,9 @@ const PANTALLAS = [
   ['minka_abajo', '/minka', () => estado(true, true, 'minka'), 'window.scrollTo(0, 99999); document.querySelector(".contenido")?.scrollTo(0, 99999)'],
   // Pantalla ancha (PC / tablet): riel de navegacion a la izquierda, contenido centrado
   ['pc_mapa', '/', () => estado(true, true), '', 1280],
+  // En PC el panel Filtrar ya arranca abierto
+  ['pc_mapa_filtros', '/', () => estado(true, true), '', 1280],
+  ['pc_mapa_pubs', '/', () => estado(true, true), "[...document.querySelectorAll('.panel-filtros .segmentos button')].find((b) => b.textContent.includes('Publicaciones'))?.click(); setTimeout(() => document.querySelectorAll('.item-pub-panel')[4]?.click(), 300)", 1280],
   ['pc_vecinos', '/vecinos', () => estado(true, true), '', 1280],
   ['pc_publicacion', '/publicacion/pub_01', () => estado(true, true), '', 1280],
   ['pc_vecino', '/vecino/vec_03', () => estado(true, true), '', 1280],

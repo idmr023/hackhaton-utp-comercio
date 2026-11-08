@@ -1,18 +1,26 @@
 // Ajustes (se abre desde el avatar de la barra): tu cuenta y verificacion, accesibilidad (letra grande, alto contraste,
 // modo para daltonicos), idioma (espanol / espanol con frases en quechua / quechua), ubicacion demo, salir.
 import { useEffect, useState } from 'react'
-import { Smartphone, Users, Coins, BadgeCheck, Type, Contrast, Languages, LocateFixed, LogOut, Eye } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { Smartphone, Users, Coins, BadgeCheck, Type, Contrast, Languages, LocateFixed, LogOut, Eye, EyeOff, Store, Camera, Trash2, Pencil } from 'lucide-react'
+import { Avatar, setFotoPerfilCache } from '../lib/social'
+import { recortarCuadrado } from '../lib/foto'
 import { useEstado } from '../lib/estado'
-import { MODO_DEMO_LOCAL } from '../lib/db'
+import { MODO_DEMO_LOCAL, listar, crearSeguro, actualizarSeguro } from '../lib/db'
+import { NEGOCIO_ELIMINADO } from '../lib/negocios'
 import { saldoPuntos } from '../lib/puntos'
 import { IDIOMAS } from '../lib/i18n'
 
-const iniciales = (nombre = '') => nombre.trim().split(/\s+/).slice(0, 2).map((p) => p[0]?.toUpperCase()).join('')
 
 export default function Ajustes() {
   const { usuario, setUsuario, ubicacionDemo, setUbicacionDemo, setAviso, prefs, setPref, idioma, t } = useEstado()
   const [saldo, setSaldo] = useState(null)
-  useEffect(() => { saldoPuntos(usuario.id).then(setSaldo).catch(() => setSaldo(0)) }, [usuario.id])
+  const [misNegocios, setMisNegocios] = useState([]) // mis negocios (varios por cuenta), sin los eliminados
+  const nav = useNavigate()
+  useEffect(() => {
+    saldoPuntos(usuario.id).then(setSaldo).catch(() => setSaldo(0))
+    listar('negocios_oficios', { autorId: usuario.id }).then((l) => setMisNegocios(l.filter((n) => n.estado !== 'eliminado'))).catch(() => {}) // retirado se muestra con chip; eliminado es como si no existiera
+  }, [usuario.id])
 
   const interruptor = (k, Icono, texto, ayuda) => (
     <label className="switch">
@@ -24,6 +32,37 @@ export default function Ajustes() {
     setUbicacionDemo(!ubicacionDemo)
     setAviso(ubicacionDemo ? t('Usando tu ubicación real') : t('Ubicación fija en Surquillo'))
   }
+  const [guardandoFoto, setGuardandoFoto] = useState(false)
+  // Foto de perfil: cuadrada de 256 px, en la coleccion perfiles (id = usuario.id); tambien en la sesion local
+  async function guardarFoto(file) {
+    setGuardandoFoto(true)
+    try {
+      const foto = file ? await recortarCuadrado(file) : null
+      await crearSeguro('perfiles', { autorId: usuario.id, usuarioId: usuario.id, nombre: usuario.nombre, fotoBase64: foto }, usuario.id)
+      setFotoPerfilCache(usuario.id, foto)
+      setUsuario({ ...usuario, fotoBase64: foto })
+      setAviso(foto ? t('Foto actualizada.') : t('Foto quitada.'))
+    } catch (e) { console.error('Foto de perfil fallo', e); setAviso(t('No se pudo guardar. Intenta de nuevo.')) }
+    finally { setGuardandoFoto(false) }
+  }
+  // Quitar mi negocio del mapa (estado "retirado"; volver a guardarlo en Publicar lo reactiva)
+  async function quitarNegocio(n) {
+    if (!window.confirm(t('¿Quitar tu negocio del mapa? Podrás volver a ponerlo cuando quieras.'))) return
+    try {
+      await actualizarSeguro('negocios_oficios', n.id, { estado: 'retirado' })
+      setMisNegocios(misNegocios.map((x) => (x.id === n.id ? { ...x, estado: 'retirado' } : x)))
+      setAviso(t('Negocio quitado del mapa.'))
+    } catch (e) { console.error('Quitar negocio fallo', e); setAviso(t('No se pudo guardar. Intenta de nuevo.')) }
+  }
+  // Eliminar mi negocio por completo (estado "eliminado" y datos en blanco; no se puede deshacer)
+  async function eliminarNegocio(n) {
+    if (!window.confirm(t('¿Eliminar tu negocio por completo? Se borran sus datos y fotos y no volverá a aparecer. No se puede deshacer.'))) return
+    try {
+      await actualizarSeguro('negocios_oficios', n.id, NEGOCIO_ELIMINADO)
+      setMisNegocios(misNegocios.filter((x) => x.id !== n.id))
+      setAviso(t('Negocio eliminado.'))
+    } catch (e) { console.error('Eliminar negocio fallo', e); setAviso(t('No se pudo guardar. Intenta de nuevo.')) }
+  }
   const salir = () => { localStorage.removeItem('ayni_usuario'); setUsuario(null); window.location.href = '/' }
 
   return (
@@ -33,7 +72,7 @@ export default function Ajustes() {
         <div>
           <div className="tarjeta">
             <div className="fila">
-              <div className="avatar" aria-hidden="true">{iniciales(usuario.nombre)}</div>
+              <Avatar nombre={usuario.nombre} usuarioId={usuario.id} size={72} />
               <div style={{ minWidth: 0 }}>
                 <h3 style={{ fontSize: 'calc(22px * var(--escala))', fontFamily: 'var(--titular)', fontWeight: 800, color: 'var(--verde-prof)', margin: 0 }}>{usuario.nombre}</h3>
                 {idioma === 'mixto' && <span className="quechua">Wasimasi (vecino/a)</span>}
@@ -44,11 +83,34 @@ export default function Ajustes() {
                 </div>
               </div>
             </div>
+            <div className="btn-fila" style={{ marginTop: 12 }}>
+              <label className="btn chico secundario" style={{ flex: 'none' }}><Camera size={18} aria-hidden="true" />{usuario.fotoBase64 ? t('Cambiar foto') : t('Poner foto de perfil')}
+                <input type="file" accept="image/*" style={{ display: 'none' }} disabled={guardandoFoto} onChange={(e) => e.target.files[0] && guardarFoto(e.target.files[0])} />
+              </label>
+              {usuario.fotoBase64 && <button className="btn chico secundario" disabled={guardandoFoto} onClick={() => guardarFoto(null)}><Trash2 size={18} aria-hidden="true" />{t('Quitar foto')}</button>}
+            </div>
             <div style={{ marginTop: 12 }}>
               <div className="dato"><Smartphone aria-hidden="true" /><span>{usuario.telefono} <span className="muted">{usuario.whatsappVisible ? t('(WhatsApp visible)') : t('(WhatsApp oculto)')}</span></span></div>
               <div className="dato"><Users aria-hidden="true" /><span>{t('Avales: {n} de 2', { n: usuario.avales?.length || 0 })}{usuario.verificado ? t(', vecino verificado') : ''}</span></div>
               <div className="dato"><Coins aria-hidden="true" /><span>{t('Puntos Ayni:')} <b>{saldo ?? '…'}</b></span></div>
             </div>
+          </div>
+          <h2 className="titulo-seccion">{t('Mi negocio')}</h2>
+          <div className="tarjeta">
+            {misNegocios.length === 0 && <p className="muted">{t('¿Tienes un negocio u oficio? Ponlo en el mapa para que tus vecinos lo encuentren.')}</p>}
+            {misNegocios.map((n) => (
+              <div key={n.id} className="mi-negocio">
+                <div className="fila"><span className={`ficha teal${n.logoBase64 ? ' logo' : ''}`}>{n.logoBase64 ? <img src={n.logoBase64} alt="" /> : <Store aria-hidden="true" />}</span><div style={{ flex: 1, minWidth: 0 }}><b>{n.nombre}</b><div className="muted">{n.rubro}</div></div>{n.estado === 'retirado' && <span className="chip pendiente">{t('Quitado del mapa')}</span>}</div>
+                <div className="btn-fila envuelve" style={{ marginTop: 8 }}>
+                  <button className="btn chico secundario" onClick={() => nav('/publicar', { state: { tipo: 'NEGOCIO', negocioId: n.id } })}><Pencil size={18} aria-hidden="true" />{t('Editar')}</button>
+                  <button className="btn chico secundario" onClick={() => nav(`/negocio/${n.id}`, { state: { negocio: n } })}>{t('Ver página')}</button>
+                  {n.estado !== 'retirado' && <button className="btn chico peligro" onClick={() => quitarNegocio(n)}><EyeOff size={18} aria-hidden="true" />{t('Quitar del mapa')}</button>}
+                  <button className="btn chico peligro" onClick={() => eliminarNegocio(n)}><Trash2 size={18} aria-hidden="true" />{t('Eliminar')}</button>
+                </div>
+              </div>
+            ))}
+            <button className="btn secundario" style={{ marginTop: 12 }} onClick={() => nav('/publicar', { state: { tipo: 'NEGOCIO', negocioId: 'nuevo' } })}><Store aria-hidden="true" />{misNegocios.length ? t('Registrar otro negocio') : t('Registrar mi negocio')}</button>
+            {misNegocios.length > 0 && <p className="nota" style={{ marginTop: 8 }}><span>{t('Quitar del mapa lo oculta y guarda tus datos para volver a ponerlo. Eliminar lo borra para siempre.')}</span></p>}
           </div>
           {MODO_DEMO_LOCAL && <div className="chip pendiente">Modo demo local: sin Firebase (.env vacío). Los datos viven en este navegador.</div>}
         </div>

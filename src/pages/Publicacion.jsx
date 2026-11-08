@@ -2,9 +2,9 @@
 // y comentarios de los vecinos. Los comentarios se guardan con id fijo (sin senal quedan en cola y suben solos).
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, ChevronRight, LocateFixed, Map, MessageCircle, MessageSquare, Send, BadgeCheck } from 'lucide-react'
+import { ArrowLeft, ChevronRight, LocateFixed, Map, MessageCircle, MessageSquare, Send, BadgeCheck, Trash2 } from 'lucide-react'
 import { useEstado } from '../lib/estado'
-import { obtener, listar, crearSeguro } from '../lib/db'
+import { obtener, listar, crearSeguro, actualizarSeguro } from '../lib/db'
 import { distanciaKm } from '../lib/geo'
 import { ICONO_TIPO } from '../lib/iconos'
 import { waLink, msjPublicacion, NOMBRE_TIPO, CLASE_TIPO, msFecha, haceCuanto, metros, claveCelda } from '../lib/contacto'
@@ -31,7 +31,7 @@ export default function Publicacion() {
       try {
         const p = loc.state?.pub || await obtener('publicaciones', id)
         if (!vivo) return
-        if (!p) return setEstado('nohay')
+        if (!p || (p.estado === 'retirada' && p.autorId !== usuario?.id)) return setEstado('nohay')
         setPub(p); setEstado('ok')
         const [c, u, r] = await Promise.all([
           listar('comentarios', { publicacionId: id }, 200),
@@ -60,6 +60,18 @@ export default function Publicacion() {
     finally { setEnviando(false) }
   }
 
+  // QUITAR mi publicacion: no se borra (las reglas no lo permiten), pasa a estado "retirada" y deja de verse
+  async function quitar() {
+    if (!window.confirm(t('¿Quitar tu publicación? Dejará de verse en el barrio.'))) return
+    setEnviando(true)
+    try {
+      await actualizarSeguro('publicaciones', id, { estado: 'retirada' })
+      setAviso(t('Publicación quitada.'))
+      nav('/vecinos', { replace: true })
+    } catch (e) { console.error('Quitar fallo', e); setAviso(t('No se pudo guardar. Intenta de nuevo.')) }
+    finally { setEnviando(false) }
+  }
+
   if (estado === 'cargando') return <div className="cargando" role="status"><p>{t('Cargando publicación…')}</p></div>
   if (estado === 'nohay') return (
     <div className="pantalla detalle">
@@ -84,7 +96,7 @@ export default function Publicacion() {
 
       <article className="tarjeta">
         <Link to={`/vecino/${pub.autorId}`} state={{ nombre: pub.autorNombre }} className="autor">
-          <Avatar nombre={pub.autorNombre} size={48} />
+          <Avatar nombre={pub.autorNombre} usuarioId={pub.autorId} size={48} />
           <div style={{ minWidth: 0 }}>
             <b>{mia ? t('{nombre} (tú)', { nombre: pub.autorNombre }) : pub.autorNombre}</b>
             {autor?.verificacion === 'reniec' && <span className="chip" style={{ marginLeft: 8 }}><BadgeCheck aria-hidden="true" />RENIEC</span>}
@@ -100,6 +112,13 @@ export default function Publicacion() {
           {pub.autorWhatsapp && !mia && <a className="btn whatsapp" href={waLink(pub.autorWhatsapp, msjPublicacion(pub))} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" />WhatsApp</a>}
           <button className="btn secundario" onClick={verMapa}><Map aria-hidden="true" />{t('Ver en el mapa')}</button>
         </div>
+        {mia && (
+          <div className="acciones-match">
+            {pub.estado === 'retirada'
+              ? <span className="chip neutro">{t('Publicación quitada')}</span>
+              : <button className="btn chico secundario" disabled={enviando} onClick={quitar}><Trash2 size={18} aria-hidden="true" />{t('Quitar publicación')}</button>}
+          </div>
+        )}
       </article>
 
       <section className="tarjeta" aria-labelledby="t-comentarios">
@@ -107,7 +126,7 @@ export default function Publicacion() {
         {comentarios.length === 0 && <p className="muted">{t('Nadie ha comentado todavía. Sé el primero.')}</p>}
         {comentarios.map((c) => (
           <div key={c.id} className="comentario">
-            <Avatar nombre={c.autorNombre} size={36} />
+            <Avatar nombre={c.autorNombre} usuarioId={c.autorId} size={36} />
             <div style={{ minWidth: 0, flex: 1 }}>
               <b>{c.autorId === usuario?.id ? t('Tú') : c.autorNombre}</b> <span className="muted">{haceCuanto(c.fecha, t)}</span>
               <p>{c.texto}</p>

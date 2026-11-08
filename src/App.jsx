@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, NavLink, Navigate, useNavigate } from 're
 import { Map, Users, Coins, Siren, WifiOff, LogOut } from 'lucide-react'
 import { EstadoProvider, useEstado } from './lib/estado'
 import { Logo } from './lib/iconos'
+import { useFotoPerfil } from './lib/social'
 import Barrio from './pages/Barrio'
 import Publicar from './pages/Publicar'
 import Minka from './pages/Minka'
@@ -11,6 +12,7 @@ import Tutorial from './pages/Tutorial'
 import Puntos from './pages/Puntos'
 import Publicacion from './pages/Publicacion'
 import Vecino from './pages/Vecino'
+import Negocio from './pages/Negocio'
 
 const iniciales = (nombre = '') => nombre.trim().split(/\s+/).slice(0, 2).map((p) => p[0]?.toUpperCase()).join('')
 const cls = ({ isActive }) => (isActive ? 'activo' : '')
@@ -31,6 +33,7 @@ function Barra() {
   const { modo, setModo, online, aviso, usuario, t } = useEstado()
   const nav = useNavigate()
   const minka = modo === 'minka'
+  const fotoPerfil = useFotoPerfil(usuario?.id)
   // Emergencia es el interruptor del Modo Minka: cambia toda la app, no es una seccion mas
   const cambiarModo = () => {
     if (minka) {
@@ -42,7 +45,7 @@ function Barra() {
     <>
       <header className={'barra-superior' + (online ? '' : ' sin-internet')}>
         <div className="marca">
-          <Logo size={38} fondo={minka ? '#fff' : 'var(--maiz)'} trazo={minka ? 'var(--rojo)' : 'var(--verde-prof)'} />
+          <Logo size={42} fondo={minka ? '#fff' : 'var(--marfil)'} />
           <div className="marca-texto">
             <div className="marca-nombre">{minka ? t('Modo Minka') : 'Ayni'}</div>
             <div className="marca-lema">{minka ? t('emergencia en tu zona') : t('tu barrio se ayuda')}</div>
@@ -58,7 +61,7 @@ function Barra() {
             <span className="btn-modo-texto">{minka ? t('Salir') : t('Emergencia')}</span>
           </button>
           <NavLink to="/ajustes" className={({ isActive }) => 'avatar-btn' + (isActive ? ' activo' : '')} aria-label={t('Ajustes y perfil')} title={t('Ajustes y perfil')}>
-            {iniciales(usuario?.nombre) || '?'}
+            {fotoPerfil ? <img src={fotoPerfil} alt="" /> : (iniciales(usuario?.nombre) || '?')}
           </NavLink>
         </div>
       </header>
@@ -83,6 +86,7 @@ function Rutas() {
           <Route path="/publicar" element={<Publicar />} />
           <Route path="/publicacion/:id" element={<Publicacion />} />
           <Route path="/vecino/:id" element={<Vecino />} />
+          <Route path="/negocio/:id" element={<Negocio />} />
           <Route path="/minka" element={<Minka />} />
           <Route path="/puntos" element={<Puntos />} />
           <Route path="/ajustes" element={<Ajustes />} />
